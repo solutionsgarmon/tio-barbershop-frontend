@@ -2,41 +2,53 @@ import { TroubleshootRounded } from "@mui/icons-material";
 import React, { createContext, useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { getBarbers, getBarbershops, getProducts, getUsers } from "../api/gets";
+import {
+  getBarbers,
+  getBarbershops,
+  getCitas,
+  getProducts,
+  getServices,
+  getUsers,
+} from "../api/gets";
 const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
   const [flagTransparent, setFlagTransparent] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [users, setUsers] = useState([]);
-  const [reloadUsers, setReloadUsers] = useState(false);
+
   const [barbers, setBarbers] = useState([]);
   const [barbershops, setBarbershops] = useState([]);
   const [products, setProducts] = useState([]);
+  const [citas, setCitas] = useState([]);
+  const [services, setServices] = useState([]);
 
-  useEffect(() => {
-    const getData = async () => {
-      setBarbers(await getBarbers());
-      setBarbershops(await getBarbershops());
-      setProducts(await getProducts());
-    };
+  const [indexTabSelected, setIndexTabSelected] = useState(0);
 
-    getData();
-  }, []);
-
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const usersData = await getUsers();
-        console.log("USUARIOS", usersData);
-        setUsers(usersData);
-      } catch (error) {
-        console.error("Error al obtener los usuarios:", error);
-      }
-    };
-
-    getData();
-  }, [reloadUsers]);
+  //Funcion para actualizar una coleccion en concreto
+  async function getData(name) {
+    name = name.toLowerCase();
+    switch (name) {
+      case "users":
+        setUsers(await getUsers());
+        break;
+      case "barbers":
+        setBarbers(await getBarbers());
+        break;
+      case "barbershops":
+        setBarbershops(await getBarbershops());
+        break;
+      case "products":
+        setProducts(await getProducts());
+        break;
+      case "citas":
+        setCitas(await getCitas());
+        break;
+      case "services":
+        setServices(await getServices());
+        break;
+    }
+  }
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,10 +72,15 @@ const AppProvider = ({ children }) => {
     setBarbers,
     setBarbershops,
     setProducts,
+    setCitas,
+    setServices,
     barbers,
     barbershops,
     products,
-    setReloadUsers,
+    citas,
+    services,
+    indexTabSelected,
+    setIndexTabSelected,
   };
   return (
     <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>

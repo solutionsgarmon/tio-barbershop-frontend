@@ -9,7 +9,7 @@ const containerStyle = {
 function MyComponent({ lat, lng }) {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "AIzaSyBbNWNfAkWMVouvys68l0BjJ96rFWJVYMM",
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_KEY,
   });
   const center = { lat: lat, lng: lng }; // Coordenadas de la CDMX
 

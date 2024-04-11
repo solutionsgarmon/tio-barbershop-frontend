@@ -30,14 +30,22 @@ import { postUser } from "../../../api/posts";
 import { deleteUser } from "../../../api/deletes";
 import Swal from "sweetalert2";
 import { updateProduct, updateUser } from "../../../api/updates";
+import { getUsers } from "../../../api/gets";
 
 const ROLES = ["Cliente", "Barbero", "Administrador"];
 
 const Example = () => {
-  const { users, setReloadUsers } = useAppContext();
   const [validationErrors, setValidationErrors] = useState({});
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
   const [isUpdateData, setIsUpdateData] = useState(false); //Bloquear la modal y boton
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      setUsers(await getUsers());
+    }
+    fetchData();
+  }, []);
 
   useEffect(() => {
     setIsLoadingUsers(false);
@@ -169,7 +177,7 @@ const Example = () => {
 
   const handleReloadData = async () => {
     setIsLoadingUsers(true);
-    await setReloadUsers((prev) => !prev);
+    setUsers(await getUsers());
   };
 
   const table = useMaterialReactTable({
@@ -250,7 +258,7 @@ const Example = () => {
             // );
           }}
         >
-          Nuevo Usuario
+          + Agregar
         </Button>
       </Box>
     ),
@@ -267,13 +275,13 @@ const Example = () => {
 
 const queryClient = new QueryClient();
 
-const TableUsers = () => (
+const TabUsers = () => (
   <QueryClientProvider client={queryClient}>
     <Example />
   </QueryClientProvider>
 );
 
-export default TableUsers;
+export default TabUsers;
 
 const validateRequired = (value) => !!value.length;
 const validateEmail = (email) =>

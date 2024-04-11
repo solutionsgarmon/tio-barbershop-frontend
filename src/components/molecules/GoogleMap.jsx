@@ -2,7 +2,7 @@ import React from "react";
 import GoogleMapReact from "google-map-react";
 
 const GoogleMap = ({ center, zoom, points }) => {
-  const GOOGLE_KEY = "AIzaSyBbNWNfAkWMVouvys68l0BjJ96rFWJVYMM";
+  const GOOGLE_KEY = import.meta.env.VITE_GOOGLE_KEY;
   const Marker = () => (
     <div style={{ color: "red", fontSize: "20px" }}>
       <img

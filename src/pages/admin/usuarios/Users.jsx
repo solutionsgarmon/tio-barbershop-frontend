@@ -1,13 +1,16 @@
 import { Box } from "@mui/material";
 import React from "react";
-import TableUsers from "./TableUser";
+import TabUsers from "./TabUsers";
+import { useEffect } from "react";
+import { useAppContext } from "../../../context/AppProvider";
+
+const COMPONENTS = [<TabUsers />];
 
 const Users = () => {
-  return (
-    <Box>
-      <TableUsers />
-    </Box>
-  );
+  const { indexTabSelected } = useAppContext();
+  const SelectedComponent = COMPONENTS[indexTabSelected] || null;
+
+  return SelectedComponent;
 };
 
 export default Users;

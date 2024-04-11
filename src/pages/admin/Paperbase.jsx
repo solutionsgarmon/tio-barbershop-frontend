@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Navigator from "./Navigator";
-import Content from "./Content";
+
 import Header from "./Header";
 import { useState } from "react";
 import PeopleIcon from "@mui/icons-material/People";
@@ -188,29 +188,37 @@ const drawerWidth = 256;
 const categories = [
   {
     id: "BASE DE DATOS",
+
     children: [
       {
         id: "Usuarios",
         icon: <PeopleIcon />,
-        tabs: ["Clientes", "Barberos", "Administradores"],
+        tabs: ["Usuarios"],
         component: <Users />,
       },
       {
         id: "Barberías",
         icon: <StorefrontIcon />,
-        tabs: ["Barberias", "Horarios", "Ubicaciones", "Barberos"],
+        tabs: [
+          "Barberias",
+          "Barberos",
+          "Servicios",
+          "Imágenes",
+          "Horario",
+          "Productos",
+        ],
         component: <Barbershops />,
       },
       {
         id: "Servicios",
         icon: <ContentCutIcon />,
-        tabs: ["Servicios"],
+        tabs: ["Servicios", "Barberos", "Imágenes"],
         component: <Services />,
       },
       {
         id: "Productos",
         icon: <SanitizerIcon />,
-        tabs: ["Productos"],
+        tabs: ["Productos", "Imágenes"],
         component: <Products />,
       },
       {
@@ -233,7 +241,7 @@ const categories = [
       {
         id: "Galeria",
         icon: <CollectionsIcon />,
-        tabs: ["Barberos", "Servicios", "Barberias"],
+        tabs: ["Barberos", "Servicios", "Barberías"],
         component: <Posts />,
       },
       {
@@ -269,7 +277,8 @@ export default function Paperbase() {
   const [displayTabs, setDisplayTabs] = useState(null);
   const [displayComponent, setDisplayComponent] = useState(null);
   const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
-  const { windowWidth } = useAppContext();
+  const { windowWidth, indexTabSelected, setIndexTabSelected } =
+    useAppContext();
 
   useEffect(() => {
     console.log("isSmUp", isSmUp);
@@ -332,7 +341,10 @@ export default function Paperbase() {
             onDrawerToggle={handleDrawerToggle}
             tabs={displayTabs}
             isSmUp={isSmUp}
+            setIndexTabSelected={setIndexTabSelected}
+            indexTabSelected={indexTabSelected}
           />
+          {/* Ventana que cambia */}
           <Box
             component="main"
             sx={{
@@ -344,7 +356,7 @@ export default function Paperbase() {
                 : `${windowWidth - 18}px`,
             }}
           >
-            <Content displayComponent={displayComponent} />
+            {displayComponent}
           </Box>
           <Box component="footer" sx={{ p: 2, bgcolor: "#EEE" }}>
             <Copyright />

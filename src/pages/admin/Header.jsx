@@ -17,22 +17,23 @@ import Typography from "@mui/material/Typography";
 import SecurityIcon from "@mui/icons-material/Security";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Skeleton, Stack } from "@mui/material";
+import { useState } from "react";
 
 const lightColor = "rgba(255, 255, 255, 0.7)";
 
 function Header(props) {
   const navigate = useNavigate();
+
   return (
     <React.Fragment>
       <AppBar
         component="div"
         color="primary"
         position="static"
-        elevation={0}
         sx={{ zIndex: 0, paddingTop: 1 }}
       >
         <Toolbar>
-          <Grid container alignItems="center" spacing={1}>
+          <Grid container alignItems="center" spacing={0.5}>
             <Grid sx={{ display: { sm: "none", xs: "block" } }} item>
               <IconButton
                 color="inherit"
@@ -93,9 +94,12 @@ function Header(props) {
           elevation={0}
           sx={{ zIndex: 0 }}
         >
-          <Tabs value={0} textColor="inherit">
-            {props.tabs.map((tab) => (
-              <Tab label={tab} />
+          <Tabs value={props.indexTabSelected} textColor="inherit">
+            {props.tabs.map((tab, index) => (
+              <Tab
+                label={tab}
+                onClick={() => props.setIndexTabSelected(index)}
+              />
             ))}
           </Tabs>
         </AppBar>
