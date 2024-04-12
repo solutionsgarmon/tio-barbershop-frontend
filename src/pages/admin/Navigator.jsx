@@ -8,6 +8,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
+import { useAppContext } from "../../context/AppProvider";
 
 const item = {
   py: "2px",
@@ -26,8 +27,10 @@ const itemCategory = {
 
 export default function Navigator(props) {
   const { ...other } = props;
+  const { setIndexTabSelected } = useAppContext();
 
   const handleClickCategorie = (idCategorie) => {
+    setIndexTabSelected(0);
     props.setIdCategorieSelected(idCategorie);
   };
 
@@ -39,7 +42,10 @@ export default function Navigator(props) {
         >
           ADMINISTRACIÓN
         </ListItem>
-        <ListItem sx={{ ...item, ...itemCategory, py: 1 }}>
+        <ListItem
+          onClick={() => props.handleShowMainPage()}
+          sx={{ ...item, ...itemCategory, py: 1, cursor: "pointer" }}
+        >
           <ListItemIcon>
             <HomeIcon />
           </ListItemIcon>
@@ -52,6 +58,7 @@ export default function Navigator(props) {
             </ListItem>
             {children.map(({ id: childId, icon, active }) => (
               <ListItem
+                disableRipple
                 disablePadding
                 key={childId}
                 onClick={() => handleClickCategorie(childId)}

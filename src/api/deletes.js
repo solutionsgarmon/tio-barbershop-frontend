@@ -36,6 +36,24 @@ export const deleteBarber = async (id) => {
     }
 };
 
+export const deleteAdmin = async (id) => {
+    try {
+         const response = await axios.delete(`${import.meta.env.VITE_ADMINS_URL}/${id}`, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                id: id 
+            }
+        });
+    return response
+ 
+    } catch (error) {
+      console.log("Error en deleteAdmin()",error)
+       return false
+    }
+};
+
 export const deleteProduct= async (id) => {
     try {
          const response = await axios.delete(`${import.meta.env.VITE_PRODUCTS_URL}/${id}`, {

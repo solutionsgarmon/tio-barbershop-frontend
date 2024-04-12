@@ -4,7 +4,6 @@ import TableBarbershops from "./TabBarbershops";
 import { useAppContext } from "../../../context/AppProvider";
 import TabBarbershops from "./TabBarbershops";
 import TabBarbers from "./TabBarbers";
-import TableServices from "../servicios/TableServices";
 import { useState } from "react";
 import {
   getBarbers,
@@ -13,41 +12,64 @@ import {
   getServices,
 } from "../../../api/gets";
 import { useEffect } from "react";
+import TabProductos from "./TabProducts";
 
 const Barbershops = () => {
-  const { indexTabSelected } = useAppContext();
+  const { indexTabSelected, setIndexTabSelected } = useAppContext();
   const [barbershops, setBarbershops] = useState([]);
   const [barbers, setBarbers] = useState([]);
   const [services, setServices] = useState([]);
   const [products, setProducts] = useState([]);
   const [barbershopSelected, setBarbershopSelected] = useState(null);
-  const [isLoading, setIsLoadingData] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [reloadData, setReloadData] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true);
       setBarbershops(await getBarbershops());
       setBarbers(await getBarbers());
       setServices(await getServices());
       setProducts(await getProducts());
+      setIsLoading(false); // Mover aquí para que se establezca en false después de obtener los datos
     }
+
     fetchData();
-    setIsLoadingData(false);
-  }, []);
+    setBarbershopSelected(null);
+    setIndexTabSelected(0);
+  }, [reloadData]);
 
   return (
     <Box>
       {indexTabSelected == 0 && (
-        <TabBarbershops setBarbershopSelected={setBarbershopSelected} />
+        <TabBarbershops
+          setBarbershopSelected={setBarbershopSelected}
+          setReloadData={setReloadData}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+        />
       )}
       {indexTabSelected == 1 && (
         <TabBarbers
           barbers={barbers}
           assignedBarbers={barbershopSelected?.barberos}
           barbershopSelected={barbershopSelected}
+          setReloadData={setReloadData}
         />
       )}
 
-      {indexTabSelected == 2 && <TableServices />}
+      {indexTabSelected == 2 && (
+        // <TabServices
+        //   services={services}
+        //   barbershopSelected={barbershopSelected}
+        //   setReloadData={setReloadData}
+        // />
+        <TabProductos
+          products={products}
+          barbershopSelected={barbershopSelected}
+          setReloadData={setReloadData}
+        />
+      )}
     </Box>
   );
 };

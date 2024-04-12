@@ -27,6 +27,9 @@ import Products from "./productos/Products";
 import Services from "./servicios/Services";
 import ExampleWithProviders from "./TableExample";
 import { useAppContext } from "../../context/AppProvider";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import Cursos from "./cursos/Cursos";
+import MainPage from "./MainPage";
 
 function Copyright() {
   return (
@@ -193,26 +196,14 @@ const categories = [
       {
         id: "Usuarios",
         icon: <PeopleIcon />,
-        tabs: ["Usuarios"],
+        tabs: ["Clientes", "Barberos", "Administradores"],
         component: <Users />,
       },
-      {
-        id: "Barberías",
-        icon: <StorefrontIcon />,
-        tabs: [
-          "Barberias",
-          "Barberos",
-          "Servicios",
-          "Imágenes",
-          "Horario",
-          "Productos",
-        ],
-        component: <Barbershops />,
-      },
+
       {
         id: "Servicios",
         icon: <ContentCutIcon />,
-        tabs: ["Servicios", "Barberos", "Imágenes"],
+        tabs: ["Servicios", "Imágenes"],
         component: <Services />,
       },
       {
@@ -222,16 +213,28 @@ const categories = [
         component: <Products />,
       },
       {
-        id: "Posts",
-        icon: <NewspaperIcon />,
-        tabs: ["Publicaciones"],
-        component: <Posts />,
+        id: "Barberías",
+        icon: <StorefrontIcon />,
+        tabs: ["Barberias", "Barberos", "Productos", "Horario", "Imágenes"],
+        component: <Barbershops />,
+      },
+      {
+        id: "Cursos",
+        icon: <MenuBookIcon />,
+        tabs: ["Cursos", "Fechas", "Horario", "Imágenes"],
+        component: <Cursos />,
       },
     ],
   },
   {
     id: "APLICACIÓN",
     children: [
+      {
+        id: "Posts",
+        icon: <NewspaperIcon />,
+        tabs: ["Publicaciones"],
+        component: <Posts />,
+      },
       {
         id: "Recomendaciones",
         icon: <RecommendIcon />,
@@ -273,7 +276,7 @@ const categories = [
 
 export default function Paperbase() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [idCategorieSelected, setIdCategorieSelected] = useState("Usuarios");
+  const [idCategorieSelected, setIdCategorieSelected] = useState(null);
   const [displayTabs, setDisplayTabs] = useState(null);
   const [displayComponent, setDisplayComponent] = useState(null);
   const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
@@ -283,6 +286,10 @@ export default function Paperbase() {
   useEffect(() => {
     console.log("isSmUp", isSmUp);
   }, [windowWidth]);
+
+  useEffect(() => {
+    setDisplayComponent(<MainPage />);
+  }, []);
 
   useEffect(() => {
     const categorySelected = categories.find((cat) =>
@@ -301,6 +308,12 @@ export default function Paperbase() {
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleShowMainPage = () => {
+    setDisplayComponent(<MainPage />);
+    setIndexTabSelected(0);
+    setIdCategorieSelected(null);
   };
 
   return (
@@ -326,6 +339,7 @@ export default function Paperbase() {
               onClose={handleDrawerToggle}
               categories={categories}
               setIdCategorieSelected={setIdCategorieSelected}
+              handleShowMainPage={handleShowMainPage}
             />
           )}
 
@@ -334,6 +348,7 @@ export default function Paperbase() {
             sx={{ display: { sm: "block", xs: "none" } }}
             categories={categories}
             setIdCategorieSelected={setIdCategorieSelected}
+            handleShowMainPage={handleShowMainPage}
           />
         </Box>
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>

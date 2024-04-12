@@ -84,18 +84,7 @@ const Example = () => {
             }),
         },
       },
-      {
-        accessorKey: "role",
-        header: "Rol",
-        size: 100,
-        editVariant: "select",
-        editSelectOptions: ROLES,
-        muiEditTextFieldProps: {
-          select: true,
-          error: !!validationErrors?.state,
-          helperText: validationErrors?.state,
-        },
-      },
+
       {
         size: 100,
         accessorKey: "password",

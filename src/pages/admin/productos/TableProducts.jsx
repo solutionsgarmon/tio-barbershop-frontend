@@ -154,7 +154,7 @@ const Table = () => {
     console.log("row", row.original);
     Swal.fire({
       title: "¿Estás seguro?",
-      text: `Se eliminará la Barbería "${row.original.nombre}", ¿Desea continuar?`,
+      text: `Se eliminará el producto "${row.original.nombre}", ¿Desea continuar?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",

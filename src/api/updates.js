@@ -63,6 +63,27 @@ export function updateBarber(values, idBarber) {
   });
 }
 
+export function updateAdmin(values, idAdmin) {
+  return new Promise((resolve, reject) => {
+    axios.patch(
+      `${import.meta.env.VITE_ADMINS_URL}/${idAdmin}`,
+      values
+    )
+      .then((response) => {
+        if (!response.data.success) {
+          console.error("No se pudo realizar correctamente la petición updateAdmin():", response.data);
+          reject(response);
+        } else {
+          resolve(response);
+        }
+      })
+      .catch((error) => {
+        console.error("Error en updateAdmin():", error);
+        reject(error);
+      });
+  });
+}
+
 export function updateBarbershop(values, idBarbershop) {
   return new Promise((resolve, reject) => {
     axios.patch(

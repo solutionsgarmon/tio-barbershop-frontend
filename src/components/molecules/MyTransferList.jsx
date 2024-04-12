@@ -9,7 +9,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
-import { Avatar } from "@mui/material";
+import { Avatar, IconButton } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import SaveIcon from "@mui/icons-material/Save";
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -30,8 +33,10 @@ export default function MyTransferList({
   setLeft,
   titleLeft,
   titleRight,
+  handleSave,
 }) {
   const [checked, setChecked] = React.useState([]);
+  const [enableSave, setEnableSave] = React.useState(false);
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
@@ -55,12 +60,14 @@ export default function MyTransferList({
     setRight(right.concat(leftChecked));
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
+    setEnableSave(true);
   };
 
   const handleCheckedLeft = () => {
     setLeft(left.concat(rightChecked));
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
+    setEnableSave(true);
   };
 
   const customList = (title, items) => (
@@ -69,13 +76,13 @@ export default function MyTransferList({
         sx={{ px: 2, py: 1 }}
         avatar={<></>}
         title={title}
-        subheader={`${numberOfChecked(items)}/${items.length} selected`}
+        subheader={`${numberOfChecked(items)}/${items.length} seleccionados`}
       />
       <Divider />
       <List
         sx={{
-          width: 200,
-          height: 230,
+          width: 300,
+          height: 400,
           bgcolor: "background.paper",
           overflow: "auto",
         }}
@@ -112,34 +119,37 @@ export default function MyTransferList({
 
   return (
     <Grid container spacing={2} justifyContent="center" alignItems="center">
-      <Grid item>{customList(<strong>Barbería </strong>, left)}</Grid>
+      <Grid item>{customList(<strong>{titleLeft} </strong>, left)}</Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">
-          <Button
+          <IconButton
             sx={{ my: 0.5 }}
-            variant="outlined"
-            size="small"
             onClick={handleCheckedRight}
             disabled={leftChecked.length === 0}
-            aria-label="move selected right"
           >
-            &gt;
-          </Button>
-          <Button
-            sx={{ my: 0.5 }}
-            variant="outlined"
-            size="small"
+            <ArrowForwardIcon />
+          </IconButton>
+
+          <IconButton
+            sx={{ my: 1 }}
+            onClick={handleSave}
+            disabled={!enableSave}
+          >
+            <SaveIcon />
+          </IconButton>
+
+          <IconButton
+            sx={{ my: 1 }}
             onClick={handleCheckedLeft}
             disabled={rightChecked.length === 0}
-            aria-label="move selected left"
           >
-            &lt;
-          </Button>
+            <ArrowBackIcon />
+          </IconButton>
         </Grid>
       </Grid>
       <Grid item>
-        <strong sx={{ fontSize: "1.2rem", fontWeight: "bold" }}>
-          {customList(<strong>Barberos Disponibles</strong>, right)}
+        <strong sx={{ fontWeight: "bold" }}>
+          {customList(<strong>{titleRight}</strong>, right)}
         </strong>
       </Grid>
     </Grid>

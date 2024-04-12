@@ -27,32 +27,33 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useAppContext } from "../../../context/AppProvider";
-import { postBarbershop, postServices, postUser } from "../../../api/posts";
+import { postBarber } from "../../../api/posts";
 import {
+  deleteBarber,
   deleteBarbershop,
   deleteService,
   deleteUser,
 } from "../../../api/deletes";
 import Swal from "sweetalert2";
 import {
+  updateBarber,
   updateBarbershop,
   updateProduct,
   updateService,
   updateUser,
 } from "../../../api/updates";
-import { getPosts } from "../../../api/gets";
+import { getBarbers } from "../../../api/gets";
 
-const ROLES = ["Cliente", "Barbero", "Administrador"];
-
+const ESTADO = ["Activo", "Inactivo"];
 const Table = () => {
   const [validationErrors, setValidationErrors] = useState({});
   const [isLoadingData, setIsLoadingData] = useState(true); // poner loading girando
   const [isUpdateData, setIsUpdateData] = useState(false); //Bloquear la modal y boton
-  const [posts, setPosts] = useState([]);
+  const [barbers, setBarbers] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
-      setPosts(await getPosts());
+      setBarbers(await getBarbers());
     }
     fetchData();
     setIsLoadingData(false);
@@ -60,32 +61,51 @@ const Table = () => {
 
   const reloadData = async () => {
     setIsLoadingData(true);
-    setPosts(await getPosts());
+    setBarbers(await getBarbers());
   };
 
   useEffect(() => {
     setIsLoadingData(false);
     setIsUpdateData(false);
-  }, [posts]);
+  }, [barbers]);
 
   const columns = useMemo(
     () => [
       {
-        accessorKey: "tipo",
-        header: "Tipo",
+        accessorKey: "nombre",
+        header: "Nombre",
         muiEditTextFieldProps: {
           required: true,
         },
       },
       {
-        accessorKey: "precio",
-        header: "Precio",
+        accessorKey: "email",
+        header: "Correo Electrónico",
+        muiEditTextFieldProps: {
+          required: true,
+        },
       },
       {
-        accessorKey: "descripcion",
-        header: "Descripción",
-
-        Cell: ({ cell }) => cell.getValue()?.slice(0, 20) + "..." || "",
+        accessorKey: "barberia_asignada",
+        header: "Barbería asignada",
+      },
+      {
+        accessorKey: "estado",
+        header: "Estado",
+        editVariant: "select",
+        editSelectOptions: ESTADO,
+        muiEditTextFieldProps: {
+          select: true,
+        },
+      },
+      {
+        accessorKey: "descanso",
+        header: "En Descanso",
+        editVariant: "select",
+        editSelectOptions: ["S", "N"],
+        muiEditTextFieldProps: {
+          select: true,
+        },
       },
     ],
 
@@ -93,10 +113,10 @@ const Table = () => {
   );
 
   // CREATE ACTION //
-  const handleCreateUser = async ({ values, table }) => {
+  const handleCreate = async ({ values, table }) => {
     setIsUpdateData(true); //loading button
 
-    const resp = await postServices(values);
+    const resp = await postBarber(values);
     console.log("resp", resp.data.success);
     if (resp.data.success) {
       toast.success("Registro Exitoso");
@@ -115,7 +135,7 @@ const Table = () => {
     console.log("values", values);
     setIsUpdateData(true);
     const id = row.original._id;
-    const resp = await updateService(values, id);
+    const resp = await updateBarber(values, id);
     if (resp.data.success) {
       toast.success("Se modificó correctamente.");
       table.setEditingRow(null);
@@ -132,7 +152,7 @@ const Table = () => {
     console.log("row", row.original);
     Swal.fire({
       title: "¿Estás seguro?",
-      text: `Se eliminará el Post "${row.original.nombre}", ¿Desea continuar?`,
+      text: `Se eliminará el Barbero "${row.original.nombre}", ¿Desea continuar?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -141,7 +161,7 @@ const Table = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const id = row.original._id;
-        const resp = await deleteService(id);
+        const resp = await deleteBarber(id);
         if (resp.data.success) {
           toast.success("Se eliminó correctamente.");
           await reloadData();
@@ -152,7 +172,7 @@ const Table = () => {
 
   const table = useMaterialReactTable({
     columns,
-    data: posts,
+    data: barbers,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
     enableEditing: true,
@@ -165,7 +185,7 @@ const Table = () => {
       },
     },
     onCreatingRowCancel: () => setValidationErrors({}),
-    onCreatingRowSave: handleCreateUser,
+    onCreatingRowSave: handleCreate,
     onEditingRowCancel: () => setValidationErrors({}),
     onEditingRowSave: handleUpdate,
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
@@ -242,10 +262,10 @@ const Table = () => {
 
 const queryClient = new QueryClient();
 
-const TableServices = () => (
+const TabBarbers = () => (
   <QueryClientProvider client={queryClient}>
     <Table />
   </QueryClientProvider>
 );
 
-export default TableServices;
+export default TabBarbers;

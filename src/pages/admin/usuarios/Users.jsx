@@ -4,12 +4,14 @@ import TabUsers from "./TabUsers";
 import { useEffect } from "react";
 import { useAppContext } from "../../../context/AppProvider";
 
-const COMPONENTS = [<TabUsers />];
+import TabAdministradores from "./TabAdministradores";
+import TabBarbers from "./TabBarbers";
+
+const COMPONENTS = [<TabUsers />, <TabBarbers />, <TabAdministradores />];
 
 const Users = () => {
   const { indexTabSelected } = useAppContext();
   const SelectedComponent = COMPONENTS[indexTabSelected] || null;
-
   return SelectedComponent;
 };
 

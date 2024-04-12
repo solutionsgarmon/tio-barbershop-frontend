@@ -39,7 +39,7 @@ import { getBarbershops } from "../../../api/gets";
 
 const ROLES = ["Cliente", "Barbero", "Administrador"];
 
-const Table = ({ setBarbershopSelected }) => {
+const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
   const [validationErrors, setValidationErrors] = useState({});
   const [isLoadingData, setIsLoadingData] = useState(true); // poner loading girando
   const [isUpdateData, setIsUpdateData] = useState(false); //Bloquear la modal y boton
@@ -53,9 +53,12 @@ const Table = ({ setBarbershopSelected }) => {
     setIsLoadingData(false);
   }, []);
 
+  useEffect(() => {
+    setIsLoadingData(isLoading);
+  }, [isLoading]);
+
   const reloadData = async () => {
-    setIsLoadingData(true);
-    setBarbershops(await getBarbershops());
+    setReloadData((prev) => !prev);
   };
 
   useEffect(() => {
@@ -269,9 +272,17 @@ const Table = ({ setBarbershopSelected }) => {
 
 const queryClient = new QueryClient();
 
-const TabBarbershops = ({ setBarbershopSelected }) => (
+const TabBarbershops = ({
+  setBarbershopSelected,
+  setReloadData,
+  isLoading,
+}) => (
   <QueryClientProvider client={queryClient}>
-    <Table setBarbershopSelected={setBarbershopSelected} />
+    <Table
+      setBarbershopSelected={setBarbershopSelected}
+      setReloadData={setReloadData}
+      isLoading={isLoading}
+    />
   </QueryClientProvider>
 );
 

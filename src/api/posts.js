@@ -28,6 +28,35 @@ export function postBarbershop(data) {
   });
 }
 
+export function postBarber(data) {
+  console.log("[ejecución] postBarbers()", data)
+  return new Promise((resolve, reject) => {
+    axios.post(import.meta.env.VITE_ADMINS_URL, data)
+      .then((response) => {
+        resolve(response); 
+      })
+      .catch((error) => {
+        console.error("Error en postBarbers():", error);
+        reject(error); 
+      });
+  });
+}
+
+export function postAdmin(data) {
+  console.log("[ejecución] postAdmin()", data)
+  return new Promise((resolve, reject) => {
+    axios.post(import.meta.env.VITE_ADMINS_URL, data)
+      .then((response) => {
+        resolve(response); 
+      })
+      .catch((error) => {
+        console.error("Error en postAdmin():", error);
+        reject(error); 
+      });
+  });
+}
+
+
 export function postServices(data) {
   console.log("[ejecución] postServices()", data)
   return new Promise((resolve, reject) => {

@@ -80,6 +80,31 @@ export function getBarbers() {
   });
 }
 
+export function getAdmins() {
+  return new Promise((resolve, reject) => {
+      axios.get(import.meta.env.VITE_ADMINS_URL)
+    .then((response) => {
+        const data = response.data;
+        console.log("getAdmins()", data);
+        if (!data.success) {
+          console.error("No se pudo realizar correctamente la petición getAdmins():", data);
+          reject(data); 
+        } else if (data.length === 0) {
+          console.info("🛈 No se encontraron elementos para getAdmins():");
+          resolve([]); 
+        } else  {
+          console.log("getAdmins -> ADMINISTRADORES", data.data);
+          resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
+        }
+      })
+      .catch((error) => {
+        console.error("Error en getAdmins():", error);
+        reject(error); // Rechaza la promesa en caso de error
+      });
+  });
+}
+
+
 
 export function getBarbershops() {
   return new Promise((resolve, reject) => {
