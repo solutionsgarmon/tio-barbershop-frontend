@@ -13,6 +13,7 @@ import {
 } from "../../../api/gets";
 import { useEffect } from "react";
 import TabProductos from "./TabProducts";
+import TabImagenes from "./TabImagenes";
 
 const Barbershops = () => {
   const { indexTabSelected, setIndexTabSelected } = useAppContext();
@@ -59,13 +60,14 @@ const Barbershops = () => {
       )}
 
       {indexTabSelected == 2 && (
-        // <TabServices
-        //   services={services}
-        //   barbershopSelected={barbershopSelected}
-        //   setReloadData={setReloadData}
-        // />
         <TabProductos
           products={products}
+          barbershopSelected={barbershopSelected}
+          setReloadData={setReloadData}
+        />
+      )}
+      {indexTabSelected == 4 && (
+        <TabImagenes
           barbershopSelected={barbershopSelected}
           setReloadData={setReloadData}
         />

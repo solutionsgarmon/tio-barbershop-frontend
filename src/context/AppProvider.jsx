@@ -1,15 +1,8 @@
-import { TroubleshootRounded } from "@mui/icons-material";
 import React, { createContext, useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import {
-  getBarbers,
-  getBarbershops,
-  getCitas,
-  getProducts,
-  getServices,
-  getUsers,
-} from "../api/gets";
+import { getFromLocalStorage } from "../helpers/localStorageHelper";
+
 const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
@@ -22,33 +15,23 @@ const AppProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [citas, setCitas] = useState([]);
   const [services, setServices] = useState([]);
-
+  const [avatarURL, setAvatarURL] = useState("");
+  const [isAutenticated, setIsAutenticated] = useState(false);
   const [indexTabSelected, setIndexTabSelected] = useState(0);
 
-  //Funcion para actualizar una coleccion en concreto
-  async function getData(name) {
-    name = name.toLowerCase();
-    switch (name) {
-      case "users":
-        setUsers(await getUsers());
-        break;
-      case "barbers":
-        setBarbers(await getBarbers());
-        break;
-      case "barbershops":
-        setBarbershops(await getBarbershops());
-        break;
-      case "products":
-        setProducts(await getProducts());
-        break;
-      case "citas":
-        setCitas(await getCitas());
-        break;
-      case "services":
-        setServices(await getServices());
-        break;
+  useEffect(() => {
+    verifySession();
+  }, []);
+
+  const verifySession = () => {
+    const session = getFromLocalStorage("session");
+    if (session) {
+      setIsAutenticated(true);
+      setAvatarURL(session.urlImage);
+    } else {
+      setIsAutenticated(false);
     }
-  }
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -81,6 +64,9 @@ const AppProvider = ({ children }) => {
     services,
     indexTabSelected,
     setIndexTabSelected,
+    verifySession,
+    isAutenticated,
+    avatarURL,
   };
   return (
     <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>

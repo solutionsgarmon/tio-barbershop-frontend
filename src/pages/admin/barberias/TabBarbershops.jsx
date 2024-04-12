@@ -171,7 +171,7 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
   const handleClickRow = (dataSelected) => {
     // console.log("dataSelected", dataSelected);
     setBarbershopSelected(dataSelected);
-    toast.success(`La barbería "${dataSelected.nombre}" fué Selecionada`);
+    toast.success(`La barbería "${dataSelected.nombre}" fue Selecionada`);
   };
 
   const table = useMaterialReactTable({

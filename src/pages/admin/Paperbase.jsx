@@ -215,13 +215,13 @@ const categories = [
       {
         id: "Barberías",
         icon: <StorefrontIcon />,
-        tabs: ["Barberias", "Barberos", "Productos", "Horario", "Imágenes"],
+        tabs: ["Barberias", "Barberos", "Productos", "Imágenes"],
         component: <Barbershops />,
       },
       {
         id: "Cursos",
         icon: <MenuBookIcon />,
-        tabs: ["Cursos", "Fechas", "Horario", "Imágenes"],
+        tabs: ["Cursos", "Fechas", "Imágenes"],
         component: <Cursos />,
       },
     ],

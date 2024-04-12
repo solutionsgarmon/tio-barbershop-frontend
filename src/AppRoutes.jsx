@@ -12,6 +12,7 @@ import { Box } from "@mui/material";
 import Footer from "./components/molecules/Footer";
 import ErrorPage from "./pages/ErrorPage";
 import Administracion from "./pages/Administracion";
+import Login from "./pages/Login";
 
 function AppRoutes() {
   const [showNavigationBar, setShowNavigationBar] = useState(true);
@@ -30,6 +31,7 @@ function AppRoutes() {
           <Route path="/sucursales" element={<Sucursales />} />
           <Route path="/citas" element={<Citas />} />
           <Route path="/error" element={<ErrorPage />} />
+          <Route path="/login" element={<Login />} />
           <Route
             path="/administracion"
             element={

@@ -44,7 +44,7 @@ import { getServices } from "../../../api/gets";
 
 const ROLES = ["Cliente", "Barbero", "Administrador"];
 
-const Table = () => {
+const Table = ({ setServiceSelected }) => {
   const [validationErrors, setValidationErrors] = useState({});
   const [isLoadingData, setIsLoadingData] = useState(true); // poner loading girando
   const [isUpdateData, setIsUpdateData] = useState(false); //Bloquear la modal y boton
@@ -150,6 +150,13 @@ const Table = () => {
     });
   };
 
+  //CLIC IN ROW
+  const handleClickRow = (dataSelected) => {
+    // console.log("dataSelected", dataSelected);
+    setServiceSelected(dataSelected);
+    toast.success(`El servicio "${dataSelected.nombre}" fué Selecionado`);
+  };
+
   const table = useMaterialReactTable({
     columns,
     data: services,
@@ -157,11 +164,17 @@ const Table = () => {
     editDisplayMode: "modal",
     enableEditing: true,
     localization: MRT_Localization_ES,
+    muiTableBodyRowProps: ({ row }) => ({
+      onClick: () => {
+        handleClickRow(row.original);
+      },
+    }),
 
     getRowId: (row) => row.id,
     muiTableContainerProps: {
       sx: {
         minHeight: "300px",
+        cursor: "pointer",
       },
     },
     onCreatingRowCancel: () => setValidationErrors({}),
@@ -242,9 +255,9 @@ const Table = () => {
 
 const queryClient = new QueryClient();
 
-const TableServices = () => (
+const TableServices = ({ setServiceSelected }) => (
   <QueryClientProvider client={queryClient}>
-    <Table />
+    <Table setServiceSelected={setServiceSelected} />
   </QueryClientProvider>
 );
 

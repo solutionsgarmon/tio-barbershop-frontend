@@ -17,20 +17,24 @@ import { Stack } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useAppContext } from "../../context/AppProvider";
+import { cerrarSesionUsuario } from "../../api/FirebaseService";
 
 const PAGES = [
   { title: "Citas", url: "/citas" },
   { title: "Servicios", url: "/servicios" },
+  { title: "Cursos", url: "/cursos" },
   { title: "Tienda", url: "/tienda" },
   { title: "Sucursales", url: "/sucursales" },
   { title: "Sobre Nosotros", url: "/sobre-nosotros" },
   { title: "Administrar", url: "/administracion" },
 ];
 
-const SETTINGS = ["Mi perfil", "Mis citas", "Cerrar sesión"];
+const SETTINGS_AUTENTICATED = ["Mi perfil", "Mis citas", "Cerrar sesión"];
+const SETTINGS_NO_AUTENTICATED = ["Iniciar sesión"];
 
 function NavigationBar({ setShowNavigationBar }) {
-  const { flagTransparent, setIsLoading } = useAppContext();
+  const { flagTransparent, setIsLoading, isAutenticated, avatarURL } =
+    useAppContext();
 
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -82,8 +86,26 @@ function NavigationBar({ setShowNavigationBar }) {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleClickSetting = (setting) => {
+    const optionSelected = setting;
+    console.log("Clic en", optionSelected);
+    switch (optionSelected) {
+      case "Iniciar sesión":
+        navigate("/login");
+        break;
+      case "Mi perfil":
+        navigate("/mi-perfil");
+        break;
+      case "Cerrar sesión":
+        handleCerrarSesion();
+        break;
+    }
     setAnchorElUser(null);
+  };
+
+  const handleCerrarSesion = () => {
+    cerrarSesionUsuario();
+    window.location.reload();
   };
 
   return (
@@ -118,6 +140,7 @@ function NavigationBar({ setShowNavigationBar }) {
               color: "inherit",
               textDecoration: "none",
               cursor: "pointer",
+              color: "yellow",
             }}
           >
             EL TÍO BARBERSHOP
@@ -162,7 +185,17 @@ function NavigationBar({ setShowNavigationBar }) {
                   key={page.title}
                   onClick={() => handleClickPage(page.url)}
                 >
-                  <Typography textAlign="center">{page.title}</Typography>
+                  <Typography
+                    textAlign="center"
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": {
+                        color: "yellow", // Cambia el color a amarillo al hacer hover
+                      },
+                    }}
+                  >
+                    {page.title}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -174,7 +207,14 @@ function NavigationBar({ setShowNavigationBar }) {
               <Button
                 key={page.title}
                 onClick={() => handleClickPage(page.url)}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: "block",
+                  "&:hover": {
+                    color: "yellow", // Cambia el color a amarillo al hacer hover
+                  },
+                }}
               >
                 {page.title}
               </Button>
@@ -186,7 +226,7 @@ function NavigationBar({ setShowNavigationBar }) {
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar
                   alt="Imagen de perfil"
-                  src="/images/avatar1.png"
+                  src={avatarURL}
                   sx={{ height: 35, width: 35 }}
                 />
               </IconButton>
@@ -205,13 +245,31 @@ function NavigationBar({ setShowNavigationBar }) {
                 horizontal: "right",
               }}
               open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+              onClose={handleClickSetting}
             >
-              {SETTINGS.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              {isAutenticated ? (
+                <>
+                  {SETTINGS_AUTENTICATED.map((setting) => (
+                    <MenuItem
+                      key={setting}
+                      onClick={() => handleClickSetting(setting)}
+                    >
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {SETTINGS_NO_AUTENTICATED.map((setting) => (
+                    <MenuItem
+                      key={setting}
+                      onClick={() => handleClickSetting(setting)}
+                    >
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  ))}
+                </>
+              )}
             </Menu>
           </Box>
         </Toolbar>
