@@ -29,6 +29,7 @@ function AppRoutes() {
           <Route path="/tienda" element={<Tienda />} />
           <Route path="/servicios" element={<Servicios />} />
           <Route path="/sucursales" element={<Sucursales />} />
+
           <Route path="/citas" element={<Citas />} />
           <Route path="/error" element={<ErrorPage />} />
           <Route path="/login" element={<Login />} />

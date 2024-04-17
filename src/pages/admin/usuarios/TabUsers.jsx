@@ -31,6 +31,7 @@ import { deleteUser } from "../../../api/deletes";
 import Swal from "sweetalert2";
 import { updateProduct, updateUser } from "../../../api/updates";
 import { getUsers } from "../../../api/gets";
+import PasswordTypography from "../../../components/atoms/PasswordTypography";
 
 const ROLES = ["Cliente", "Barbero", "Administrador"];
 
@@ -51,55 +52,33 @@ const Example = () => {
     setIsLoadingUsers(false);
   }, [users]);
 
+  // const propertiesToExcludeCreate = ["mrt-row-create_password"];
+  const propertiesToExcludeCreate = [""];
+  const propertiesToExcludeUpdate = ["0_password"];
+
   const columns = useMemo(
     () => [
       {
-        accessorKey: "name",
+        accessorKey: "nombre",
         header: "Nombre",
-        size: 100,
         muiEditTextFieldProps: {
           required: true,
-          error: !!validationErrors?.firstName,
-          helperText: validationErrors?.firstName,
-          onFocus: () =>
-            setValidationErrors({
-              ...validationErrors,
-              firstName: undefined,
-            }),
         },
       },
       {
-        accessorKey: "email",
+        accessorKey: "correo",
         header: "Email",
-        size: 100,
         muiEditTextFieldProps: {
-          type: "email",
           required: true,
-          error: !!validationErrors?.email,
-          helperText: validationErrors?.email,
-          onFocus: () =>
-            setValidationErrors({
-              ...validationErrors,
-              email: undefined,
-            }),
         },
       },
-
       {
-        size: 100,
         accessorKey: "password",
         header: "Contraseña",
-        size: 100,
         muiEditTextFieldProps: {
           required: true,
-          // error: !!validationErrors?.firstName,
-          // helperText: validationErrors?.firstName,
-          onFocus: () =>
-            setValidationErrors({
-              ...validationErrors,
-              // firstName: undefined,
-            }),
         },
+        Cell: ({ cell }) => <PasswordTypography value={cell.getValue()} />,
       },
     ],
     [validationErrors]
@@ -107,6 +86,10 @@ const Example = () => {
 
   // CREATE ACTION //
   const handleCreateUser = async ({ values, table }) => {
+    if (!verifyForm(values)) {
+      toast.error("Por favor complete los datos obligatorios");
+      return;
+    }
     setIsUpdateData(true);
     try {
       const resp = await postUser(values);
@@ -125,17 +108,16 @@ const Example = () => {
 
   // UPDATE ACTION //
   const handleSaveUser = async ({ values, row }) => {
+    if (!verifyForm(values)) {
+      toast.error("Por favor complete los datos obligatorios");
+      return;
+    }
     setIsUpdateData(true);
     const idUser = row.original._id;
     const resp = await updateUser(values, idUser);
 
     if (resp.data.success) toast.success("Se modificó correctamente.");
     else toast.error("No se pudo modificar.");
-    // const newValidationErrors = validateUser(values);
-    // if (Object.values(newValidationErrors).some((error) => error)) {
-    //   setValidationErrors(newValidationErrors);
-    //   return;
-    // }
     setIsUpdateData(false);
     await handleReloadData();
     setValidationErrors({});
@@ -162,6 +144,13 @@ const Example = () => {
         await handleReloadData();
       }
     });
+  };
+
+  const verifyForm = (values) => {
+    console.log("values", values);
+    if (!values["nombre"] || !values["correo"] || !values["password"])
+      return false;
+    else return true;
   };
 
   const handleReloadData = async () => {
@@ -193,7 +182,13 @@ const Example = () => {
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
-          {internalEditComponents} {/* or render custom edit components here */}
+          {internalEditComponents.map(
+            (component) =>
+              // Filtra las propiedades que no deseas mostrar en la edición
+              !propertiesToExcludeCreate.includes(component.key) && (
+                <div key={component.accessorKey}>{component}</div>
+              )
+          )}
         </DialogContent>
         <DialogActions>
           <MRT_EditActionButtons variant="text" table={table} row={row} />
@@ -207,7 +202,13 @@ const Example = () => {
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >
-          {internalEditComponents} {/* or render custom edit components here */}
+          {internalEditComponents.map(
+            (component) =>
+              // Filtra las propiedades que no deseas mostrar en la edición
+              !propertiesToExcludeUpdate.includes(component.key) && (
+                <div key={component.accessorKey}>{component}</div>
+              )
+          )}
         </DialogContent>
         <DialogActions>
           <MRT_EditActionButtons variant="text" table={table} row={row} />

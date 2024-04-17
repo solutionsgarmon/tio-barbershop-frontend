@@ -2,59 +2,23 @@ import { useState } from "react";
 import { Box, Grid, Stack } from "@mui/material";
 import MyMap from "../components/molecules/MyMap";
 import ElementListWithImage from "../components/molecules/ElementListWithImage";
+import { useAppContext } from "../context/AppProvider";
+import CustomSwalModal from "../components/modals/CustomSwalModal";
 
 const Sucursales = () => {
+  const { barbershops } = useAppContext();
   const [sucursalSelected, setSucursalSelected] = useState(0);
-  const SUCURSALES = [
-    {
-      coordenadas: { lat: 19.3598, lng: -99.1774 },
-      nombre: "Chapultepec",
-      image: "/images/localbarberia.PNG",
-      address: "Av. Reforma #123 Col. La comercial, entre Rayon y Colosio",
-    },
-    {
-      coordenadas: { lat: 19.4348, lng: -99.1381 },
-      nombre: "Zócalo",
-      image: "/images/localbarberia.PNG",
-      address: "Av. Reforma #123 Col. La comercial, entre Rayon y Colosio",
-    },
-    {
-      coordenadas: { lat: 19.2826, lng: -99.1669 },
-      nombre: "Xochimilco",
-      image: "/images/localbarberia.PNG",
-      address: "Av. Reforma #123 Col. La comercial, entre Rayon y Colosio",
-    },
-    {
-      coordenadas: { lat: 19.282, lng: -99.1255 },
-      nombre: "Coyoacán",
-      image: "/images/localbarberia.PNG",
-      address: "Av. Reforma #123 Col. La comercial, entre Rayon y Colosio",
-    },
-    {
-      coordenadas: { lat: 19.4354, lng: -99.1332 },
-      nombre: "Templo Mayor",
-      image: "/images/localbarberia.PNG",
-      address: "Av. Reforma #123 Col. La comercial, entre Rayon y Colosio",
-    },
-    {
-      coordenadas: { lat: 19.4227, lng: -99.1625 },
-      nombre: "Parque México",
-      image: "/images/localbarberia.PNG",
-      address: "Av. Reforma #123 Col. La comercial, entre Rayon y Colosio",
-    },
-    {
-      coordenadas: { lat: 19.4193, lng: -99.1621 },
-      nombre: "Parque España",
-      image: "/images/localbarberia.PNG",
-      address: "Av. Reforma #123 Col. La comercial, entre Rayon y Colosio",
-    },
-    {
-      coordenadas: { lat: 19.4151, lng: -99.1646 },
-      nombre: "Parque Lincoln",
-      image: "/images/localbarberia.PNG",
-      address: "Av. Reforma #123 Col. La comercial, entre Rayon y Colosio",
-    },
-  ];
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleCerrarModal = () => {
+    console.log("handleCerrarModal");
+    setOpenModal(false);
+  };
+
+  const handleVerHorario = () => {
+    console.log("handleVerHorario");
+    setOpenModal(true);
+  };
 
   return (
     <Grid container sx={{ p: 2 }}>
@@ -80,24 +44,30 @@ const Sucursales = () => {
         }}
       >
         <h2>SUCURSALES</h2>
-        {SUCURSALES.map((sucursal, index) => (
+        {barbershops.map((barbershop, index) => (
           <Box sx={{ m: 1 }}>
             <ElementListWithImage
               setSucursalSelected={setSucursalSelected}
-              image={sucursal.image}
-              primaryText={sucursal.nombre}
-              secondaryText={sucursal.address}
+              image={barbershop.imagen}
+              primaryText={barbershop.nombre}
+              secondaryText={`${barbershop.direccion.calle},${barbershop.direccion.colonia} ${barbershop.direccion.ciudad}`}
               index={index}
+              handleVerHorario={handleVerHorario}
             />
           </Box>
         ))}
       </Grid>
       <Grid xs={8} md={8}>
         <MyMap
-          lat={SUCURSALES[sucursalSelected].coordenadas.lat}
-          lng={SUCURSALES[sucursalSelected].coordenadas.lng}
+          lat={parseFloat(barbershops[sucursalSelected]?.coordenadas.latitud)}
+          lng={parseFloat(barbershops[sucursalSelected]?.coordenadas.longitud)}
         />
       </Grid>
+      <CustomSwalModal
+        horario={barbershops[sucursalSelected]?.horario || {}}
+        handleCerrarModal={handleCerrarModal}
+        openModal={openModal}
+      />
     </Grid>
   );
 };

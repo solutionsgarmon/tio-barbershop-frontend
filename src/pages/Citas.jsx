@@ -4,6 +4,16 @@ import CardServices from "../components/cards/CardServices";
 import CitasConfirmacion from "../views/CitasConfirmacion";
 import CitasSeleccionBarberia from "../views/CitasSeleccionBarberia";
 import { useState } from "react";
+import Stepper from "../components/molecules/Stepper";
+
+const STEPS = ["Barbería", "Barbero", "Servicio", "Hora", "Confirmación"];
+const STEPS_DESC = [
+  "Selecciona una Sucursal",
+  "Elige tu barbero favorito",
+  "Selecciona el Servicio",
+  "Elige la Hora",
+  "Confirmación de Cita",
+];
 const SERVICIOS = [
   {
     id: 1,
@@ -58,7 +68,6 @@ const SERVICIOS = [
 const Citas = () => {
   const [selectedServicio, setSelectedServicio] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
-  const steps = ["Haz una Cita", "Selección de Barbería", "Confirmación"];
 
   const handleSelect = (servicio) => {
     setSelectedServicio(servicio);
@@ -74,7 +83,8 @@ const Citas = () => {
 
   return (
     <Box>
-      <h1>{steps[currentStep]}</h1>
+      <h1>{STEPS_DESC[currentStep]}</h1>
+      <Stepper steps={STEPS} currenStep={currentStep} />
       {currentStep === 0 && (
         <Box
           sx={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}
@@ -104,6 +114,7 @@ const Citas = () => {
           )}
         </Box>
       )}
+
       {currentStep !== 0 && (
         <Box sx={{ mt: 2 }}>
           {currentStep === 1 && <CitasSeleccionBarberia />}
@@ -122,7 +133,7 @@ const Citas = () => {
           disabled={!selectedServicio}
           onClick={handleContinue}
         >
-          {currentStep === steps.length - 1 ? "Finalizar" : "Continuar"}
+          {currentStep === STEPS.length - 1 ? "Finalizar" : "Continuar"}
         </Button>
       </Box>
     </Box>

@@ -13,13 +13,32 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useNavigate } from "react-router-dom";
-import { Stack } from "@mui/material";
+import { Divider, Stack } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useAppContext } from "../../context/AppProvider";
 import { cerrarSesionUsuario } from "../../api/FirebaseService";
 
-const PAGES = [
+const PAGES_ADMIN = [
+  { title: "Citas", url: "/citas" },
+  { title: "Servicios", url: "/servicios" },
+  { title: "Cursos", url: "/cursos" },
+  { title: "Tienda", url: "/tienda" },
+  { title: "Sucursales", url: "/sucursales" },
+  { title: "Sobre Nosotros", url: "/sobre-nosotros" },
+  { title: "Administrar", url: "/administracion" },
+];
+
+const PAGES_CLIENTE = [
+  { title: "Citas", url: "/citas" },
+  { title: "Servicios", url: "/servicios" },
+  { title: "Cursos", url: "/cursos" },
+  { title: "Tienda", url: "/tienda" },
+  { title: "Sucursales", url: "/sucursales" },
+  { title: "Sobre Nosotros", url: "/sobre-nosotros" },
+];
+
+const PAGES_BARBERO = [
   { title: "Citas", url: "/citas" },
   { title: "Servicios", url: "/servicios" },
   { title: "Cursos", url: "/cursos" },
@@ -33,13 +52,19 @@ const SETTINGS_AUTENTICATED = ["Mi perfil", "Mis citas", "Cerrar sesión"];
 const SETTINGS_NO_AUTENTICATED = ["Iniciar sesión"];
 
 function NavigationBar({ setShowNavigationBar }) {
-  const { flagTransparent, setIsLoading, isAutenticated, avatarURL } =
-    useAppContext();
+  const {
+    flagTransparent,
+    setIsLoading,
+    isAutenticated,
+    avatarURL,
+    sessionDataStorage,
+  } = useAppContext();
 
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [scrollY, setScrollY] = useState(0);
+  const [pages, setPages] = useState(PAGES_ADMIN);
 
   const backgroundColor = scrollY === 0 ? "rgba(0, 0, 0, 0)" : "#333"; // Cambia el color dependiendo de la posición del scroll
 
@@ -54,6 +79,23 @@ function NavigationBar({ setShowNavigationBar }) {
     backgroundColor,
     transition: "background-color 0.5s ease", // Agrega una transición suave al cambio de color
   };
+
+  useEffect(() => {
+    if (sessionDataStorage === null) setPages(PAGES_CLIENTE);
+    else {
+      switch (sessionDataStorage.rol) {
+        case "ADMINISTRADOR":
+          setPages(PAGES_ADMIN);
+          break;
+        case "BARBERO":
+          setPages(PAGES_BARBERO);
+          break;
+        case "CLIENTE":
+          setPages(PAGES_CLIENTE);
+          break;
+      }
+    }
+  }, [sessionDataStorage]);
 
   useEffect(() => {
     console.log("flagTransparent", flagTransparent);
@@ -180,7 +222,7 @@ function NavigationBar({ setShowNavigationBar }) {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {PAGES.map((page) => (
+              {pages.map((page) => (
                 <MenuItem
                   key={page.title}
                   onClick={() => handleClickPage(page.url)}
@@ -203,7 +245,7 @@ function NavigationBar({ setShowNavigationBar }) {
           {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
 
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {PAGES.map((page) => (
+            {pages.map((page) => (
               <Button
                 key={page.title}
                 onClick={() => handleClickPage(page.url)}
@@ -226,7 +268,11 @@ function NavigationBar({ setShowNavigationBar }) {
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar
                   alt="Imagen de perfil"
-                  src={avatarURL}
+                  src={
+                    sessionDataStorage !== null
+                      ? sessionDataStorage.datos_personales.imagen
+                      : ""
+                  }
                   sx={{ height: 35, width: 35 }}
                 />
               </IconButton>
@@ -247,17 +293,41 @@ function NavigationBar({ setShowNavigationBar }) {
               open={Boolean(anchorElUser)}
               onClose={handleClickSetting}
             >
-              {isAutenticated ? (
-                <>
+              {sessionDataStorage !== null ? (
+                <Box textAlign="center" sx={{ color: "black", width: 180 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Avatar
+                      alt="Imagen de perfil"
+                      src={
+                        sessionDataStorage !== null
+                          ? sessionDataStorage.datos_personales.imagen
+                          : ""
+                      }
+                      sx={{ height: 100, width: 100, marginBottom: "10px" }}
+                    />
+                    <Typography variant="h6" gutterBottom>
+                      <strong>{sessionDataStorage.nombre}</strong>
+                    </Typography>
+                    <Typography variant="h6" gutterBottom>
+                      {sessionDataStorage.rol}
+                    </Typography>
+                  </Box>
+                  <Divider sx={{ marginTop: "20px", marginBottom: "20px" }} />
                   {SETTINGS_AUTENTICATED.map((setting) => (
                     <MenuItem
                       key={setting}
                       onClick={() => handleClickSetting(setting)}
                     >
-                      <Typography textAlign="center">{setting}</Typography>
+                      <Typography>{setting}</Typography>
                     </MenuItem>
                   ))}
-                </>
+                </Box>
               ) : (
                 <>
                   {SETTINGS_NO_AUTENTICATED.map((setting) => (

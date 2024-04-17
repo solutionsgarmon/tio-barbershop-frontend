@@ -12,6 +12,7 @@ export default function ElementListWithImage({
   image,
   setSucursalSelected,
   index,
+  handleVerHorario,
 }) {
   const handleClickItem = () => {
     setSucursalSelected(index);
@@ -62,7 +63,12 @@ export default function ElementListWithImage({
           }
         />
 
-        <Button sx={{ alignSelf: "flex-start" }}>Ver Horario</Button>
+        <Button
+          sx={{ alignSelf: "flex-start" }}
+          onClick={() => handleVerHorario()}
+        >
+          Ver Horario
+        </Button>
       </Stack>
     </ListItem>
   );

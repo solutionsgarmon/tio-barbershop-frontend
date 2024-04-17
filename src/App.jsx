@@ -6,14 +6,14 @@ import { useAppContext } from "./context/AppProvider";
 import { ToastContainer, toast } from "react-toastify";
 
 function App() {
-  const { isLoading } = useAppContext();
+  const { isLoadingApp } = useAppContext();
 
   return (
     <Box>
       <Router>
         <AppRoutes />
       </Router>
-      <Loader showBackdrop={isLoading} />
+      <Loader showBackdrop={isLoadingApp} />
     </Box>
   );
 }

@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 export function postUser(data) {
   console.log("[ejecución] postUser()", data)
   return new Promise((resolve, reject) => {
@@ -31,12 +32,13 @@ export function postBarbershop(data) {
 export function postBarber(data) {
   console.log("[ejecución] postBarbers()", data)
   return new Promise((resolve, reject) => {
-    axios.post(import.meta.env.VITE_ADMINS_URL, data)
+    axios.post(import.meta.env.VITE_BARBERS_URL, data)
       .then((response) => {
         resolve(response); 
       })
       .catch((error) => {
         console.error("Error en postBarbers():", error);
+
         reject(error); 
       });
   });

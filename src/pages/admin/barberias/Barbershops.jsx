@@ -14,6 +14,7 @@ import {
 import { useEffect } from "react";
 import TabProductos from "./TabProducts";
 import TabImagenes from "./TabImagenes";
+import TabHorario from "./TabHorario";
 
 const Barbershops = () => {
   const { indexTabSelected, setIndexTabSelected } = useAppContext();
@@ -62,6 +63,12 @@ const Barbershops = () => {
       {indexTabSelected == 2 && (
         <TabProductos
           products={products}
+          barbershopSelected={barbershopSelected}
+          setReloadData={setReloadData}
+        />
+      )}
+      {indexTabSelected == 3 && (
+        <TabHorario
           barbershopSelected={barbershopSelected}
           setReloadData={setReloadData}
         />

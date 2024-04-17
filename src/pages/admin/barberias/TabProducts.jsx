@@ -7,8 +7,10 @@ import {
   updateProduct,
 } from "../../../api/updates";
 import { toast } from "react-toastify";
+import { useAppContext } from "../../../context/AppProvider";
 
 const TabProducts = ({ barbershopSelected, products, setReloadData }) => {
+  const { setIsLoadingApp } = useAppContext();
   const [left, setLeft] = React.useState([]);
   const [right, setRight] = React.useState([]);
 
@@ -35,6 +37,7 @@ const TabProducts = ({ barbershopSelected, products, setReloadData }) => {
   }, []);
 
   const handleSave = async () => {
+    setIsLoadingApp(true);
     const newProductosAsignados = left;
     const newProductosNoAsignados = right;
     const idBarbershop = barbershopSelected._id;
@@ -51,12 +54,6 @@ const TabProducts = ({ barbershopSelected, products, setReloadData }) => {
       const values = { barberias_asignadas: idBarbershop };
       return updateProduct(values, producto._id);
     });
-
-    // Modificar propiedad de barberia_asignada a todos los productos no asignados
-    // const promises2 = newProductosNoAsignados.map(async (barbero) => {
-    //   const values = { barberia_asignada: "" };
-    //   return updateBarber(values, barbero._id);
-    // });
 
     // Esperar a que todas las actualizaciones se completen
     const resultados = await Promise.allSettled([...promises1]);
@@ -76,6 +73,7 @@ const TabProducts = ({ barbershopSelected, products, setReloadData }) => {
       );
     }
     setReloadData((prev) => !prev);
+    setIsLoadingApp(false);
   };
 
   return (

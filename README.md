@@ -28,3 +28,5 @@ npm install sweetalert2
 npm install --save react-toastify
 npm i dayjs
 npm i npm install firebase
+npm install react-bootstrap bootstrap
+sweetalert2-react-content

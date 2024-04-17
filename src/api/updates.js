@@ -45,6 +45,27 @@ export function updateProduct(values, idProduct) {
 export function updateBarber(values, idBarber) {
   return new Promise((resolve, reject) => {
     axios.patch(
+      `${import.meta.env.VITE_BARBERS_URL}/update-password/${idBarber}`,
+      values
+    )
+      .then((response) => {
+        if (!response.data.success) {
+          console.error("No se pudo realizar correctamente la petición updateBarber():", response.data);
+          reject(response);
+        } else {
+          resolve(response);
+        }
+      })
+      .catch((error) => {
+        console.error("Error en updateBarber():", error);
+        reject(error);
+      });
+  });
+}
+
+export function updatePassworsBarber(values, idBarber) {
+  return new Promise((resolve, reject) => {
+    axios.patch(
       `${import.meta.env.VITE_BARBERS_URL}/${idBarber}`,
       values
     )
@@ -64,6 +85,7 @@ export function updateBarber(values, idBarber) {
 }
 
 export function updateAdmin(values, idAdmin) {
+ 
   return new Promise((resolve, reject) => {
     axios.patch(
       `${import.meta.env.VITE_ADMINS_URL}/${idAdmin}`,
@@ -85,6 +107,7 @@ export function updateAdmin(values, idAdmin) {
 }
 
 export function updateBarbershop(values, idBarbershop) {
+   console.log("updateBarbershop()=>",values,idBarbershop)
   return new Promise((resolve, reject) => {
     axios.patch(
       `${import.meta.env.VITE_BARBERSHOPS_URL}/${idBarbershop}`,

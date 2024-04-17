@@ -4,9 +4,12 @@ import FloatingAddButton from "../components/atoms/FloatingButtons";
 import PrincipalSlider from "../components/sliders/PrincipalSlider";
 import { useAppContext } from "../context/AppProvider";
 import GoogleMap from "../components/molecules/GoogleMap";
+import { useNavigate } from "react-router-dom";
 
 const MainPage = () => {
   const { setFlagTransparent } = useAppContext();
+  const navigate = useNavigate();
+
   const elements = [
     {
       image: "/images/sliders/principal/slider2.jpg",
@@ -22,10 +25,6 @@ const MainPage = () => {
     },
   ];
 
-  const center = { lat: 40.7128, lng: -74.006 };
-  const zoom = 11;
-  const points = [{ lat: 40.7128, lng: -74.006, text: "Marcador 1" }];
-
   useEffect(() => {
     setFlagTransparent(true);
 
@@ -33,6 +32,11 @@ const MainPage = () => {
       setFlagTransparent(false);
     };
   }, []);
+
+  const handleClickFloatingButton = () => {
+    console.log("handleClickFloatingButton");
+    navigate("/citas");
+  };
 
   return (
     <Box sx={{ mt: -10 }}>
@@ -83,7 +87,9 @@ const MainPage = () => {
         </Typography>
       </Box>
 
-      <FloatingAddButton />
+      <FloatingAddButton
+        handleClickFloatingButton={handleClickFloatingButton}
+      />
     </Box>
   );
 };

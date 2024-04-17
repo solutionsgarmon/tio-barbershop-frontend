@@ -3,13 +3,10 @@ import MyTransferList from "../../../components/molecules/MyTransferList";
 import AlertWarning from "../../../components/messages/AlertWarning";
 import { updateBarber, updateBarbershop } from "../../../api/updates";
 import { toast } from "react-toastify";
+import { useAppContext } from "../../../context/AppProvider";
 
-const TabBarbers = ({
-  barbershopSelected,
-  barbers,
-  assignedBarbers = [],
-  setReloadData,
-}) => {
+const TabBarbers = ({ barbershopSelected, barbers, setReloadData }) => {
+  const { setIsLoadingApp } = useAppContext();
   const [left, setLeft] = React.useState([]);
   const [right, setRight] = React.useState([]);
 
@@ -30,6 +27,7 @@ const TabBarbers = ({
   }, []);
 
   const handleSave = async () => {
+    setIsLoadingApp(true);
     const newBarberosAsignados = left;
     const newBarberosNoAsignados = right;
     const idBarbershop = barbershopSelected._id;
@@ -71,6 +69,7 @@ const TabBarbers = ({
       );
     }
     setReloadData((prev) => !prev);
+    setIsLoadingApp(false);
   };
 
   return (

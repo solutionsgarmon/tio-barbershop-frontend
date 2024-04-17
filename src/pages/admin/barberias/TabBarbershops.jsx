@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { MRT_Localization_ES } from "material-react-table/locales/es";
 import { toast } from "react-toastify";
+
 import {
   MRT_EditActionButtons,
   MaterialReactTable,
@@ -37,13 +38,12 @@ import {
 } from "../../../api/updates";
 import { getBarbershops } from "../../../api/gets";
 
-const ROLES = ["Cliente", "Barbero", "Administrador"];
-
 const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
   const [validationErrors, setValidationErrors] = useState({});
   const [isLoadingData, setIsLoadingData] = useState(true); // poner loading girando
   const [isUpdateData, setIsUpdateData] = useState(false); //Bloquear la modal y boton
   const [barbershops, setBarbershops] = useState([]);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -66,36 +66,44 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
     setIsUpdateData(false);
   }, [barbershops]);
 
+  const propertiesToExcludeCreate = ["mrt-row-create_imagen"];
+  const propertiesToExcludeUpdate = ["0_imagen"];
+
   const columns = useMemo(
     () => [
       {
         accessorKey: "nombre",
         header: "Nombre",
+        size: 200,
         muiEditTextFieldProps: {
           required: true,
         },
       },
       {
         accessorKey: "direccion.calle",
-        header: "Calle",
+        header: "Calle y Número",
         muiEditTextFieldProps: {
           required: true,
         },
-      },
-      {
-        accessorKey: "direccion.codigoPostal",
-        header: "CP",
       },
       {
         accessorKey: "direccion.ciudad",
         header: "Ciudad",
       },
       {
+        accessorKey: "direccion.colonia",
+        header: "Colonia",
+      },
+      {
+        accessorKey: "direccion.cp",
+        header: "CP",
+      },
+      {
         accessorKey: "telefono",
         header: "Teléfono",
       },
       {
-        accessorKey: "correoElectronico",
+        accessorKey: "correo",
         header: "Correo",
       },
       {
@@ -104,6 +112,19 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
 
         Cell: ({ cell }) => cell.getValue()?.slice(0, 20) + "..." || "",
       },
+
+      {
+        accessorKey: "coordenadas.latitud",
+        header: "Latitud (izquierda)",
+      },
+      {
+        accessorKey: "coordenadas.longitud",
+        header: "Longitud (derecha)",
+      },
+      {
+        accessorKey: "imagen",
+        header: "Imagen",
+      },
     ],
 
     [validationErrors]
@@ -111,19 +132,28 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
 
   // CREATE ACTION //
   const handleCreateUser = async ({ values, table }) => {
-    setIsUpdateData(true); //loading button
+    setIsUpdateData(true); // loading button
 
-    const resp = await postBarbershop(values);
-    console.log("resp", resp.data.success);
-    if (resp.data.success) {
-      toast.success("Registro Exitoso");
-      setIsLoadingData(true); //loading button
-      await reloadData();
-      table.setCreatingRow(null);
-    } else {
+    try {
+      const resp = await postBarbershop(values);
+      console.log("resp", resp.data.success);
+      if (resp.data.success) {
+        console.log("Registro Exitoso");
+        toast.success("Registro Exitoso");
+        setIsLoadingData(true); // loading button
+        await reloadData();
+        table.setCreatingRow(null);
+      } else {
+        console.error("Error al crear Registro:", resp.data.error);
+        toast.error("Error al crear Registro.");
+        setIsLoadingData(false);
+      }
+    } catch (error) {
       console.error("Error al crear Registro:", error);
       toast.error("Error al crear Registro.");
       setIsLoadingData(false);
+    } finally {
+      setIsUpdateData(false);
     }
   };
 
@@ -132,19 +162,26 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
     console.log("values", values);
     setIsUpdateData(true);
     const id = row.original._id;
-    const resp = await updateBarbershop(values, id);
-    if (resp.data.success) {
-      toast.success("Se modificó correctamente.");
-      table.setEditingRow(null);
-      setIsLoadingData(true);
-      await reloadData();
-    } else {
-      toast.error("No se pudo modificar.");
+
+    try {
+      const resp = await updateBarbershop(values, id);
+      if (resp.data.success) {
+        toast.success("Se modificó correctamente.");
+        table.setEditingRow(null);
+        setIsLoadingData(true);
+        await reloadData();
+      } else {
+        toast.error("No se pudo modificar.");
+        setIsUpdateData(false);
+      }
+    } catch (error) {
+      console.error("Error al modificar:", error);
+      toast.error("Error al modificar.");
       setIsUpdateData(false);
     }
   };
 
-  //DELETE action
+  // DELETE action
   const handleDelete = (row) => {
     console.log("row", row.original);
     Swal.fire({
@@ -158,11 +195,19 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const id = row.original._id;
-        const resp = await deleteBarbershop(id);
-        if (resp.data.success) {
-          toast.success("Se eliminó correctamente.");
-          await reloadData();
-        } else toast.error("No se pudo eliminar.");
+
+        try {
+          const resp = await deleteBarbershop(id);
+          if (resp.data.success) {
+            toast.success("Se eliminó correctamente.");
+            await reloadData();
+          } else {
+            toast.error("No se pudo eliminar.");
+          }
+        } catch (error) {
+          console.error("Error al eliminar:", error);
+          toast.error("Error al eliminar.");
+        }
       }
     });
   };
@@ -170,7 +215,9 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
   //CLIC IN ROW
   const handleClickRow = (dataSelected) => {
     // console.log("dataSelected", dataSelected);
+    setSelectedRow(dataSelected);
     setBarbershopSelected(dataSelected);
+    console.log("dataSelected", dataSelected);
     toast.success(`La barbería "${dataSelected.nombre}" fue Selecionada`);
   };
 
@@ -184,6 +231,10 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
     muiTableBodyRowProps: ({ row }) => ({
       onClick: () => {
         handleClickRow(row.original);
+      },
+      sx: {
+        backgroundColor: row.original === selectedRow ? "#009be5" : "inherit", // Aplica el color amarillo si la fila está seleccionada
+        cursor: "pointer",
       },
     }),
     getRowId: (row) => row.id,
@@ -204,7 +255,13 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
-          {internalEditComponents}
+          {internalEditComponents.map(
+            (component) =>
+              // Filtra las propiedades que no deseas mostrar en la edición
+              !propertiesToExcludeCreate.includes(component.key) && (
+                <div key={component.accessorKey}>{component}</div>
+              )
+          )}
         </DialogContent>
         <DialogActions>
           <MRT_EditActionButtons variant="text" table={table} row={row} />
@@ -218,7 +275,13 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
         >
-          {internalEditComponents} {/* or render custom edit components here */}
+          {internalEditComponents.map(
+            (component) =>
+              // Filtra las propiedades que no deseas mostrar en la edición
+              !propertiesToExcludeUpdate.includes(component.key) && (
+                <div key={component.accessorKey}>{component}</div>
+              )
+          )}
         </DialogContent>
         <DialogActions>
           <MRT_EditActionButtons variant="text" table={table} row={row} />

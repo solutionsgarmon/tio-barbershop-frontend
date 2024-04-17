@@ -11,8 +11,10 @@ const StyledFab = styled(Fab)({
   backgroundColor: "#e2b753", // Color de fondo personalizado
   color: "black", // Color del icono
 });
-export default function FloatingAddButton() {
-  const handleClick = () => {};
+export default function FloatingAddButton({ handleClickFloatingButton }) {
+  const handleClick = () => {
+    handleClickFloatingButton();
+  };
 
   return (
     <Box sx={{ position: "fixed", bottom: "20px", right: "20px" }}>

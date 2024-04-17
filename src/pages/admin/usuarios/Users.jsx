@@ -1,13 +1,8 @@
-import { Box } from "@mui/material";
 import React from "react";
 import TabUsers from "./TabUsers";
-import { useEffect } from "react";
 import { useAppContext } from "../../../context/AppProvider";
 
-import TabAdministradores from "./TabAdministradores";
-import TabBarbers from "./TabBarbers";
-
-const COMPONENTS = [<TabUsers />, <TabBarbers />, <TabAdministradores />];
+const COMPONENTS = [<TabUsers />];
 
 const Users = () => {
   const { indexTabSelected } = useAppContext();

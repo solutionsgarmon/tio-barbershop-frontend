@@ -20,9 +20,14 @@ import {
   autenticarUsuarioFB,
 } from "../api/FirebaseService";
 
-import { createUserSession } from "../helpers/localStorageHelper";
+import {
+  addToLocalStorage,
+  createUserSession,
+} from "../helpers/localStorageHelper";
 import GoogleIcon from "../../public/images/icons/icon-google.png";
 import { useAppContext } from "../context/AppProvider";
+import { autenticarUsuario } from "../api/auth";
+import { toast } from "react-toastify";
 
 function Copyright(props) {
   return (
@@ -43,11 +48,9 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Login() {
-  //   const USUARIOS = useSelector((state) => state.usuariosSliceReducer);
-  //   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    Correo: "emmanuel@gmail.com",
-    Password: "123123123",
+    Correo: "admin@gmail.com",
+    Password: "admin",
   });
   const { Correo, Password } = formData;
   const [errorLogin, setErrorLogin] = useState(false);
@@ -55,7 +58,7 @@ export default function Login() {
   const [mensajeMayus, setMensajeMayus] = useState("");
   const [showMenu, setShowMenu] = useState(false);
 
-  const { verifySession } = useAppContext();
+  const { verifySession, setLoadinApp, setReload } = useAppContext();
 
   const navigate = useNavigate();
   //   const { token } = useParams();
@@ -77,8 +80,34 @@ export default function Login() {
     }, 500);
   };
 
-  //Autenticación correo/contraseña
   const handleLogin = async () => {
+    //setLoadinApp(true)
+    try {
+      const values = { correo: formData.Correo, password: formData.Password };
+      const resp = await autenticarUsuario(values);
+      console.log("resp resp", resp);
+      if (resp.data.success) {
+        toast.success("Autenticación Exitosa");
+        console.log("resp.data.data", resp.data.data);
+        addToLocalStorage("session", resp.data.data);
+        navigate("/");
+        setReload((prev) => !prev);
+      } else {
+        console.error("Error al Autenticarse", resp.data.error);
+        toast.error("Credenciales Inválidas");
+      }
+    } catch (error) {
+      console.error("Hubo un problema al autenticar", error);
+      setLoading(false);
+      toast.error(
+        "Ups, hay un problema con este proceso, por favor intente mas tarde"
+      );
+    }
+  };
+
+  //Autenticación correo/contraseña en FB
+  const handleLoginFB = async () => {
+    //setLoadinApp(true)
     try {
       const userFB = await autenticarUsuarioFB(
         formData.Correo,

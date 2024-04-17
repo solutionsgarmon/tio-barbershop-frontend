@@ -2,6 +2,7 @@ import React, { createContext, useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { getFromLocalStorage } from "../helpers/localStorageHelper";
+import { getBarbershops } from "../api/gets";
 
 const AppContext = createContext();
 
@@ -18,14 +19,36 @@ const AppProvider = ({ children }) => {
   const [avatarURL, setAvatarURL] = useState("");
   const [isAutenticated, setIsAutenticated] = useState(false);
   const [indexTabSelected, setIndexTabSelected] = useState(0);
+  const [reload, setReload] = useState(false);
+  const [isLoadingApp, setIsLoadingApp] = useState(false);
+  const [sessionDataStorage, setSessionDataStorage] = useState(null);
 
   useEffect(() => {
-    verifySession();
-  }, []);
+    async function fetchData() {
+      verifySession();
+      setBarbershops(await getBarbershops());
+      // setBarbers(await getBarbers());
+      // setServices(await getServices());
+      // setProducts(await getProducts());
+    }
+    fetchData();
+  }, [reload]);
+
+  // const verifySessionFB = () => {
+  //   const session = getFromLocalStorage("session");
+  //   if (session) {
+  //     setIsAutenticated(true);
+  //     setAvatarURL(session.urlImage);
+  //   } else {
+  //     setIsAutenticated(false);
+  //   }
+  // };
 
   const verifySession = () => {
     const session = getFromLocalStorage("session");
     if (session) {
+      console.log("session", session);
+      setSessionDataStorage(session);
       setIsAutenticated(true);
       setAvatarURL(session.urlImage);
     } else {
@@ -67,6 +90,10 @@ const AppProvider = ({ children }) => {
     verifySession,
     isAutenticated,
     avatarURL,
+    setReload,
+    setIsLoadingApp,
+    isLoadingApp,
+    sessionDataStorage,
   };
   return (
     <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>

@@ -30,6 +30,12 @@ import { useAppContext } from "../../context/AppProvider";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import Cursos from "./cursos/Cursos";
 import MainPage from "./MainPage";
+import AirlineSeatReclineExtraIcon from "@mui/icons-material/AirlineSeatReclineExtra";
+import Groups2Icon from "@mui/icons-material/Groups2";
+import Diversity3Icon from "@mui/icons-material/Diversity3";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import Barbers from "./barberos/Barbers";
+import Administradores from "./administradores/Administradores";
 
 function Copyright() {
   return (
@@ -190,16 +196,34 @@ const drawerWidth = 256;
 
 const categories = [
   {
-    id: "BASE DE DATOS",
+    id: "USUARIOS",
 
     children: [
       {
-        id: "Usuarios",
-        icon: <PeopleIcon />,
-        tabs: ["Clientes", "Barberos", "Administradores"],
+        id: "Clientes",
+        icon: <Groups2Icon />,
+        tabs: ["Clientes", "Citas"],
         component: <Users />,
       },
 
+      {
+        id: "Barberos",
+        icon: <Diversity3Icon />,
+        tabs: ["Barberos", "Horario", "Imágenes"],
+        component: <Barbers />,
+      },
+      {
+        id: "Administradores",
+        icon: <SupervisorAccountIcon />,
+        tabs: ["Administradores"],
+        component: <Administradores />,
+      },
+    ],
+  },
+  {
+    id: "BASE DE DATOS",
+
+    children: [
       {
         id: "Servicios",
         icon: <ContentCutIcon />,
@@ -215,7 +239,7 @@ const categories = [
       {
         id: "Barberías",
         icon: <StorefrontIcon />,
-        tabs: ["Barberias", "Barberos", "Productos", "Imágenes"],
+        tabs: ["Barberias", "Barberos", "Productos", "Horario", "Imágenes"],
         component: <Barbershops />,
       },
       {
