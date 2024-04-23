@@ -36,6 +36,10 @@ import Diversity3Icon from "@mui/icons-material/Diversity3";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import Barbers from "./barberos/Barbers";
 import Administradores from "./administradores/Administradores";
+import FeedIcon from "@mui/icons-material/Feed";
+import EventIcon from "@mui/icons-material/Event";
+import DescriptionIcon from "@mui/icons-material/Description";
+import Citas from "./citas/Citas";
 
 function Copyright() {
   return (
@@ -194,7 +198,7 @@ theme = {
 
 const drawerWidth = 256;
 
-const categories = [
+const categories_administrador = [
   {
     id: "USUARIOS",
 
@@ -274,8 +278,8 @@ const categories = [
       {
         id: "Citas",
         icon: <CalendarMonthIcon />,
-        tabs: ["Calendario", "Citas programadas", "Historial"],
-        component: <Posts />,
+        tabs: ["Citas"],
+        component: <Citas />,
       },
       {
         id: "Reportes",
@@ -298,14 +302,59 @@ const categories = [
   },
 ];
 
+const categories_barbero = [
+  {
+    id: "Mi Perfil",
+
+    children: [
+      {
+        id: "Mis datos ",
+        icon: <FeedIcon />,
+        tabs: ["Mis Datos"],
+        component: <Barbers />,
+      },
+    ],
+  },
+  {
+    id: "Citas",
+
+    children: [
+      {
+        id: "Mis citas",
+        icon: <EventIcon />,
+        tabs: ["Citas"],
+        component: <Citas />,
+      },
+    ],
+  },
+  {
+    id: "Publicaciones",
+
+    children: [
+      {
+        id: "Lista de Publicaciones",
+        icon: <DescriptionIcon />,
+        tabs: ["Clientes", "Citas"],
+        component: <Users />,
+      },
+    ],
+  },
+];
+
 export default function Paperbase() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [idCategorieSelected, setIdCategorieSelected] = useState(null);
   const [displayTabs, setDisplayTabs] = useState(null);
   const [displayComponent, setDisplayComponent] = useState(null);
   const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
-  const { windowWidth, indexTabSelected, setIndexTabSelected } =
-    useAppContext();
+  const [categoriasMapear, setCategoriasMapear] = useState([]);
+
+  const {
+    windowWidth,
+    indexTabSelected,
+    setIndexTabSelected,
+    sessionDataStorage,
+  } = useAppContext();
 
   useEffect(() => {
     console.log("isSmUp", isSmUp);
@@ -313,10 +362,18 @@ export default function Paperbase() {
 
   useEffect(() => {
     setDisplayComponent(<MainPage />);
+    if (sessionDataStorage) {
+      if (sessionDataStorage.rol == "ADMINISTRADOR")
+        setCategoriasMapear(categories_administrador);
+      else if (sessionDataStorage.rol == "BARBERO")
+        setCategoriasMapear(categories_barbero);
+    } else {
+      console.error("No se encontro la sesionDataStorage del Usuario");
+    }
   }, []);
 
   useEffect(() => {
-    const categorySelected = categories.find((cat) =>
+    const categorySelected = categoriasMapear.find((cat) =>
       cat.children.some((child) => child.id === idCategorieSelected)
     );
 
@@ -336,6 +393,7 @@ export default function Paperbase() {
 
   const handleShowMainPage = () => {
     setDisplayComponent(<MainPage />);
+    setDisplayTabs(null);
     setIndexTabSelected(0);
     setIdCategorieSelected(null);
   };
@@ -361,7 +419,7 @@ export default function Paperbase() {
               variant="temporary"
               open={mobileOpen}
               onClose={handleDrawerToggle}
-              categories={categories}
+              categories={categoriasMapear}
               setIdCategorieSelected={setIdCategorieSelected}
               handleShowMainPage={handleShowMainPage}
             />
@@ -370,7 +428,7 @@ export default function Paperbase() {
           <Navigator
             PaperProps={{ style: { width: drawerWidth } }}
             sx={{ display: { sm: "block", xs: "none" } }}
-            categories={categories}
+            categories={categoriasMapear}
             setIdCategorieSelected={setIdCategorieSelected}
             handleShowMainPage={handleShowMainPage}
           />

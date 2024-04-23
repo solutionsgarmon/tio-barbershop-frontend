@@ -36,14 +36,7 @@ import {
   deleteUser,
 } from "../../../api/deletes";
 import Swal from "sweetalert2";
-import {
-  updateAdmin,
-  updateBarber,
-  updateBarbershop,
-  updateProduct,
-  updateService,
-  updateUser,
-} from "../../../api/updates";
+import { updateAdmin } from "../../../api/updates";
 import { getAdmins } from "../../../api/gets";
 import PasswordTypography from "../../../components/atoms/PasswordTypography";
 
@@ -72,8 +65,8 @@ const Table = () => {
   }, [admins]);
 
   // const propertiesToExcludeCreate = ["mrt-row-create_password"];
-  const propertiesToExcludeCreate = [""];
-  const propertiesToExcludeUpdate = ["0_password"];
+  const propertiesToExcludeCreate = [];
+  const propertiesToExcludeUpdate = ["password"];
   const columns = useMemo(
     () => [
       {
@@ -226,9 +219,9 @@ const Table = () => {
           {internalEditComponents.map(
             (component) =>
               // Filtra las propiedades que no deseas mostrar en la edición
-              !propertiesToExcludeCreate.includes(component.key) && (
-                <div key={component.accessorKey}>{component}</div>
-              )
+              !propertiesToExcludeCreate.some((prop) =>
+                component.key.includes(prop)
+              ) && <div key={component.key}>{component}</div>
           )}
         </DialogContent>
         <DialogActions>
@@ -246,9 +239,9 @@ const Table = () => {
           {internalEditComponents.map(
             (component) =>
               // Filtra las propiedades que no deseas mostrar en la edición
-              !propertiesToExcludeUpdate.includes(component.key) && (
-                <div key={component.accessorKey}>{component}</div>
-              )
+              !propertiesToExcludeUpdate.some((prop) =>
+                component.key.includes(prop)
+              ) && <div key={component.key}>{component}</div>
           )}
         </DialogContent>
         <DialogActions>

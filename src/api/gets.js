@@ -56,6 +56,33 @@ export function getUsers() {
   });
 }
 
+
+// Función para verificar si un usuario existe y obtener su rol
+export const getExisteUser = async (correo) => {
+  try {
+    // Realizar la solicitud a la API
+   const response=  await axios.get(`${import.meta.env.VITE_USERS_URL}/existe-usuario?correo=${correo}`);
+console.log("response",response)
+    // Verificar la respuesta de la API
+    const data = response.data.data; // Obtener los datos de la respuesta
+    
+    if (data.encontrado) {
+      // Si se encuentra el usuario, mostrar el rol
+    
+      console.log(`Usuario encontrado. Rol: ${data.rol}`);  
+      return true
+    } else {
+      // Si no se encuentra el usuario, mostrar un mensaje de usuario no encontrado
+      console.log('Usuario no encontrado.');
+      return false
+    }
+  } catch (error) {
+    // Manejar errores de la solicitud
+    console.error('Error al verificar el usuario:', error);
+    
+  }
+};
+
 export function getBarbers() {
   return new Promise((resolve, reject) => {
       axios.get(import.meta.env.VITE_BARBERS_URL)
@@ -79,6 +106,30 @@ export function getBarbers() {
       });
   });
 }
+
+// export function getBarber(id) {
+//   return new Promise((resolve, reject) => {
+//       axios.get(`${import.meta.env.VITE_BARBER_URL}/${id}`)
+//     .then((response) => {
+//         const data = response.data;
+//         console.log("getUsers()", data);
+//         if (!data.success) {
+//           console.error("No se pudo realizar correctamente la petición getBarbers():", data);
+//           reject(data); 
+//         } else if (data.length === 0) {
+//           console.info("🛈 No se encontraron elementos para getBarbers():");
+//           resolve([]); 
+//         } else  {
+//           console.log("getBarber -> BARBES", data.data);
+//           resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
+//         }
+//       })
+//       .catch((error) => {
+//         console.error("Error en getBarbers():", error);
+//         reject(error); // Rechaza la promesa en caso de error
+//       });
+//   });
+// }
 
 export function getAdmins() {
   return new Promise((resolve, reject) => {

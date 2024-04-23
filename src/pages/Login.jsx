@@ -28,6 +28,8 @@ import GoogleIcon from "../../public/images/icons/icon-google.png";
 import { useAppContext } from "../context/AppProvider";
 import { autenticarUsuario } from "../api/auth";
 import { toast } from "react-toastify";
+import { getExisteUser } from "../api/gets";
+import { postUser } from "../api/posts";
 
 function Copyright(props) {
   return (
@@ -76,14 +78,14 @@ export default function Login() {
     event.preventDefault();
     setLoading(true);
     timer.current = window.setTimeout(() => {
-      handleLogin();
+      handleLogin(formData.Correo, formData.Password);
     }, 500);
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (correo, password) => {
     //setLoadinApp(true)
     try {
-      const values = { correo: formData.Correo, password: formData.Password };
+      const values = { correo: correo, password: password };
       const resp = await autenticarUsuario(values);
       console.log("resp resp", resp);
       if (resp.data.success) {
@@ -104,37 +106,51 @@ export default function Login() {
       );
     }
   };
-
-  //Autenticación correo/contraseña en FB
-  const handleLoginFB = async () => {
-    //setLoadinApp(true)
+  //1. Inicia sesion con google y obtiene sus credenciales
+  //2. con esa informacion crea un nuevo usuario o accede en caso de ya haberlo.
+  const handleLoginGoogle = async () => {
     try {
-      const userFB = await autenticarUsuarioFB(
-        formData.Correo,
-        formData.Password
-      );
-      console.log("userFBuserFB", userFB);
-      // await createUserSession(userFB);
+      const userFB = await autenticarUsuarioConGoogle();
+      const dataSessionGoogle = await createUserSession(userFB);
+      if (await getExisteUser(dataSessionGoogle.email)) {
+        // El usuario existe en la base de datos
+        handleLogin(
+          dataSessionGoogle.email,
+          import.meta.env.VITE_PASSWORD_GOOGLE
+        );
+      } else {
+        const values = {
+          nombre: dataSessionGoogle.username,
+          password: import.meta.env.VITE_PASSWORD_GOOGLE,
+          correo: dataSessionGoogle.email,
+          imagen: dataSessionGoogle.urlImage,
+        };
+        handleCreateUser(values);
+      }
+
       // verifySession();
-      setShowMenu(true);
-      navigate("/");
+
+      // navigate("/");
     } catch (e) {
-    } finally {
-      setLoading(false);
+      // showMensajeError("Hubo un problema con su autententicación : " + e);
     }
   };
 
-  const handleGoogle = async () => {
+  // CREATE ACTION //
+  const handleCreateUser = async (values) => {
     try {
-      const userFB = await autenticarUsuarioConGoogle();
-
-      await createUserSession(userFB);
-      verifySession();
-      setShowMenu(true);
-
-      navigate("/");
-    } catch (e) {
-      // showMensajeError("Hubo un problema con su autententicación : " + e);
+      const resp = await postUser(values);
+      console.log("resp", resp.data.success);
+      if (resp.data.success) {
+        toast.success("Se registró correctamente.");
+        // INICIAR SESION
+        handleLogin(
+          dataSessionGoogle.email,
+          import.meta.env.VITE_PASSWORD_GOOGLE
+        );
+      } else toast.error("Error al crear usuario.");
+    } catch (error) {
+      console.error("Error al crear el usuario:", error);
     }
   };
 
@@ -253,7 +269,7 @@ export default function Login() {
                       style={{ width: 24, height: 24 }}
                     />
                   }
-                  onClick={handleGoogle}
+                  onClick={handleLoginGoogle}
                   color="inherit"
                   sx={{ border: "1px solid black" }}
                 >

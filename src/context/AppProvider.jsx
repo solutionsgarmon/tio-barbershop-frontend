@@ -94,6 +94,7 @@ const AppProvider = ({ children }) => {
     setIsLoadingApp,
     isLoadingApp,
     sessionDataStorage,
+    setSessionDataStorage,
   };
   return (
     <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>

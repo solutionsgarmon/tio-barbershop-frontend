@@ -49,41 +49,69 @@ import { getBarbers, getBarbershops } from "../../../api/gets";
 import PasswordField from "../../../components/atoms/PasswordField";
 import PasswordTypography from "../../../components/atoms/PasswordTypography";
 import ChangePassword from "../../../components/modals/ChangePassword";
+import { Typography } from "antd";
 
 const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
   const [validationErrors, setValidationErrors] = useState({});
   const [isLoadingData, setIsLoadingData] = useState(true); // poner loading girando
   const [isUpdateData, setIsUpdateData] = useState(false); //Bloquear la modal y boton
   const [barbers, setBarbers] = useState([]);
-  const { barbershops, setReload } = useAppContext();
+  const { barbershops, setReload, sessionDataStorage } = useAppContext();
   const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
-      setBarbers(await getBarbers());
+      setIsLoadingData(true);
+      let barberos = await getBarbers();
+      if (sessionDataStorage.rol == "BARBERO") {
+        const barberoEncontrado = barberos.find(
+          (barbero) => sessionDataStorage._id === barbero._id
+        );
+        console.log("barberoEncontrado"), barberoEncontrado;
+        if (barberoEncontrado) {
+          setBarbers([barberoEncontrado]);
+        } else {
+          setBarbers([]);
+        }
+      } else {
+        setBarbers(barberos);
+      }
+      setIsLoadingData(false);
     }
+
     fetchData();
-    setIsLoadingData(false);
+    setBarberSelected(null);
   }, []);
 
   const reloadData = async () => {
     setIsLoadingData(true);
-    setBarbers(await getBarbers());
+    setSelectedRow(null);
+
+    let barberos = await getBarbers();
+    if (sessionDataStorage.rol == "BARBERO") {
+      const barberoEncontrado = barberos.find(
+        (barbero) => sessionDataStorage._id === barbero._id
+      );
+      console.log("barberoEncontrado"), barberoEncontrado;
+      if (barberoEncontrado) {
+        setBarbers([barberoEncontrado]);
+      } else {
+        setBarbers([]);
+      }
+    } else {
+      setBarbers(barberos);
+    }
+
     setReload((prev) => !prev);
     setIsLoadingData(false);
   };
 
   const propertiesToExcludeCreate = [
-    "mrt-row-create_barberia_asignada",
-    "mrt-row-create_estatus",
-    "mrt-row-create_descanso",
+    "barberia_asignada",
+    "descanso",
+    "estatus",
   ];
-  const propertiesToExcludeUpdate = [
-    "0_barberia_asignada",
-    "0_estatus",
-    "0_descanso",
-    "0_password",
-  ];
+  const propertiesToExcludeUpdate = ["barberia_asignada", "password"];
 
   const columns = useMemo(
     () => [
@@ -102,27 +130,6 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
         },
       },
       {
-        accessorKey: "password",
-        header: "Contraseña",
-        muiEditTextFieldProps: {
-          required: true,
-        },
-        Cell: ({ cell }) => <PasswordTypography value={cell.getValue()} />,
-      },
-      {
-        accessorKey: "descripcion",
-        header: "Descripción",
-      },
-      {
-        accessorKey: "datos_personales.telefono",
-        header: "Telefono/Celular",
-      },
-
-      {
-        accessorKey: "barberia_asignada",
-        header: "Barbería asignada",
-      },
-      {
         accessorKey: "estatus",
         header: "Estatus",
         editVariant: "select",
@@ -131,6 +138,17 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
           required: true,
           select: true,
         },
+
+        Cell: ({ cell }) => (
+          <Typography
+            style={{
+              fontWeight: "bold",
+              color: cell.getValue() === "ACTIVO" ? "green" : "red",
+            }}
+          >
+            {cell.getValue()}
+          </Typography>
+        ),
       },
       {
         accessorKey: "descanso",
@@ -141,6 +159,29 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
           required: true,
           select: true,
         },
+      },
+
+      {
+        accessorKey: "datos_personales.telefono",
+        header: "Telefono/Celular",
+      },
+
+      {
+        accessorKey: "barberia_asignada",
+        header: "Barbería asignada",
+      },
+
+      {
+        accessorKey: "descripcion",
+        header: "Descripción",
+      },
+      {
+        accessorKey: "password",
+        header: "Contraseña",
+        muiEditTextFieldProps: {
+          required: true,
+        },
+        Cell: ({ cell }) => <PasswordTypography value={cell.getValue()} />,
       },
     ],
 
@@ -298,9 +339,9 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
           {internalEditComponents.map(
             (component) =>
               // Filtra las propiedades que no deseas mostrar en la edición
-              !propertiesToExcludeCreate.includes(component.key) && (
-                <div key={component.accessorKey}>{component}</div>
-              )
+              !propertiesToExcludeCreate.some((prop) =>
+                component.key.includes(prop)
+              ) && <div key={component.key}>{component}</div>
           )}
         </DialogContent>
         <DialogActions>
@@ -311,6 +352,7 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
     // ======== PERSONALIZAR MODAL UPDATE ======== //
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
+        {console.log("internalEditComponents", internalEditComponents)}
         <DialogTitle variant="h4">Editar</DialogTitle>
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
@@ -318,9 +360,9 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
           {internalEditComponents.map(
             (component) =>
               // Filtra las propiedades que no deseas mostrar en la edición
-              !propertiesToExcludeUpdate.includes(component.key) && (
-                <div key={component.key}>{component}</div>
-              )
+              !propertiesToExcludeUpdate.some((prop) =>
+                component.key.includes(prop)
+              ) && <div key={component.key}>{component}</div>
           )}
         </DialogContent>
         <DialogActions>

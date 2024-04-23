@@ -52,9 +52,8 @@ const Example = () => {
     setIsLoadingUsers(false);
   }, [users]);
 
-  // const propertiesToExcludeCreate = ["mrt-row-create_password"];
-  const propertiesToExcludeCreate = [""];
-  const propertiesToExcludeUpdate = ["0_password"];
+  const propertiesToExcludeCreate = [];
+  const propertiesToExcludeUpdate = ["password"];
 
   const columns = useMemo(
     () => [
@@ -185,9 +184,9 @@ const Example = () => {
           {internalEditComponents.map(
             (component) =>
               // Filtra las propiedades que no deseas mostrar en la edición
-              !propertiesToExcludeCreate.includes(component.key) && (
-                <div key={component.accessorKey}>{component}</div>
-              )
+              !propertiesToExcludeCreate.some((prop) =>
+                component.key.includes(prop)
+              ) && <div key={component.key}>{component}</div>
           )}
         </DialogContent>
         <DialogActions>
@@ -205,9 +204,9 @@ const Example = () => {
           {internalEditComponents.map(
             (component) =>
               // Filtra las propiedades que no deseas mostrar en la edición
-              !propertiesToExcludeUpdate.includes(component.key) && (
-                <div key={component.accessorKey}>{component}</div>
-              )
+              !propertiesToExcludeUpdate.some((prop) =>
+                component.key.includes(prop)
+              ) && <div key={component.key}>{component}</div>
           )}
         </DialogContent>
         <DialogActions>

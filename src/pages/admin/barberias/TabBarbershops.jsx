@@ -58,6 +58,7 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
   }, [isLoading]);
 
   const reloadData = async () => {
+    setSelectedRow(null);
     setReloadData((prev) => !prev);
   };
 
@@ -66,8 +67,8 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
     setIsUpdateData(false);
   }, [barbershops]);
 
-  const propertiesToExcludeCreate = ["mrt-row-create_imagen"];
-  const propertiesToExcludeUpdate = ["0_imagen"];
+  const propertiesToExcludeCreate = ["imagen"];
+  const propertiesToExcludeUpdate = ["imagen"];
 
   const columns = useMemo(
     () => [
@@ -258,9 +259,9 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
           {internalEditComponents.map(
             (component) =>
               // Filtra las propiedades que no deseas mostrar en la edición
-              !propertiesToExcludeCreate.includes(component.key) && (
-                <div key={component.accessorKey}>{component}</div>
-              )
+              !propertiesToExcludeCreate.some((prop) =>
+                component.key.includes(prop)
+              ) && <div key={component.key}>{component}</div>
           )}
         </DialogContent>
         <DialogActions>
@@ -278,9 +279,9 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
           {internalEditComponents.map(
             (component) =>
               // Filtra las propiedades que no deseas mostrar en la edición
-              !propertiesToExcludeUpdate.includes(component.key) && (
-                <div key={component.accessorKey}>{component}</div>
-              )
+              !propertiesToExcludeUpdate.some((prop) =>
+                component.key.includes(prop)
+              ) && <div key={component.key}>{component}</div>
           )}
         </DialogContent>
         <DialogActions>

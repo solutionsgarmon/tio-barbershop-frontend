@@ -21,7 +21,7 @@ function AppRoutes() {
       {showNavigationBar && (
         <NavigationBar setShowNavigationBar={setShowNavigationBar} />
       )}
-      <Box sx={{ margin: "auto", pt: 8.5 }}>
+      <Box sx={{ margin: "auto", pt: 8.5, pb: 1, minHeight: "60vh" }}>
         <Routes>
           {/* <Route path="/provocarError" element={<ComponentWithError />} /> */}
           <Route path="/" element={<Home />} />

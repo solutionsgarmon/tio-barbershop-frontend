@@ -60,26 +60,14 @@ export function removeFromLocalStorage(key) {
 
 export async function createUserSession(userFB){
    console.log("createUserSession")
-  let session = sessionModel()
-  session.username =userFB.displayName
-  session.email =userFB.email;
-  session.urlImage=userFB.photoURL
-  session.isAuthenticated =true
-  session.emailVerified = userFB.emailVerified
+  let dataSessionGoogle = sessionModel()
+  dataSessionGoogle.username =userFB.displayName
+  dataSessionGoogle.email =userFB.email;
+  dataSessionGoogle.urlImage=userFB.photoURL
+  dataSessionGoogle.isAuthenticated =true
+  dataSessionGoogle.emailVerified = userFB.emailVerified
 
-  console.log("session",session)
-  addToLocalStorage("session",session)
-  return true
+  console.log("dataSessionGoogle",dataSessionGoogle)
+  addToLocalStorage("sessionGoogle",dataSessionGoogle)
+  return dataSessionGoogle
 }
-
-//Si existe el valor lo retorna, si no, lo crea y retorna
-  export const verifyPositionStaticBar = () => {
-    const value = getFromLocalStorage("IS_STATIC_TOOLBAR");
-    if (value === null || value === undefined) {
-      addToLocalStorage("IS_STATIC_TOOLBAR",true);
-      console.log("IS_STATIC_TOOLBAR no existía en el localStorage, se creó");
-      return false
-    } else {
-      return value
-    }
-  };

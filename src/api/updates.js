@@ -43,9 +43,10 @@ export function updateProduct(values, idProduct) {
 }
 
 export function updateBarber(values, idBarber) {
+  console.log("> updateBarber()")
   return new Promise((resolve, reject) => {
     axios.patch(
-      `${import.meta.env.VITE_BARBERS_URL}/update-password/${idBarber}`,
+      `${import.meta.env.VITE_BARBERS_URL}/${idBarber}`,
       values
     )
       .then((response) => {
@@ -64,14 +65,15 @@ export function updateBarber(values, idBarber) {
 }
 
 export function updatePassworsBarber(values, idBarber) {
+  console.log("> updatePassworsBarber()")
   return new Promise((resolve, reject) => {
     axios.patch(
-      `${import.meta.env.VITE_BARBERS_URL}/${idBarber}`,
+      `${import.meta.env.VITE_BARBERS_URL}/update-password/${idBarber}`,
       values
     )
       .then((response) => {
         if (!response.data.success) {
-          console.error("No se pudo realizar correctamente la petición updateBarber():", response.data);
+          console.error("No se pudo realizar correctamente la petición updatePassworsBarber():", response.data);
           reject(response);
         } else {
           resolve(response);

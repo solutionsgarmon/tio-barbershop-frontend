@@ -64,7 +64,7 @@ function NavigationBar({ setShowNavigationBar }) {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [scrollY, setScrollY] = useState(0);
-  const [pages, setPages] = useState(PAGES_ADMIN);
+  const [pages, setPages] = useState(PAGES_CLIENTE);
 
   const backgroundColor = scrollY === 0 ? "rgba(0, 0, 0, 0)" : "#333"; // Cambia el color dependiendo de la posición del scroll
 

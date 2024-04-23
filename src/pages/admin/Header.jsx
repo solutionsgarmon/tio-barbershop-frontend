@@ -18,10 +18,13 @@ import SecurityIcon from "@mui/icons-material/Security";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Skeleton, Stack } from "@mui/material";
 import { useState } from "react";
+import MySwitch from "../../components/atoms/MySwitch";
+import { useAppContext } from "../../context/AppProvider";
 
 const lightColor = "rgba(255, 255, 255, 0.7)";
 
 function Header(props) {
+  const { sessionDataStorage } = useAppContext();
   const navigate = useNavigate();
 
   return (
@@ -57,6 +60,7 @@ function Header(props) {
                   )}
                 </Typography>
               )}
+              {sessionDataStorage?.rol == "BARBERO" && <MySwitch />}
             </Grid>
             <Grid item>
               <Button

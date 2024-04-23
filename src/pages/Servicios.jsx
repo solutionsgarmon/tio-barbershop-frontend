@@ -1,10 +1,11 @@
 import { Box, Button } from "@mui/material";
 import React from "react";
 import CardServices from "../components/cards/CardServices";
-import CitasConfirmacion from "../views/CitasConfirmacion";
-import CitasSeleccionBarberia from "../views/CitasSeleccionBarberia";
+
 import { useState } from "react";
 import MapFrame from "../components/atoms/MapFrame";
+import { useEffect } from "react";
+import { getServices } from "../api/gets";
 const SERVICIOS = [
   {
     id: 1,
@@ -57,12 +58,21 @@ const SERVICIOS = [
 ];
 
 const Servicios = () => {
+  const [services, setServices] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      setServices(await getServices());
+    }
+
+    fetchData();
+  }, []);
+
   return (
     <Box>
       <h1>Servicios que Ofrecemos</h1>
 
       <Box sx={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}>
-        {SERVICIOS?.map((servicio) => (
+        {services?.map((servicio) => (
           <Box sx={{ m: 2, maxWidth: 500 }}>
             <CardServices servicio={servicio} withButtons={false} />
           </Box>

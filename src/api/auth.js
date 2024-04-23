@@ -10,7 +10,7 @@ export function autenticarUsuario(values) {
         resolve(response); 
       })
       .catch((error) => {
-        console.error("Error en postUser():", error);
+        console.error("Error en autenticarUsuario():", error);
         reject(error); 
       });
   });

@@ -1,7 +1,12 @@
 import * as React from "react";
 import { styled } from "@mui/material/styles";
-
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import NoPhotographyIcon from "@mui/icons-material/NoPhotography";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Paper, Stack, Button, ImageList, ImageListItem } from "@mui/material";
+import { Typography } from "antd";
+import { toast } from "react-toastify";
+import { useAppContext } from "../../context/AppProvider";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -14,29 +19,33 @@ const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
-import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import { Stack } from "@mui/material";
 
-export default function StandardImageList() {
-  const [openModal, setOpenModal] = React.useState(false);
+export default function StandardImageList({
+  imagenes,
+  handleSubirImagen,
+  handleEliminarImagen,
+}) {
+  const { windowWidth } = useAppContext();
+  const [hoveredIndex, setHoveredIndex] = React.useState(null);
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
+  const handleInputChange = (e) => {
+    const archivo = e.target.files[0];
+    if (archivo && archivo.type.startsWith("image/")) {
+      handleSubirImagen(archivo);
+    } else {
+      toast.warning("Por favor sube una imagen");
+    }
   };
 
   return (
-    <Box
+    <Paper
       sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
     >
-      <ImageList sx={{ width: 600, height: 600 }} cols={3} rowHeight={200}>
+      <ImageList
+        sx={{ width: 600, maxHeight: 600 }}
+        cols={windowWidth <= 768 ? 2 : 3}
+        rowHeight={260}
+      >
         <ImageListItem>
           <Button
             sx={{ mb: 0, height: "100%", width: "100%", fontSize: "larger" }}
@@ -44,79 +53,58 @@ export default function StandardImageList() {
             role={undefined}
             variant="contained"
             tabIndex={-1}
-            // startIcon={<CloudUploadIcon sx={{ width: 50, height: 50 }} />}
           >
             <Stack sx={{ alignItems: "center" }}>
               <CloudUploadIcon sx={{ width: 50, height: 50 }} />
               Subir Imagen
             </Stack>
-
-            <VisuallyHiddenInput type="file" />
+            <VisuallyHiddenInput
+              type="file"
+              onChange={(event) => handleInputChange(event)}
+            />
           </Button>
         </ImageListItem>
-        {itemData.map((item) => (
-          <ImageListItem key={item.img}>
+        {imagenes.map((item, index) => (
+          <ImageListItem
+            key={item.url}
+            onMouseEnter={() => setHoveredIndex(index)}
+            onMouseLeave={() => setHoveredIndex(null)}
+            style={{ position: "relative" }}
+          >
             <img
-              srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-              src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-              alt={item.title}
+              srcSet={`${item.url}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+              src={`${item.url}?w=164&h=164&fit=crop&auto=format`}
+              alt={item.url}
               loading="lazy"
               style={{ borderRadius: "10px" }}
             />
+            {hoveredIndex === index && (
+              <Button
+                variant="contained"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={() => handleEliminarImagen(item)}
+                sx={{
+                  position: "absolute",
+                  top: 5,
+                  right: 5,
+                  borderRadius: "30px",
+                }}
+              >
+                Eliminar
+              </Button>
+            )}
           </ImageListItem>
         ))}
+        {imagenes.length === 0 && (
+          <ImageListItem key={"default-imageList"} sx={{ textAlign: "center" }}>
+            <Stack direction={"column"} alignItems="center">
+              <NoPhotographyIcon sx={{ width: 80, height: 80, mt: 5 }} />
+              <Typography sx={{ textAlign: "center" }}>Sin imágenes</Typography>
+            </Stack>
+          </ImageListItem>
+        )}
       </ImageList>
-    </Box>
+    </Paper>
   );
 }
-
-const itemData = [
-  {
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    title: "Breakfast",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-    title: "Burger",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-    title: "Camera",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c",
-    title: "Coffee",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1533827432537-70133748f5c8",
-    title: "Hats",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62",
-    title: "Honey",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
-    title: "Basketball",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1518756131217-31eb79b20e8f",
-    title: "Fern",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1597645587822-e99fa5d45d25",
-    title: "Mushrooms",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1567306301408-9b74779a11af",
-    title: "Tomato basil",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1471357674240-e1a485acb3e1",
-    title: "Sea star",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6",
-    title: "Bike",
-  },
-];

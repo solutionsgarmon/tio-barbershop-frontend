@@ -61,6 +61,7 @@ const Table = ({ setServiceSelected }) => {
   const reloadData = async () => {
     setIsLoadingData(true);
     setServices(await getServices());
+    setServiceSelected(null);
   };
 
   useEffect(() => {
@@ -71,10 +72,41 @@ const Table = ({ setServiceSelected }) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "tipo",
-        header: "Tipo",
+        accessorKey: "nombre",
+        header: "Nombre",
         muiEditTextFieldProps: {
           required: true,
+        },
+      },
+      {
+        accessorKey: "duracion",
+        header: "Duración (minutos)",
+      },
+
+      {
+        accessorKey: "categorias",
+        header: "Categoría",
+        editVariant: "multiSelect", // Configuración para selección múltiple
+        editSelectOptions: [
+          "CORTE",
+          "AFEITADO",
+          "MASAJE",
+          "TRATAMIENTO",
+          "DEPILACIÓN",
+          "COLORACIÓN",
+          "HOMBRE",
+          "MUJER",
+          "INFANTIL",
+        ],
+        muiEditTextFieldProps: {
+          required: true,
+          select: true,
+          multiple: true, // Permitir selección múltiple
+        },
+        // Formato de valor de la celda para mostrar como una lista de opciones seleccionadas
+        Cell: ({ cell }) => {
+          const value = cell.getValue();
+          return value ? value.join(", ") : "";
         },
       },
       {
@@ -94,37 +126,58 @@ const Table = ({ setServiceSelected }) => {
 
   // CREATE ACTION //
   const handleCreateUser = async ({ values, table }) => {
+    if (!verifyForm(values)) {
+      toast.error("Por favor complete los datos obligatorios");
+      return;
+    }
     setIsUpdateData(true); //loading button
 
-    const resp = await postServices(values);
-    console.log("resp", resp.data.success);
-    if (resp.data.success) {
-      toast.success("Registro Exitoso");
-      setIsLoadingData(true); //loading button
-      await reloadData();
-      table.setCreatingRow(null);
-    } else {
+    try {
+      const resp = await postServices(values);
+      console.log("resp", resp.data.success);
+      if (resp.data.success) {
+        toast.success("Registro Exitoso");
+        setIsLoadingData(true); //loading button
+        await reloadData();
+        table.setCreatingRow(null);
+      } else {
+        console.error("Error al crear Registro:", error);
+        toast.error("Error al crear Registro.");
+        setIsLoadingData(false);
+      }
+    } catch (error) {
       console.error("Error al crear Registro:", error);
       toast.error("Error al crear Registro.");
-      setIsLoadingData(false);
     }
+    setIsUpdateData(true);
+    setIsLoadingData(false);
   };
 
   // UPDATE ACTION //
   const handleUpdate = async ({ values, row }) => {
+    if (!verifyForm(values)) {
+      toast.error("Por favor complete los datos obligatorios");
+      return;
+    }
     console.log("values", values);
     setIsUpdateData(true);
-    const id = row.original._id;
-    const resp = await updateService(values, id);
-    if (resp.data.success) {
-      toast.success("Se modificó correctamente.");
-      table.setEditingRow(null);
-      setIsLoadingData(true);
-      await reloadData();
-    } else {
-      toast.error("No se pudo modificar.");
-      setIsUpdateData(false);
+
+    try {
+      const id = row.original._id;
+      const resp = await updateService(values, id);
+      if (resp.data.success) {
+        toast.success("Se modificó correctamente.");
+        table.setEditingRow(null);
+        setIsLoadingData(true);
+        await reloadData();
+      } else {
+        toast.error("No se pudo modificar.");
+      }
+    } catch (error) {
+      console.error("Error al modificar:", error);
+      toast.error("Error al modificar.");
     }
+    setIsUpdateData(false);
   };
 
   //DELETE action
@@ -140,14 +193,27 @@ const Table = ({ setServiceSelected }) => {
       confirmButtonText: "Sí, eliminar",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const id = row.original._id;
-        const resp = await deleteService(id);
-        if (resp.data.success) {
-          toast.success("Se eliminó correctamente.");
-          await reloadData();
-        } else toast.error("No se pudo eliminar.");
+        try {
+          const id = row.original._id;
+          const resp = await deleteService(id);
+          if (resp.data.success) {
+            toast.success("Se eliminó correctamente.");
+            await reloadData();
+          } else toast.error("No se pudo eliminar.");
+        } catch (error) {
+          console.error("Error al eliminar:", error);
+          toast.error("Error al eliminar.");
+        }
       }
     });
+  };
+
+  //VERIFICAR FORMULARIO
+  const verifyForm = (values) => {
+    console.log("values", values);
+    if (!values["nombre"] || !values["categorias"] || !values["duracion"])
+      return false;
+    else return true;
   };
 
   //CLIC IN ROW

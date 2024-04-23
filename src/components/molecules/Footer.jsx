@@ -33,7 +33,7 @@ const Footer = () => {
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             <li style={{ display: "inline-block", marginRight: "10px" }}>
               <a
-                href="https://www.facebook.com/GarmonSolutions"
+                href="https://www.facebook.com/eltiobarbershop"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -42,7 +42,7 @@ const Footer = () => {
                 </IconButton>
               </a>
             </li>
-            <li style={{ display: "inline-block", marginRight: "10px" }}>
+            {/* <li style={{ display: "inline-block", marginRight: "10px" }}>
               <a
                 href="https://www.instagram.com/GarmonSolutions"
                 target="_blank"
@@ -74,8 +74,8 @@ const Footer = () => {
                   <TwitterIcon style={{ fontSize: "36px" }} />
                 </IconButton>
               </a>
-            </li>
-            <li style={{ display: "inline-block", marginRight: "10px" }}>
+            </li> */}
+            {/* <li style={{ display: "inline-block", marginRight: "10px" }}>
               <a
                 href="mailto:contacto@garmon.com.mx"
                 target="_blank"
@@ -85,7 +85,7 @@ const Footer = () => {
                   <EmailIcon style={{ fontSize: "36px" }} />
                 </IconButton>
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
         <div className="col-sm-5 col-xs-12 text-center">

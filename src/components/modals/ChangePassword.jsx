@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useAppContext } from "../../context/AppProvider";
-import { updateBarber, updatePassworsBarber } from "../../api/updates";
+import { updatePassworsBarber } from "../../api/updates";
 import { toast } from "react-toastify";
 
 const ChangePassword = ({ open, handleClose, barberSelected }) => {
@@ -31,6 +31,8 @@ const ChangePassword = ({ open, handleClose, barberSelected }) => {
       const resp = await updatePassworsBarber(newPassword, id);
       if (resp.data.success) {
         toast.success("Se modificó correctamente.");
+        handleClose();
+        setInputValue("");
         // await setReloadData((prev) => !prev);
       } else {
         toast.error("No se pudo modificar.");

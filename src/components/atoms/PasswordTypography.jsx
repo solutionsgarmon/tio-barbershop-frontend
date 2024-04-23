@@ -13,7 +13,7 @@ const PasswordTypography = ({ value }) => {
 
   return (
     <Typography>
-      {showPassword ? value : "*".repeat(value?.length)}
+      {showPassword ? value : "*".repeat(10)}
       <IconButton onClick={handleTogglePasswordVisibility}>
         {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
       </IconButton>

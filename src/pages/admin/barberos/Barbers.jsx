@@ -11,23 +11,38 @@ import TabHorario from "./TabHorario";
 import ChangePassword from "../../../components/modals/ChangePassword";
 
 const Barbers = () => {
-  const { indexTabSelected, setIndexTabSelected } = useAppContext();
+  const {
+    indexTabSelected,
+    setIndexTabSelected,
+    sessionDataStorage,
+    setIsLoadingApp,
+  } = useAppContext();
   const [barbers, setBarbers] = useState([]);
   const [barberSelected, setBarberSelected] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [reloadData, setReloadData] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true);
-      setBarbers(await getBarbers());
-      setIsLoading(false); // Mover aquí para que se establezca en false después de obtener los datos
+      setIsLoadingApp(true);
+      let barberos = await getBarbers();
+      if (sessionDataStorage.rol == "BARBERO") {
+        const barberoEncontrado = barberos.find(
+          (barbero) => sessionDataStorage._id === barbero._id
+        );
+        if (barberoEncontrado) {
+          setBarbers([barberoEncontrado]);
+        } else {
+          setBarbers([]);
+        }
+      } else {
+        setBarbers(barberos);
+      }
+      setIsLoadingApp(false);
     }
 
     fetchData();
     setBarberSelected(null);
-    setIndexTabSelected(0);
   }, [reloadData]);
 
   const handleCloseModal = () => {
@@ -38,7 +53,6 @@ const Barbers = () => {
     <Box>
       {indexTabSelected == 0 && (
         <TabBarbers
-          barbers={barbers}
           assignedBarbers={barberSelected?.barberos}
           barberSelected={barberSelected}
           setBarberSelected={setBarberSelected}

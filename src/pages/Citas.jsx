@@ -1,80 +1,103 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Paper, Skeleton, Stack } from "@mui/material";
 import React from "react";
 import CardServices from "../components/cards/CardServices";
 import CitasConfirmacion from "../views/CitasConfirmacion";
-import CitasSeleccionBarberia from "../views/CitasSeleccionBarberia";
+
 import { useState } from "react";
 import Stepper from "../components/molecules/Stepper";
+import { useEffect } from "react";
+import { getBarbers, getBarbershops, getServices } from "../api/gets";
+import { useAppContext } from "../context/AppProvider";
+import CitasSeleccionBarbero from "../views/CitasSeleccionBarbero";
+import CitasSeleccionServicio from "../views/CitasSeleccionServicio";
+import CitasSeleccionHora from "../views/CitasSeleccionHora";
+import CitasDatosCliente from "../views/CitasDatosCliente";
+import CardCitaBarbershop from "../components/cards/CardCitaBarbershop";
 
 const STEPS = ["Barbería", "Barbero", "Servicio", "Hora", "Confirmación"];
 const STEPS_DESC = [
-  "Selecciona una Sucursal",
-  "Elige tu barbero favorito",
-  "Selecciona el Servicio",
-  "Elige la Hora",
-  "Confirmación de Cita",
-];
-const SERVICIOS = [
-  {
-    id: 1,
-    nombre: "Corte de Cabello",
-    precio: 100,
-    descripcion:
-      "Servicio de estilismo en el que se corta y/o peina el cabello según las preferencias del cliente.",
-    imagen: "/images/servicios/servicios1.png",
-  },
-  {
-    id: 2,
-    nombre: "Afeitado Clásico",
-    precio: 100,
-    descripcion:
-      "Servicio de afeitado facial que sigue técnicas tradicionales, que incluye el uso de navajas de afeitar y productos de afeitado de alta calidad.",
-    imagen: "/images/servicios/servicios2.png",
-  },
-  {
-    id: 3,
-    nombre: "Afeitado Deluxe",
-    precio: 200,
-    descripcion:
-      "Servicio de afeitado premium que ofrece una experiencia de afeitado de lujo, con características adicionales como masajes faciales, productos especiales para la piel.",
-    imagen: "/images/servicios/servicios3.png",
-  },
-  {
-    id: 4,
-    nombre: "Paquete Clásico",
-    precio: 250,
-    descripcion:
-      "Paquete que combina servicios básicos de estilismo y aseo personal, como corte de cabello y afeitado clásico, ofreciendo un valor agregado a un precio conveniente.",
-    imagen: "/images/servicios/servicios4.png",
-  },
-  {
-    id: 5,
-    nombre: "Servicio Premium",
-    precio: 300,
-    descripcion:
-      "Un servicio exclusivo y personalizado que puede incluir una variedad de tratamientos de belleza y cuidado personal, adaptados a las necesidades individuales y utilizando productos de alta gama.",
-    imagen: "/images/servicios/servicios5.png",
-  },
-  {
-    id: 6,
-    nombre: "Todo incluido",
-    precio: 350,
-    descripcion:
-      "Paquete completo que abarca una amplia gama de servicios de estilismo y cuidado personal, desde cortes de cabello y afeitados hasta tratamientos faciales y masajes.",
-    imagen: "/images/servicios/servicios6.png",
-  },
+  "Sucursal ",
+  "Barbero favorito",
+  "Servicio",
+  "Fecha y Hora",
+  "Confirmación",
 ];
 
 const Citas = () => {
+  const { isLoadingApp, setIsLoadingApp, sessionDataStorage } = useAppContext();
+  const [dataCita, setDataCita] = useState({
+    barberia: "",
+    id_barberia: "",
+    servicio: "",
+    id_servicio: "",
+    costo: "",
+    duracion: "",
+    barbero: "",
+    id_barbero: "",
+    imagen_barbero: "",
+    hora: "",
+    fecha: "",
+    nombre_cliente: "",
+    telefono_cliente: "",
+    correo_cliente: "",
+  });
   const [selectedServicio, setSelectedServicio] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
+  const [barbershops, setBarbershops] = useState([]);
+  const [barbers, setBarbers] = useState([]);
+  const [services, setServices] = useState([]);
+  const [barbershopSelected, setBarbershopSelected] = useState(null);
+  const [enableButton, setEnableButton] = useState(false);
 
-  const handleSelect = (servicio) => {
-    setSelectedServicio(servicio);
+  const [reloadData, setReloadData] = useState(false);
+  useEffect(() => {
+    if (sessionDataStorage?.rol === "BARBERO") {
+      const barberiaAsignada = sessionDataStorage.barberia_asignada;
+      const nombreBarberia =
+        barbershops.find((barbershop) => barbershop._id === barberiaAsignada)
+          ?.nombre ?? "";
+      setDataCita((prevDataCita) => ({
+        ...prevDataCita,
+        barberia: nombreBarberia,
+        id_barberia: barberiaAsignada,
+        barbero: sessionDataStorage.nombre,
+        id_barbero: sessionDataStorage._id,
+        imagen_barbero: sessionDataStorage.imagenes?.[0]?.url ?? "",
+      }));
+      setCurrentStep(2);
+    }
+  }, [sessionDataStorage, barbershops]);
+
+  useEffect(() => {
+    console.log("dataCita", dataCita);
+  }, [dataCita]);
+
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoadingApp(true);
+      setBarbershops(await getBarbershops());
+      setBarbers(await getBarbers());
+      setServices(await getServices());
+      // setProducts(await getProducts());
+      setIsLoadingApp(false); // Mover aquí para que se establezca en false después de obtener los datos
+    }
+
+    fetchData();
+    setBarbershopSelected(null);
+  }, [reloadData]);
+
+  const handleSelectBarbershop = (barberia) => {
+    setDataCita((prevDataCita) => ({
+      ...prevDataCita,
+      barberia: barberia.nombre,
+      id_barberia: barberia._id,
+    }));
+    setEnableButton(true);
   };
 
   const handleContinue = () => {
     setCurrentStep(currentStep + 1);
+    setEnableButton(false);
   };
 
   const handleBack = () => {
@@ -82,60 +105,111 @@ const Citas = () => {
   };
 
   return (
-    <Box>
-      <h1>{STEPS_DESC[currentStep]}</h1>
-      <Stepper steps={STEPS} currenStep={currentStep} />
-      {currentStep === 0 && (
-        <Box
-          sx={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}
-        >
-          {SERVICIOS?.map(
-            (servicio, index) =>
-              index % 2 === 0 && (
-                <React.Fragment key={servicio.id}>
-                  <Box sx={{ m: 1, maxWidth: 350 }}>
-                    <CardServices
-                      servicio={servicio}
-                      isSelected={selectedServicio === servicio}
-                      onSelect={handleSelect}
-                    />
-                  </Box>
-                  {index + 1 < SERVICIOS.length && (
-                    <Box sx={{ m: 1, maxWidth: 350 }}>
-                      <CardServices
-                        servicio={SERVICIOS[index + 1]}
-                        isSelected={selectedServicio === SERVICIOS[index + 1]}
-                        onSelect={handleSelect}
-                      />
-                    </Box>
-                  )}
-                </React.Fragment>
-              )
+    <Box
+      sx={{ m: "auto", minHeight: "85vh", maxWidth: 800, textAlign: "center" }}
+    >
+      {/* <h1>{STEPS_DESC[currentStep]}</h1> */}
+      <Paper sx={{ pt: 2, pb: 1, mt: { xs: -1.5, sm: 1 } }}>
+        <Stepper steps={STEPS} currenStep={currentStep} />
+      </Paper>
+      {isLoadingApp ? (
+        <>
+          <Stack
+            direction={"row"}
+            sx={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}
+          >
+            <Skeleton variant="text" width={350} height={350} sx={{ mx: 2 }} />
+            <Skeleton variant="text" width={350} height={350} sx={{ mx: 2 }} />
+            <Skeleton variant="text" width={350} height={350} sx={{ mx: 2 }} />
+          </Stack>
+        </>
+      ) : (
+        <>
+          {currentStep === 0 && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              {barbershops?.map(
+                (element, index) =>
+                  index % 2 === 0 && (
+                    <React.Fragment key={element.id}>
+                      <Box sx={{ m: 1, maxWidth: 350 }}>
+                        <CardCitaBarbershop
+                          barbershop={element}
+                          onSelect={handleSelectBarbershop}
+                          dataCita={dataCita}
+                        />
+                      </Box>
+                      {index + 1 < barbershops.length && (
+                        <Box sx={{ m: 1, maxWidth: 350 }}>
+                          <CardCitaBarbershop
+                            barbershop={barbershops[index + 1]}
+                            onSelect={handleSelectBarbershop}
+                            dataCita={dataCita}
+                          />
+                        </Box>
+                      )}
+                    </React.Fragment>
+                  )
+              )}
+            </Box>
           )}
-        </Box>
-      )}
 
-      {currentStep !== 0 && (
-        <Box sx={{ mt: 2 }}>
-          {currentStep === 1 && <CitasSeleccionBarberia />}
-          {currentStep === 2 && <CitasConfirmacion />}
-        </Box>
-      )}
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-        {currentStep !== 0 && (
-          <Button disabled={!selectedServicio} onClick={handleBack}>
-            Regresar
-          </Button>
-        )}
+          {currentStep !== 0 && (
+            <Box sx={{ mt: 2 }}>
+              {currentStep === 1 && (
+                <CitasSeleccionBarbero
+                  dataCita={dataCita}
+                  setEnableButton={setEnableButton}
+                  setDataCita={setDataCita}
+                  barbers={barbers}
+                />
+              )}
+              {currentStep === 2 && (
+                <CitasSeleccionServicio
+                  services={services}
+                  dataCita={dataCita}
+                  setEnableButton={setEnableButton}
+                  setDataCita={setDataCita}
+                />
+              )}
+              {currentStep === 3 && (
+                <CitasSeleccionHora
+                  setEnableButton={setEnableButton}
+                  setDataCita={setDataCita}
+                  dataCita={dataCita}
+                />
+              )}
 
-        <Button
-          variant="contained"
-          disabled={!selectedServicio}
-          onClick={handleContinue}
-        >
-          {currentStep === STEPS.length - 1 ? "Finalizar" : "Continuar"}
-        </Button>
-      </Box>
+              {currentStep === 4 && (
+                <CitasConfirmacion
+                  setEnableButton={setEnableButton}
+                  setDataCita={setDataCita}
+                  dataCita={dataCita}
+                />
+              )}
+            </Box>
+          )}
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            {currentStep !== 0 && (
+              <Button onClick={handleBack}>Regresar</Button>
+            )}
+            {currentStep === STEPS.length - 1 ? null : (
+              <Button
+                variant="contained"
+                disabled={!enableButton}
+                onClick={handleContinue}
+              >
+                Continuar
+              </Button>
+            )}
+          </Box>
+        </>
+      )}
     </Box>
   );
 };

@@ -2,9 +2,10 @@ import React from "react";
 import Calendar from "../../components/atoms/Calendar";
 
 const MainPage = () => {
+  const handleChangeCalendar = () => {};
   return (
     <div>
-      <Calendar />
+      <Calendar handleChangeCalendar={handleChangeCalendar} />
     </div>
   );
 };
