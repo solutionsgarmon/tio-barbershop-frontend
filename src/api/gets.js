@@ -107,6 +107,32 @@ export function getBarbers() {
   });
 }
 
+export function getHorarioDisponibleBarber(idBarbero,idServicio) {
+  const body = {
+    idBarbero: idBarbero,
+    idServicio: idServicio
+  }
+  return new Promise((resolve, reject) => {
+      axios.post(`${import.meta.env.VITE_BARBER_URL}/horario-disponible`,body)
+    .then((response) => {
+        const data = response.data;
+        console.log("getHorarioDisponibleBarber()", data);
+        if (!data.success) {
+          console.error("No se pudo realizar correctamente la petición getHorarioDisponibleBarber():", data);
+          reject(data); 
+       
+        } else  {
+          console.log("getHorarioDisponibleBarber -> ", data.horarioDisponible);
+          resolve(JSON.parse(JSON.stringify(data.horarioDisponible))); // Resuelve la promesa y hace una copia profunda
+        }
+      })
+      .catch((error) => {
+        console.error("Error en getHorarioDisponibleBarber():", error);
+        reject(error); // Rechaza la promesa en caso de error
+      });
+  });
+}
+
 // export function getBarber(id) {
 //   return new Promise((resolve, reject) => {
 //       axios.get(`${import.meta.env.VITE_BARBER_URL}/${id}`)
@@ -200,6 +226,128 @@ export function getCitas() {
       })
       .catch((error) => {
         console.error("Error en getCitas():", error);
+        reject(error); // Rechaza la promesa en caso de error
+      });
+  });
+}
+
+export function getCitasByCorreo(correo) {
+  return new Promise((resolve, reject) => {
+      axios.get(`${import.meta.env.VITE_CITAS_URL}/getByIdCorreo/${correo}`)
+    .then((response) => {
+        const data = response.data;
+        console.log("getCitasByCorreo()", data);
+        if (!data.success) {
+          console.error("No se pudo realizar correctamente la petición getCitasByCorreo():", data);
+          reject(data); 
+        } else if (data.length === 0) {
+          console.info("🛈 No se encontraron elementos para getCitasByCorreo():");
+          resolve([]); 
+        } else  {
+          console.log("getCitasByCorreo -> CITAS", data.data);
+          resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
+        }
+      })
+      .catch((error) => {
+        console.error("Error en getCitasByCorreo():", error);
+        reject(error); // Rechaza la promesa en caso de error
+      });
+  });
+}
+
+export function getCitasByIdBarbero(id) {
+  return new Promise((resolve, reject) => {
+      axios.get(`${import.meta.env.VITE_CITAS_URL}/getByIdBarbero/${id}`)
+    .then((response) => {
+        const data = response.data;
+        console.log("getCitasByCorreoBarbero()", data);
+        if (!data.success) {
+          console.error("No se pudo realizar correctamente la petición getCitasByCorreoBarbero():", data);
+          reject(data); 
+        } else if (data.length === 0) {
+          console.info("🛈 No se encontraron elementos para getCitasByCorreoBarbero():");
+          resolve([]); 
+        } else  {
+          console.log("getCitasByCorreoBarbero -> CITAS", data.data);
+          resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
+        }
+      })
+      .catch((error) => {
+        console.error("Error en getCitasByCorreoBarbero():", error);
+        reject(error); // Rechaza la promesa en caso de error
+      });
+  });
+}
+
+export function getCitasPendientesByIdBarbero(id) {
+  console.log("[ejecución] getCitasPendientesByIdBarbero",id)
+  return new Promise((resolve, reject) => {
+      axios.get(`${import.meta.env.VITE_CITAS_URL}/getPendientesByIdBarbero/${id}`)
+    .then((response) => {  
+       console.log("getCitasPendientesByIdBarbero() response", response);
+        const data = response.data;
+     
+        if (!data.success) {
+          console.error("No se pudo realizar correctamente la petición getCitasPendientesByIdBarbero():", data);
+          reject(data); 
+        } else if (data.length === 0) {
+          console.info("🛈 No se encontraron elementos para getCitasPendientesByIdBarbero():");
+          resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
+        } else  {
+          console.log("getCitasPendientesByIdBarbero -> CITAS", data.data);
+          resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
+        }
+      })
+      .catch((error) => {
+        console.error("Error en getCitasByCorreoBarbero():", error);
+        reject(error); // Rechaza la promesa en caso de error
+      });
+  });
+}
+
+export function getCitasCompletadasByIdBarbero(id) {
+  return new Promise((resolve, reject) => {
+      axios.get(`${import.meta.env.VITE_CITAS_URL}/getCompletadasByIdBarbero/${id}`)
+    .then((response) => {
+        const data = response.data;
+        console.log("getCitasByCorreoBarbero()", data);
+        if (!data.success) {
+          console.error("No se pudo realizar correctamente la petición getCitasCompletadasByIdBarbero():", data);
+          reject(data); 
+        } else if (data.length === 0) {
+          console.info("🛈 No se encontraron elementos para getCitasCompletadasByIdBarbero():");
+          resolve([]); 
+        } else  {
+          console.log("getCitasCompletadasByIdBarbero -> CITAS", data.data);
+          resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
+        }
+      })
+      .catch((error) => {
+        console.error("Error en getCitasCompletadasByIdBarbero():", error);
+        reject(error); // Rechaza la promesa en caso de error
+      });
+  });
+}
+
+export function getCitasCanceladasByIdBarbero(id) {
+  return new Promise((resolve, reject) => {
+      axios.get(`${import.meta.env.VITE_CITAS_URL}/getCanceladasByIdBarbero/${id}`)
+    .then((response) => {
+        const data = response.data;
+        console.log("getCitasCanceladasByIdBarbero()", data);
+        if (!data.success) {
+          console.error("No se pudo realizar correctamente la petición getCitasCanceladasByIdBarbero():", data);
+          reject(data); 
+        } else if (data.length === 0) {
+          console.info("🛈 No se encontraron elementos para getCitasCanceladasByIdBarbero():");
+          resolve([]); 
+        } else  {
+          console.log("getCitasCanceladasByIdBarbero -> CITAS", data.data);
+          resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
+        }
+      })
+      .catch((error) => {
+        console.error("Error en getCitasCanceladasByIdBarbero():", error);
         reject(error); // Rechaza la promesa en caso de error
       });
   });

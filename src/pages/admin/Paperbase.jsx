@@ -361,7 +361,8 @@ export default function Paperbase() {
   }, [windowWidth]);
 
   useEffect(() => {
-    setDisplayComponent(<MainPage />);
+    // setDisplayComponent(<MainPage />);
+    setDisplayComponent(<></>);
     if (sessionDataStorage) {
       if (sessionDataStorage.rol == "ADMINISTRADOR")
         setCategoriasMapear(categories_administrador);
@@ -392,7 +393,9 @@ export default function Paperbase() {
   };
 
   const handleShowMainPage = () => {
-    setDisplayComponent(<MainPage />);
+    //TODO cambia
+    // setDisplayComponent(<MainPage />);
+    setDisplayComponent(<Citas />);
     setDisplayTabs(null);
     setIndexTabSelected(0);
     setIdCategorieSelected(null);

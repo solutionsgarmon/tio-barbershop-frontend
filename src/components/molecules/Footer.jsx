@@ -8,7 +8,7 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 
 const Footer = () => {
   return (
-    <Box sx={{ backgroundColor: "#333", py: 4 }}>
+    <Box sx={{ backgroundColor: "#333", py: 4, mt: 2 }}>
       <div
         style={{
           margin: "0 auto",

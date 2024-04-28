@@ -55,6 +55,7 @@ const Table = ({ setProductSelected }) => {
   const [isLoadingData, setIsLoadingData] = useState(true); // poner loading girando
   const [isUpdateData, setIsUpdateData] = useState(false); //Bloquear la modal y boton
   const [products, setProducts] = useState([]);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -65,6 +66,7 @@ const Table = ({ setProductSelected }) => {
   }, []);
 
   const reloadData = async () => {
+    setSelectedRow(null);
     setIsLoadingData(true);
     setProducts(await getProducts());
   };
@@ -175,6 +177,7 @@ const Table = ({ setProductSelected }) => {
   //CLIC IN ROW
   const handleClickRow = (dataSelected) => {
     // console.log("dataSelected", dataSelected);
+    setSelectedRow(dataSelected);
     setProductSelected(dataSelected);
     toast.success(`El servicio "${dataSelected.nombre}" fué Selecionado`);
   };
@@ -189,6 +192,10 @@ const Table = ({ setProductSelected }) => {
     muiTableBodyRowProps: ({ row }) => ({
       onClick: () => {
         handleClickRow(row.original);
+      },
+      sx: {
+        backgroundColor: row.original === selectedRow ? "#009be5" : "inherit", // Aplica el color amarillo si la fila está seleccionada
+        cursor: "pointer",
       },
     }),
     getRowId: (row) => row.id,

@@ -1,10 +1,42 @@
-import { Box, Grid, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  Fade,
+  Grid,
+  Slide,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import Carousel from "react-material-ui-carousel";
-// import { useAppContext } from "../../../app/AppProvider";
+import Zoom from "@mui/material/Zoom";
 
-const PrincipalSlider = ({ elements }) => {
+const PrincipalSlider = ({ banners }) => {
   const isMobile = useMediaQuery("(max-width:600px)");
+  const [showText, setShowText] = useState(true);
+
+  useEffect(() => {
+    if (showText) {
+      const toggleInterval = setInterval(() => {
+        setShowText((prev) => false); // Cambia el valor actual de showText
+      }, 6000); // Cambia cada 6 segundos
+
+      return () => clearInterval(toggleInterval); // Limpia el intervalo cuando el componente se desmonta
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!showText) {
+      const timeoutId = setTimeout(() => {
+        setShowText(true); // Cambia el valor actual de showText después de 1 segundo
+      }, 1000); // Espera 1 segundo (1000 milisegundos)
+
+      return () => {
+        clearTimeout(timeoutId); // Limpia el timeout si el componente se desmonta antes de que se ejecute
+      };
+    }
+  }, [showText]);
 
   return (
     <Box sx={{ mt: -8.5 }}>
@@ -15,15 +47,12 @@ const PrincipalSlider = ({ elements }) => {
         stopAutoPlayOnHover={false}
         autoPlay={true}
         animation="fade"
-        // animation="slide"
         duration={1500}
         interval={isMobile ? 6000 : 6000}
         indicators={false}
         navButtonsAlwaysInvisible={true}
-
-        //Puntitos de abajo
       >
-        {elements.map((item, index) => (
+        {banners.map((item, index) => (
           <a
             key={index}
             href={item.link}
@@ -34,8 +63,7 @@ const PrincipalSlider = ({ elements }) => {
               key={index}
               style={{
                 position: "relative",
-
-                height: isMobile ? "300px" : "400px",
+                height: isMobile ? "70vh" : "102vh",
                 overflow: "hidden",
               }}
             >
@@ -47,19 +75,63 @@ const PrincipalSlider = ({ elements }) => {
                   position: "absolute",
                   width: "100%",
                   height: "100%",
-                  objectFit: "cover", // Para asegurar que la imagen cubra el contenedor
+                  objectFit: "cover",
                 }}
               />
+              {/* Contenedor para las letras */}
               <div
                 style={{
                   position: "absolute",
-                  top: "100%", // Comienza el degradado desde la mitad
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  textAlign: "center",
+                  color: "white",
+                  zIndex: 1,
+                }}
+              >
+                <Zoom
+                  in={showText}
+                  timeout={1000} //Duracion dela transición
+                  style={{ transitionDelay: showText ? "0ms" : "0ms" }}
+                >
+                  <Box>
+                    <Typography
+                      variant={"h6"}
+                      sx={{
+                        fontWeight: "bold",
 
+                        mb: 2,
+                        color: "#e2b753",
+                      }}
+                    >
+                      {item.text2.toUpperCase()}
+                    </Typography>
+
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        fontWeight: "bold",
+                        mt: 2,
+                        mb: 3,
+                      }}
+                    >
+                      {item.text1.toUpperCase()}
+                    </Typography>
+                    {item.component}
+                  </Box>
+                </Zoom>
+              </div>
+              {/* Efecto de desenfoque en la parte inferior */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: "100%",
                   width: "100%",
-                  height: "500%", // cuanto porcentaje de abajo a arriba quiero que se desbanesca
+                  height: "500%",
                   backgroundImage:
-                    "linear-gradient(to bottom, transparent, rgba(0,0,0, 0.7))", //Transparencia
-                  transform: "translateY(-100%)", // Ajusta el posicionamiento vertical
+                    "linear-gradient(to bottom, transparent, rgba(0,0,0, 0.7))",
+                  transform: "translateY(-100%)",
                 }}
               />
             </div>

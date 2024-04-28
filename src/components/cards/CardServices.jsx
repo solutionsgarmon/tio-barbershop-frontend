@@ -52,7 +52,7 @@ const CardServices = ({ servicio, onSelect, dataCita, withButtons = true }) => {
         backgroundColor: isSelected ? "#f0f0f0" : "transparent", // Cambia el color de fondo si está seleccionado
         "&:hover": {
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-          transform: "scale(1.08)",
+          transform: "scale(1.01)",
         },
       }}
       onMouseEnter={handleMouseEnter}

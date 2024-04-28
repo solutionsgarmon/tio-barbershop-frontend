@@ -30,6 +30,7 @@ import { autenticarUsuario } from "../api/auth";
 import { toast } from "react-toastify";
 import { getExisteUser } from "../api/gets";
 import { postUser } from "../api/posts";
+import ModalRegistroUsuario from "../components/modals/ModalRegistroUsuario";
 
 function Copyright(props) {
   return (
@@ -49,12 +50,13 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function Login() {
+export default function Login({ showModalRegistro, setShowModalRegistro }) {
   const [formData, setFormData] = useState({
     Correo: "admin@gmail.com",
     Password: "admin",
   });
   const { Correo, Password } = formData;
+
   const [errorLogin, setErrorLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mensajeMayus, setMensajeMayus] = useState("");
@@ -74,7 +76,9 @@ export default function Login() {
     };
   }, []);
 
+  //
   const handleSubmit = async (event) => {
+    console.log("handleSubmit()");
     event.preventDefault();
     setLoading(true);
     timer.current = window.setTimeout(() => {
@@ -106,9 +110,11 @@ export default function Login() {
       );
     }
   };
+
   //1. Inicia sesion con google y obtiene sus credenciales
   //2. con esa informacion crea un nuevo usuario o accede en caso de ya haberlo.
   const handleLoginGoogle = async () => {
+    console.log("handleLoginGoogle()");
     try {
       const userFB = await autenticarUsuarioConGoogle();
       const dataSessionGoogle = await createUserSession(userFB);
@@ -119,19 +125,22 @@ export default function Login() {
           import.meta.env.VITE_PASSWORD_GOOGLE
         );
       } else {
+        let arrayImages = [];
+        arrayImages.push({ url: dataSessionGoogle.urlImage });
         const values = {
           nombre: dataSessionGoogle.username,
           password: import.meta.env.VITE_PASSWORD_GOOGLE,
           correo: dataSessionGoogle.email,
-          imagen: dataSessionGoogle.urlImage,
+          imagenes: arrayImages,
+          telefono: "",
         };
         handleCreateUser(values);
       }
 
       // verifySession();
-
       // navigate("/");
     } catch (e) {
+      console.error("");
       // showMensajeError("Hubo un problema con su autententicación : " + e);
     }
   };
@@ -144,14 +153,15 @@ export default function Login() {
       if (resp.data.success) {
         toast.success("Se registró correctamente.");
         // INICIAR SESION
-        handleLogin(
-          dataSessionGoogle.email,
-          import.meta.env.VITE_PASSWORD_GOOGLE
-        );
+        handleLogin(values.correo, values.password);
       } else toast.error("Error al crear usuario.");
     } catch (error) {
       console.error("Error al crear el usuario:", error);
     }
+  };
+
+  const handleCloseModalRegistro = () => {
+    setShowModalRegistro(false);
   };
 
   function isCapsLockOn(event) {
@@ -298,7 +308,7 @@ export default function Login() {
                       href="#"
                       onClick={(event) => {
                         event.preventDefault();
-                        navigate("/registro");
+                        setShowModalRegistro(true);
                       }}
                     >
                       Registrarse
@@ -332,6 +342,10 @@ export default function Login() {
           </Box>
         </Box>
       </Grid>
+      <ModalRegistroUsuario
+        open={showModalRegistro}
+        handleClose={handleCloseModalRegistro}
+      />
     </Grid>
   );
 }

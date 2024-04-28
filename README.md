@@ -30,3 +30,4 @@ npm i dayjs
 npm i npm install firebase
 npm install react-bootstrap bootstrap
 sweetalert2-react-content
+npm install react-slick slick-carousel

@@ -8,19 +8,26 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { useState } from "react";
 import { useEffect } from "react";
 
-dayjs.locale("es"); // Establecer la localización en español
-
-export default function Calendar({ handleChangeCalendar }) {
+export default function CalendarSeleccionCita({ handleChangeCalendar }) {
   const [value, setValue] = useState(dayjs());
+
+  const disableDates = (day) => {
+    const today = dayjs();
+    const maxDate = today.add(14, "day"); // Obtener la fecha máxima permitida (hoy + 14 días)
+    return (
+      dayjs(day).isBefore(today, "day") || dayjs(day).isAfter(maxDate, "day")
+    );
+  };
 
   useEffect(() => {
     const today = dayjs();
-    const formattedDate = today.format("DD/MM/YYYY").toUpperCase();
+
+    const formattedDate = today.format("YYYY-MM-DD").toUpperCase();
     handleChangeCalendar(formattedDate);
   }, []);
 
   const handleChange = (newValue) => {
-    const formattedDate = newValue.format("DD/MM/YYYY").toUpperCase();
+    const formattedDate = newValue.format("YYYY-MM-DD").toUpperCase();
     setValue(newValue);
     handleChangeCalendar(formattedDate);
   };
@@ -37,7 +44,7 @@ export default function Calendar({ handleChangeCalendar }) {
           <DateCalendar
             value={value}
             onChange={(newValue) => handleChange(newValue)}
-            shouldDisableDate={disablePastDates}
+            shouldDisableDate={disableDates}
           />
         </DemoItem>
       </DemoContainer>

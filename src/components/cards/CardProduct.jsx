@@ -8,14 +8,15 @@ import {
   Grid,
   Hidden,
   useMediaQuery,
+  Stack,
 } from "@mui/material";
 
 const CardProduct = ({ producto }) => {
   const isMobile = useMediaQuery("(max-width:600px)");
 
   const truncateDescription = (description) => {
-    return description.length > 100
-      ? description.slice(0, 100) + "..."
+    return description.length > 130
+      ? description.slice(0, 130) + "..."
       : description;
   };
   const truncateDescriptionMovil = (description) => {
@@ -40,38 +41,42 @@ const CardProduct = ({ producto }) => {
           flexDirection: "column",
           minWidth: { xs: 120, sm: 250 },
           height: { xs: 340, sm: 410 },
+          backgroundColor: "#000",
+          border: "1px solid #fff",
         }}
       >
         <CardActionArea>
           <CardMedia
             component="img"
-            sx={{ height: { xs: 150, sm: 200 } }}
-            image={producto.imagen}
+            sx={{ height: { xs: 150, sm: 220 } }}
+            image={producto.imagenes[0].url}
             alt={producto.nombre}
           />
           <CardContent sx={{ flexGrow: 1 }}>
             <Typography
               gutterBottom
-              variant={isMobile ? "subtitle1" : "h6"} // Utiliza "subtitle1" para tamaños de texto más pequeños en dispositivos móviles
               component="div"
               sx={{
                 textAlign: "center",
-                height: 75,
+                height: { xs: 75, sm: 50 },
                 m: { xs: -1, sm: 0 },
+                color: "white",
               }}
             >
-              {isMobile
-                ? truncateTitleMovil(producto.nombre)
-                : truncateTitle(producto.nombre)}
+              <strong>
+                {isMobile
+                  ? truncateTitleMovil(producto.nombre)
+                  : truncateTitle(producto.nombre)}
+              </strong>
             </Typography>
             <Typography
               variant="body2"
-              color="text.secondary"
+              color="white"
               sx={{
                 textAlign: { xs: "left", sm: "justify" },
 
                 m: { xs: -1, sm: 0 },
-                height: { xs: 45, sm: 40 },
+                height: { xs: 46, sm: 40 },
               }}
             >
               {isMobile
@@ -80,22 +85,21 @@ const CardProduct = ({ producto }) => {
             </Typography>
           </CardContent>
         </CardActionArea>
-        <CardContent
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        <Stack direction={"row"} sx={{ m: "auto" }}>
           <Typography
             variant="h5"
-            color="text.secondary"
+            color="white"
             sx={{ textAlign: "center", margin: "auto" }}
           >
             ${producto.precio}
           </Typography>
-          {/* Aquí puedes agregar cualquier otro detalle adicional, como un botón de compra */}
-        </CardContent>
+          <Typography
+            color="text.secondary"
+            sx={{ textAlign: "center", margin: "auto", mt: -0.2 }}
+          >
+            00
+          </Typography>
+        </Stack>
       </Card>
     </>
   );

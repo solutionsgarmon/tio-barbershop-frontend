@@ -75,21 +75,21 @@ const Example = () => {
       },
 
       {
-        accessorKey: "servicio_asignado",
+        accessorKey: "nombre_servicio_asignado",
         header: "Servicio",
         muiEditTextFieldProps: {
           required: true,
         },
       },
       {
-        accessorKey: "barbero_asignado",
+        accessorKey: "nombre_barbero_asignado",
         header: "Barbero",
         muiEditTextFieldProps: {
           required: true,
         },
       },
       {
-        accessorKey: "barberia_asignada",
+        accessorKey: "nombre_barberia_asignada",
         header: "Barberia",
         muiEditTextFieldProps: {
           required: true,
@@ -308,22 +308,3 @@ const TabCitas = () => (
 );
 
 export default TabCitas;
-
-const validateRequired = (value) => !!value.length;
-const validateEmail = (email) =>
-  !!email.length &&
-  email
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-
-function validateUser(user) {
-  return {
-    firstName: !validateRequired(user.firstName)
-      ? "First Name is Required"
-      : "",
-    lastName: !validateRequired(user.lastName) ? "Last Name is Required" : "",
-    email: !validateEmail(user.email) ? "Incorrect Email Format" : "",
-  };
-}

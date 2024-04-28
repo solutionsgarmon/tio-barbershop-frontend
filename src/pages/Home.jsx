@@ -1,27 +1,79 @@
 import React, { useEffect } from "react";
-import { Box, Typography, useMediaQuery } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Stack,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import FloatingAddButton from "../components/atoms/FloatingButtons";
 import PrincipalSlider from "../components/sliders/PrincipalSlider";
 import { useAppContext } from "../context/AppProvider";
 import GoogleMap from "../components/molecules/GoogleMap";
 import { useNavigate } from "react-router-dom";
+import Tooltip from "@mui/material/Tooltip";
+import CardServices from "../components/cards/CardServices";
+import CardServicesMainSlider from "../components/cards/CardServicesMainSlider";
+import AutoplaySlider from "../components/sliders/AutoplaySlider";
+import CardRecomendacion from "../components/cards/CardRecomendacion";
 
-const MainPage = () => {
+const MainPage = ({ services, products }) => {
   const { setFlagTransparent } = useAppContext();
   const navigate = useNavigate();
 
-  const elements = [
+  const banners = [
     {
-      image: "/images/sliders/principal/slider2.jpg",
-      link: "www.fb.com",
+      image: "/images/sliders/principal/1.jpg",
+      text1: "La  barbería #1 en México",
+      text2: "Te presentamos",
+      component: <></>,
+      // (
+      //   <Button variant="outlined" sx={{ width: 300, fontWeight: "bold" }}>
+      //     Conócelos
+      //   </Button>
+      // ),
     },
     {
-      image: "/images/sliders/principal/slider3.jpg",
-      link: "www.google.com",
+      image: "/images/sliders/principal/2.jpg",
+      text1: "Nuestras Sucursales",
+      text2: "Conoce",
+      component: (
+        <Button variant="outlined" sx={{ width: 300, fontWeight: "bold" }}>
+          Ver sucursales
+        </Button>
+      ),
     },
     {
-      image: "/images/sliders/principal/slider4.jpg",
-      link: "www.instagram.com",
+      image: "/images/sliders/principal/3.jpg",
+      text1: "Agenda una Cita",
+      text2: "Conciéntete",
+      component: (
+        <Button variant="outlined" sx={{ width: 300, fontWeight: "bold" }}>
+          Agendar
+        </Button>
+      ),
+    },
+    {
+      image: "/images/sliders/principal/4.jpg",
+
+      text1: "Nuestros Productos",
+      text2: "Adquiere",
+      component: (
+        <Button variant="outlined" sx={{ width: 300, fontWeight: "bold" }}>
+          Visitar Tienda
+        </Button>
+      ),
+    },
+    {
+      image: "/images/sliders/principal/5.jpg",
+      text1: "Nuestras Sucursales",
+      text2: "Conoce",
+      component: (
+        <Button variant="outlined" sx={{ width: 300, fontWeight: "bold" }}>
+          Ver sucursales
+        </Button>
+      ),
     },
   ];
 
@@ -40,7 +92,7 @@ const MainPage = () => {
 
   return (
     <Box sx={{ mt: -10 }}>
-      <PrincipalSlider elements={elements} />
+      <PrincipalSlider banners={banners} />
       <Box sx={{ backgroundColor: "#000", width: "100%", height: "500px" }}>
         <Typography
           gutterBottom
@@ -55,36 +107,102 @@ const MainPage = () => {
         >
           NUESTROS SERVICIOS
         </Typography>
+        <Box sx={{ overflowX: "auto" }}>
+          <Stack direction={"row"} spacing={2}>
+            {services?.map((servicio, index) => (
+              <Box key={index} sx={{ m: 2 }}>
+                <CardServicesMainSlider
+                  servicio={servicio}
+                  withButtons={false}
+                />
+              </Box>
+            ))}
+          </Stack>
+        </Box>
       </Box>
-      <Box sx={{ backgroundColor: "#333", width: "100%", height: "500px" }}>
+      <Box
+        sx={{
+          backgroundColor: "#333",
+          width: "100%",
+          py: 5,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Typography
           gutterBottom
-          variant={"h4"}
+          variant="h4"
           component="div"
           sx={{
             textAlign: "center",
             height: 75,
-            pt: { xs: 5, sm: 5 },
+
             color: "#e2b753",
           }}
         >
           LO MAS VENDIDO
         </Typography>
+        <Box sx={{ textAlign: "center" }}>
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            sx={{ justifyContent: "center" }}
+          >
+            <Avatar
+              src={products[1]?.imagenes[0].url}
+              sx={{
+                borderRadius: 5,
+                mx: 3,
+                height: 300,
+                width: 300,
+              }}
+            />
+            <Stack
+              direction={"column"}
+              sx={{ justifyContent: "center", mx: 3, mt: { xs: 5, sm: 0 } }}
+            >
+              <Typography
+                variant="h3"
+                maxWidth={300}
+                color={"white"}
+                sx={{ mb: 5 }}
+              >
+                {products[1]?.nombre}
+              </Typography>
+              <Typography variant="h6" maxWidth={300} color={"white"}>
+                {products[1]?.descripcion}
+              </Typography>
+              <Button variant="outlined" sx={{ py: 1, mt: 2 }}>
+                Visitar Tienda
+              </Button>
+            </Stack>
+          </Stack>
+        </Box>
       </Box>
-      <Box sx={{ backgroundColor: "#000", width: "100%", height: "500px" }}>
+
+      <Box
+        sx={{
+          backgroundColor: "#000",
+          width: "100%",
+          py: 2,
+          textAlign: "center",
+        }}
+      >
         <Typography
           gutterBottom
           variant={"h4"}
           component="div"
           sx={{
-            textAlign: "center",
             height: 75,
-            pt: { xs: 5, sm: 5 },
+            mt: { xs: 5, sm: 3 },
+            mb: { xs: 5, sm: 0 },
             color: "#e2b753",
           }}
         >
           CLIENTES QUE NOS RECOMIENDAN
         </Typography>
+        <AutoplaySlider />
       </Box>
 
       <FloatingAddButton

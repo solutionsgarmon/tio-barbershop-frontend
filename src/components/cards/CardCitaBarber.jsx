@@ -10,7 +10,6 @@ import { useState } from "react";
 
 const CardCitaBarber = ({
   barbero,
-  selectedServicio,
   onSelect,
   dataCita,
   withButtons = true,
@@ -18,6 +17,11 @@ const CardCitaBarber = ({
   const [hovered, setHovered] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
   const [isSelected, setIsSelected] = useState(false);
+
+  useEffect(() => {
+    if (dataCita?.id_barbero == barbero._id) setIsSelected(true);
+    else setIsSelected(false);
+  }, [dataCita]);
 
   const handleMouseEnter = () => {
     setHovered(true);
@@ -57,7 +61,7 @@ const CardCitaBarber = ({
         backgroundColor: isSelected ? "#f0f0f0" : "transparent",
         "&:hover": {
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-          transform: "scale(1.08)",
+          transform: "scale(1.01)",
         },
       }}
       onMouseEnter={handleMouseEnter}

@@ -26,30 +26,37 @@ import { sumarMinutosAHora } from "../helpers/fechaYhora";
 const CitasConfirmacion = ({ setDataCita, dataCita }) => {
   const navigate = useNavigate();
   const { setIsLoadingApp } = useAppContext();
-  const [nombre, setNombre] = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [correo, setCorreo] = useState("");
+  const [nombre, setNombre] = useState(dataCita?.nombre_cliente);
+  const [telefono, setTelefono] = useState(dataCita?.telefono_cliente);
+  const [correo, setCorreo] = useState(dataCita?.correo_cliente);
+  const [nota, setNota] = useState("");
 
   const handleSubmit = (event) => {
+    event.preventDefault();
     if (nombre == "" || telefono == "") {
-      toast.warning("Debe llenar los campos obligatorios");
+      console.log("Debe llenar los campos obligatorios");
+      toast.warning("Complete los campos obligatorios.");
       return;
     }
-    event.preventDefault();
 
     const values = {
+      nombre_servicio_asignado: dataCita.servicio,
       servicio_asignado: dataCita.id_servicio,
+      nombre_barbero_asignado: dataCita.barbero,
       barbero_asignado: dataCita.id_barbero,
+      nombre_barberia_asignada: dataCita.barberia,
       barberia_asignada: dataCita.id_barberia,
       hora_inicio_asignada: dataCita.hora,
+      imagen_barbero_asignado: dataCita.imagen_barbero,
       hora_fin_asignada: sumarMinutosAHora(dataCita.hora, dataCita.duracion),
       fecha_asignada: dataCita.fecha,
       estatus: "PENDIENTE",
-      notas: "",
+      costo: dataCita.costo,
+      notas: nota,
       fecha_creacion: new Date(),
       fecha_actualizacion: [],
       recordatorio: {
-        tipo: "CORREO",
+        tipo: "WHATSAPP",
         enviado: "NO",
       },
       datos_cliente: {
@@ -130,8 +137,14 @@ const CitasConfirmacion = ({ setDataCita, dataCita }) => {
         <Stack direction="row">
           <AccessTimeIcon />
           <Typography variant="subtitle1" gutterBottom sx={{ ml: 1 }}>
-            {dataCita.hora} -{" "}
-            {sumarMinutosAHora(dataCita.hora, servicio.duracion)}
+            {dataCita.hora} - Hora cita
+          </Typography>
+        </Stack>
+        <Stack direction="row">
+          <AccessTimeIcon />
+          <Typography variant="subtitle1" gutterBottom sx={{ ml: 1 }}>
+            {sumarMinutosAHora(dataCita.hora, dataCita.duracion)} - Salida
+            Aprox.
           </Typography>
         </Stack>
         <br /> <br />
@@ -163,6 +176,18 @@ const CitasConfirmacion = ({ setDataCita, dataCita }) => {
                 fullWidth
                 value={correo}
                 onChange={(event) => setCorreo(event.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id="outlined-multiline-static"
+                label="Agrega una nota..."
+                multiline
+                rows={4}
+                value={nota}
+                onChange={(event) => setNota(event.target.value)}
+                variant="outlined"
+                fullWidth
               />
             </Grid>
             <Grid item xs={12}>

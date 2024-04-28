@@ -18,6 +18,11 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useAppContext } from "../../context/AppProvider";
 import { cerrarSesionUsuario } from "../../api/FirebaseService";
+import ModalMisCitasCliente from "../modals/ModalMisCitasCliente";
+import ModalMisCitasBarbero from "../modals/ModalMisCitasBarbero";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import PersonIcon from "@mui/icons-material/Person";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 
 const PAGES_ADMIN = [
   { title: "Citas", url: "/citas" },
@@ -49,21 +54,23 @@ const PAGES_BARBERO = [
 ];
 
 const SETTINGS_AUTENTICATED = ["Mi perfil", "Mis citas", "Cerrar sesión"];
-const SETTINGS_NO_AUTENTICATED = ["Iniciar sesión"];
+const SETTINGS_NO_AUTENTICATED = ["Iniciar sesión", "Registrarse"];
 
-function NavigationBar({ setShowNavigationBar }) {
+function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
   const {
     flagTransparent,
     setIsLoading,
     isAutenticated,
     avatarURL,
     sessionDataStorage,
+    windowWidth,
   } = useAppContext();
 
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [scrollY, setScrollY] = useState(0);
+  const [showNModalMisCitas, setShowModalMisCitas] = useState(false);
   const [pages, setPages] = useState(PAGES_CLIENTE);
 
   const backgroundColor = scrollY === 0 ? "rgba(0, 0, 0, 0)" : "#333"; // Cambia el color dependiendo de la posición del scroll
@@ -83,7 +90,7 @@ function NavigationBar({ setShowNavigationBar }) {
   useEffect(() => {
     if (sessionDataStorage === null) setPages(PAGES_CLIENTE);
     else {
-      switch (sessionDataStorage.rol) {
+      switch (sessionDataStorage?.rol) {
         case "ADMINISTRADOR":
           setPages(PAGES_ADMIN);
           break;
@@ -135,8 +142,15 @@ function NavigationBar({ setShowNavigationBar }) {
       case "Iniciar sesión":
         navigate("/login");
         break;
+      case "Registrarse":
+        setShowModalRegistro(true);
+        navigate("/login");
+        break;
       case "Mi perfil":
         navigate("/mi-perfil");
+        break;
+      case "Mis citas":
+        setShowModalMisCitas(true);
         break;
       case "Cerrar sesión":
         handleCerrarSesion();
@@ -150,23 +164,26 @@ function NavigationBar({ setShowNavigationBar }) {
     window.location.reload();
   };
 
+  const handleCloseModalMisCitas = () => {
+    setShowModalMisCitas(false);
+  };
+
   return (
     <AppBar
       position="fixed"
       sx={flagTransparent ? appBarStyleTransparente : appBarStyle}
     >
-      <Container maxWidth="xl">
+      <Container sx={{ py: 1 }}>
         <Toolbar disableGutters>
-          {/* PC */}
-          {/* <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
-          {/* <img src="images/icon-tio.png" height={40} width={40} /> */}
-          <img
-            src="images/icon-tio2.png"
-            height={50}
-            width={50}
-            onClick={() => handleClickPage("/")}
-            style={{ cursor: "pointer" }} // Cambio de cursor a una manita
-          />
+          {windowWidth >= 768 && (
+            <Avatar
+              src="images/icon-tio.png"
+              onClick={() => handleClickPage("/")}
+              style={{ cursor: "pointer" }} // Cambio de cursor a una manita
+              sx={{ width: 80, height: 80, m: "auto" }}
+            />
+          )}
+
           <Typography
             variant="h6"
             noWrap
@@ -187,7 +204,6 @@ function NavigationBar({ setShowNavigationBar }) {
           >
             EL TÍO BARBERSHOP
           </Typography>
-
           <Box
             sx={{
               flexGrow: 1,
@@ -201,9 +217,20 @@ function NavigationBar({ setShowNavigationBar }) {
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
+              sx={{ ml: -2 }}
             >
               <MenuIcon />
             </IconButton>
+
+            {windowWidth <= 768 && (
+              <Avatar
+                src="images/icon-tio.png"
+                onClick={() => handleClickPage("/")}
+                style={{ cursor: "pointer" }} // Cambio de cursor a una manita
+                sx={{ width: 80, height: 80, m: "auto" }}
+              />
+            )}
+
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -242,8 +269,6 @@ function NavigationBar({ setShowNavigationBar }) {
               ))}
             </Menu>
           </Box>
-          {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
-
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
@@ -262,18 +287,11 @@ function NavigationBar({ setShowNavigationBar }) {
               </Button>
             ))}
           </Box>
-
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open SETTINGS">
+            <Tooltip title="Menú de Usuario">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar
-                  alt="Imagen de perfil"
-                  src={
-                    sessionDataStorage !== null
-                      ? sessionDataStorage.datos_personales.imagen
-                      : ""
-                  }
-                  sx={{ height: 35, width: 35 }}
+                <AccountCircleOutlinedIcon
+                  sx={{ color: "white", width: 26, height: 26 }}
                 />
               </IconButton>
             </Tooltip>
@@ -304,18 +322,14 @@ function NavigationBar({ setShowNavigationBar }) {
                   >
                     <Avatar
                       alt="Imagen de perfil"
-                      src={
-                        sessionDataStorage !== null
-                          ? sessionDataStorage.datos_personales.imagen
-                          : ""
-                      }
+                      src={sessionDataStorage.imagenes[0]?.url}
                       sx={{ height: 100, width: 100, marginBottom: "10px" }}
                     />
                     <Typography variant="h6" gutterBottom>
                       <strong>{sessionDataStorage.nombre}</strong>
                     </Typography>
                     <Typography variant="h6" gutterBottom>
-                      {sessionDataStorage.rol}
+                      {sessionDataStorage?.rol}
                     </Typography>
                   </Box>
                   <Divider sx={{ marginTop: "20px", marginBottom: "20px" }} />
@@ -344,6 +358,19 @@ function NavigationBar({ setShowNavigationBar }) {
           </Box>
         </Toolbar>
       </Container>
+      {sessionDataStorage?.rol == "BARBERO" && (
+        <ModalMisCitasBarbero
+          open={showNModalMisCitas}
+          handleClose={handleCloseModalMisCitas}
+        />
+      )}
+
+      {sessionDataStorage?.rol == "CLIENTE" && (
+        <ModalMisCitasCliente
+          open={showNModalMisCitas}
+          handleClose={handleCloseModalMisCitas}
+        />
+      )}
     </AppBar>
   );
 }

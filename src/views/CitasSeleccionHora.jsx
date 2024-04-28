@@ -1,18 +1,50 @@
 import React, { useEffect, useState } from "react";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-
-import Calendar from "../components/atoms/Calendar";
-import { Select, MenuItem } from "@mui/material";
-
-const horaInicio = 8;
-const horaFin = 16;
+import { Select, MenuItem, Box, Stack } from "@mui/material";
+import { getHorarioDisponibleBarber } from "../api/gets";
+import { useAppContext } from "../context/AppProvider";
+import CalendarSeleccionCita from "../components/atoms/CalendarSeleccionCita";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const CitasSeleccionHora = ({ setEnableButton, dataCita, setDataCita }) => {
+  const fechaHoy = dayjs().format("YYYY-MM-DD").toUpperCase();
+  const { setIsLoadingApp } = useAppContext();
   const [horaSeleccionada, setHoraSeleccionada] = useState("");
+  const [fechaSeleccionada, setFechaSeleccionada] = useState("");
+  const [horasDisponibles, setHorasDisponibles] = useState([]);
+  const [totalHorasDisponibles, setTotalHorasDisponibles] = useState(null);
+  const [loading, setloading] = useState(false);
+
+  // Obtener todo el horario disponible de los próximos 15 días y las horas disponibles de HOY
+  useEffect(() => {
+    setloading(true);
+    console.log("useEffect []");
+    async function fetchData() {
+      const horario_disponible_15_dias = await getHorarioDisponibleBarber(
+        dataCita.id_barbero,
+        dataCita.id_servicio
+      );
+
+      const horario_disponible_hoy =
+        horario_disponible_15_dias[dayjs().format("YYYY-MM-DD").toUpperCase()];
+      setHorasDisponibles(horario_disponible_hoy);
+      setTotalHorasDisponibles(horario_disponible_15_dias);
+      setloading(false);
+    }
+
+    fetchData();
+  }, []);
+
+  //Este useEffect es el que cambia la data del Select dependiendo de la fecha
+  useEffect(() => {
+    setloading(true);
+    console.log("useEffect fechaSeleccionada", fechaSeleccionada);
+    if (totalHorasDisponibles) {
+      const horario_disponible_hoy = totalHorasDisponibles[fechaSeleccionada];
+      setHorasDisponibles(horario_disponible_hoy);
+    }
+    setloading(false);
+  }, [fechaSeleccionada]);
 
   // Función para manejar el cambio de hora seleccionada
   const handleChangeHora = (event) => {
@@ -26,17 +58,14 @@ const CitasSeleccionHora = ({ setEnableButton, dataCita, setDataCita }) => {
     setEnableButton(true);
   };
 
-  // Generar el rango de horas disponibles basado en horaInicio y horaFin
-  const horasDisponibles = [];
-  for (let hora = horaInicio; hora <= horaFin; hora++) {
-    for (let minuto = 0; minuto < 60; minuto += 10) {
-      horasDisponibles.push(
-        `${hora.toString().padStart(2, "0")}:${minuto
-          .toString()
-          .padStart(2, "0")}`
-      );
-    }
-  }
+  const handleChangeCalendar = (dateSelected) => {
+    console.log("[ejecución] handleChangeCalendar()");
+    setFechaSeleccionada(dateSelected);
+    setDataCita((prevDataCita) => ({
+      ...prevDataCita,
+      fecha: dateSelected,
+    }));
+  };
 
   // Función para sumar la duración del corte de cabello a la hora seleccionada
   const sumarDuracion = (hora, duracion) => {
@@ -46,37 +75,37 @@ const CitasSeleccionHora = ({ setEnableButton, dataCita, setDataCita }) => {
     return horaFinalObj.format("HH:mm");
   };
 
-  const handleChangeCalendar = (dateSelected) => {
-    setDataCita((prevDataCita) => ({
-      ...prevDataCita,
-      fecha: dateSelected,
-    }));
-  };
-
   return (
-    <div>
-      <Calendar handleChangeCalendar={handleChangeCalendar} />
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center", // Centrado horizontal
+        alignItems: "center", // Centrado vertical
+      }}
+    >
+      <Stack direction={"column"}>
+        <CalendarSeleccionCita handleChangeCalendar={handleChangeCalendar} />
 
-      <div>
         <Select
           value={horaSeleccionada}
           onChange={handleChangeHora}
           displayEmpty
           fullWidth
-          sx={{ mt: -10 }}
+          sx={{ mt: { xs: -3, md: 0 } }}
         >
-          {/* Opción para seleccionar hora */}
           <MenuItem value="" disabled>
-            Selecciona una hora
+            {horasDisponibles.length == 0
+              ? "DESCANSO DEL BARBERO"
+              : "SELECCIONA UN HORARIO"}
           </MenuItem>
-          {/* Mapear las horas en MenuItem */}
-          {horasDisponibles.map((hora, index) => (
-            <MenuItem key={index} value={hora}>
+
+          {horasDisponibles?.map((hora, index) => (
+            <MenuItem key={index} value={hora} disabled={false}>
               {`${hora} - ${sumarDuracion(hora, dataCita.duracion)}`}
             </MenuItem>
           ))}
         </Select>
-      </div>
+      </Stack>
     </div>
   );
 };

@@ -7,6 +7,9 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useEffect } from "react";
 import { useState } from "react";
+import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import TableHorario from "../molecules/TableHorario";
 
 const CardCitaBarbershop = ({
   barbershop,
@@ -16,11 +19,11 @@ const CardCitaBarbershop = ({
 }) => {
   const [hovered, setHovered] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
-  const [isSelected, setIsSedlected] = useState(false);
+  const [isSelected, setIsSelected] = useState(false);
 
   useEffect(() => {
-    if (dataCita?.id_barberia == barbershop._id) setIsSedlected(true);
-    else setIsSedlected(false);
+    if (dataCita?.id_barberia == barbershop._id) setIsSelected(true);
+    else setIsSelected(false);
   }, [dataCita]);
 
   const handleMouseEnter = () => {
@@ -34,6 +37,7 @@ const CardCitaBarbershop = ({
 
   const handleSelect = () => {
     onSelect(barbershop);
+    setIsSelected(true);
   };
 
   React.useEffect(() => {
@@ -52,10 +56,10 @@ const CardCitaBarbershop = ({
     <Card
       sx={{
         border: isSelected ? "3px solid blue" : "none",
-        backgroundColor: isSelected ? "#f0f0f0" : "transparent", // Cambia el color de fondo si está seleccionado
+        backgroundColor: isSelected ? "#f0f0f0" : "transparent",
         "&:hover": {
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-          transform: "scale(1.08)",
+          transform: "scale(1.01)",
         },
       }}
       onMouseEnter={handleMouseEnter}
@@ -78,10 +82,25 @@ const CardCitaBarbershop = ({
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ height: 70, textAlign: "justify" }}
+          sx={{ height: 35, textAlign: "justify" }}
         >
-          {barbershop?.descripcion}
+          {barbershop?.direccion.calle}
+          {barbershop?.direccion.colonia}, {barbershop?.direccion.ciudad}
         </Typography>
+        <div style={{ margin: "auto" }}>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1-content"
+              id="panel1-header"
+            >
+              <Typography> Ver Horario</Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ mt: -4 }}>
+              <TableHorario horario={barbershop?.horario} />
+            </AccordionDetails>
+          </Accordion>
+        </div>
       </CardContent>
       {withButtons && (
         <CardActions>
@@ -89,9 +108,11 @@ const CardCitaBarbershop = ({
             size="small"
             onClick={handleSelect}
             fullWidth
+            variant="outlined"
             sx={{
               backgroundColor: isSelected ? "blue" : "#f0f0f0",
               color: isSelected ? "white" : "black",
+              p: 1,
             }} // Cambia el color de fondo y texto si está seleccionado
           >
             {isSelected ? "SELECCIONADO" : "Seleccionar"}

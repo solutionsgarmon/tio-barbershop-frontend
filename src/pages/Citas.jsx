@@ -1,4 +1,12 @@
-import { Box, Button, Paper, Skeleton, Stack } from "@mui/material";
+import {
+  Box,
+  Button,
+  Paper,
+  Skeleton,
+  Stack,
+  Alert,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import CardServices from "../components/cards/CardServices";
 import CitasConfirmacion from "../views/CitasConfirmacion";
@@ -40,8 +48,8 @@ const Citas = () => {
     nombre_cliente: "",
     telefono_cliente: "",
     correo_cliente: "",
+    imagen_cliente: "",
   });
-  const [selectedServicio, setSelectedServicio] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [barbershops, setBarbershops] = useState([]);
   const [barbers, setBarbers] = useState([]);
@@ -65,8 +73,36 @@ const Citas = () => {
         imagen_barbero: sessionDataStorage.imagenes?.[0]?.url ?? "",
       }));
       setCurrentStep(2);
+    } else if (sessionDataStorage?.rol == "CLIENTE") {
+      setDataCita((prevData) => ({
+        ...prevData,
+        nombre_cliente: sessionDataStorage.nombre || "",
+        telefono_cliente: sessionDataStorage.datos_personales?.telefono || "",
+        correo_cliente: sessionDataStorage.correo || "",
+        imagen_cliente: sessionDataStorage.imagen || "",
+      }));
     }
   }, [sessionDataStorage, barbershops]);
+
+  // useEffect(() => {
+  //   if (sessionDataStorage.rol == "CLIENTE") {
+  //     setDataCita((prevData) => ({
+  //       ...prevData,
+  //       nombre_cliente: sessionDataStorage?.nombre || "",
+  //       telefono_cliente: sessionDataStorage?.datos_personales?.telefono || "",
+  //       correo_cliente: sessionDataStorage?.correo || "",
+  //       imagen_cliente: sessionDataStorage?.imagen || "",
+  //     }));
+  //   } else if (sessionDataStorage.rol == "BARBERO") {
+  //     setDataCita((prevData) => ({
+  //       ...prevData,
+  //       nombre_cliente: ,
+  //       telefono_cliente: "",
+  //       correo_cliente: sessionDataStorage?.correo || "",
+  //       imagen_cliente: sessionDataStorage?.imagen || "",
+  //     }));
+  //   }
+  // }, [sessionDataStorage]);
 
   useEffect(() => {
     console.log("dataCita", dataCita);
@@ -106,11 +142,28 @@ const Citas = () => {
 
   return (
     <Box
-      sx={{ m: "auto", minHeight: "85vh", maxWidth: 800, textAlign: "center" }}
+      sx={{
+        m: "auto",
+        minHeight: "85vh",
+        maxWidth: 1000,
+        textAlign: "center",
+        mt: 4,
+      }}
     >
       {/* <h1>{STEPS_DESC[currentStep]}</h1> */}
       <Paper sx={{ pt: 2, pb: 1, mt: { xs: -1.5, sm: 1 } }}>
         <Stepper steps={STEPS} currenStep={currentStep} />
+        {!sessionDataStorage && (
+          <Alert variant="filled" severity="warning" sx={{ mt: 1, mx: 1 }}>
+            <Typography>
+              <strong>
+                Usted no está autenticado, aún así su cita si se guardará, si
+                desea consultarla o modificarla deberá crear una cuenta con el
+                e-mail registrado en el formulario.
+              </strong>
+            </Typography>
+          </Alert>
+        )}
       </Paper>
       {isLoadingApp ? (
         <>
@@ -194,7 +247,9 @@ const Citas = () => {
               )}
             </Box>
           )}
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+          <Box
+            sx={{ display: "flex", justifyContent: "flex-end", m: 2, mt: 5 }}
+          >
             {currentStep !== 0 && (
               <Button onClick={handleBack}>Regresar</Button>
             )}
@@ -203,6 +258,8 @@ const Citas = () => {
                 variant="contained"
                 disabled={!enableButton}
                 onClick={handleContinue}
+                fullWidth
+                sx={{ py: 2 }}
               >
                 Continuar
               </Button>

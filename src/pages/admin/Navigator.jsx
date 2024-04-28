@@ -42,7 +42,8 @@ export default function Navigator(props) {
         >
           ADMINISTRACIÓN
         </ListItem>
-        <ListItem
+        {/* TODO : tablero principal */}
+        {/* <ListItem
           onClick={() => props.handleShowMainPage()}
           sx={{ ...item, ...itemCategory, py: 1, cursor: "pointer" }}
         >
@@ -50,7 +51,7 @@ export default function Navigator(props) {
             <HomeIcon />
           </ListItemIcon>
           <ListItemText>Tablero Principal</ListItemText>
-        </ListItem>
+        </ListItem> */}
         {props.categories?.map(({ id, children }) => (
           <Box key={id} sx={{ bgcolor: "#101F33" }}>
             <ListItem sx={{ pt: 1, pb: 0, px: 3 }}>

@@ -55,16 +55,16 @@ const CitasSeleccionBarbero = ({
               <Box sx={{ m: 1, maxWidth: 350 }}>
                 <CardCitaBarber
                   barbero={barbero}
-                  isSelected={selected === barbero}
                   onSelect={handleSelectCard}
+                  dataCita={dataCita}
                 />
               </Box>
               {index + 1 < barberosLocal.length && (
                 <Box sx={{ m: 1, maxWidth: 350 }}>
                   <CardCitaBarber
                     barbero={barberosLocal[index + 1]}
-                    isSelected={selected === barberosLocal[index + 1]}
                     onSelect={handleSelectCard}
+                    dataCita={dataCita}
                   />
                 </Box>
               )}
