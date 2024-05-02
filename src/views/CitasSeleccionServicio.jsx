@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import React, { useState } from "react";
 import CardServices from "../components/cards/CardServices";
+import { scrollToBottom } from "../utils/screen";
 
 const CitasSeleccionBarbero = ({
   setEnableButton,
@@ -19,6 +20,7 @@ const CitasSeleccionBarbero = ({
       costo: servicio.precio,
     }));
     setEnableButton(true);
+    scrollToBottom();
   };
 
   return (
@@ -27,6 +29,7 @@ const CitasSeleccionBarbero = ({
         display: "flex",
         justifyContent: "center",
         flexWrap: "wrap",
+        cursor: "pointer",
       }}
     >
       {services?.map(

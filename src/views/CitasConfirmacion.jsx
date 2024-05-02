@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -10,6 +10,7 @@ import {
   Grid,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
+import SendIcon from "@mui/icons-material/Send";
 
 import BusinessIcon from "@mui/icons-material/Business";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
@@ -23,19 +24,66 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { sumarMinutosAHora } from "../helpers/fechaYhora";
 
-const CitasConfirmacion = ({ setDataCita, dataCita }) => {
+const CitasConfirmacion = ({
+  setDataCita,
+  dataCita,
+  confirmacion,
+  setConfirmacion,
+}) => {
   const navigate = useNavigate();
   const { setIsLoadingApp } = useAppContext();
   const [nombre, setNombre] = useState(dataCita?.nombre_cliente);
   const [telefono, setTelefono] = useState(dataCita?.telefono_cliente);
   const [correo, setCorreo] = useState(dataCita?.correo_cliente);
+  const [errorNombre, setErrorNombre] = useState(false);
+  const [errorTelefono, setErrorTelefono] = useState(false);
+  const [errorCorreo, setErrorCorreo] = useState(false);
   const [nota, setNota] = useState("");
+  const correoValido = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  useEffect(() => {
+    if (confirmacion) {
+      handleSubmit();
+    }
+  }, [confirmacion]);
+
+  const handleSubmit = () => {
+    setConfirmacion(false);
+    //Validacion no vacios
     if (nombre == "" || telefono == "") {
       console.log("Debe llenar los campos obligatorios");
       toast.warning("Complete los campos obligatorios.");
+      return;
+    }
+
+    if (telefono.length !== 10) {
+      console.log("Debe llenar los campos obligatorios");
+      toast.warning("Ingrese su numero telefónico a 10 dígitos");
+      return;
+    }
+    if (!nombre.trim() || !telefono.trim()) {
+      setErrorNombre(!nombre.trim());
+      setErrorTelefono(!telefono.trim());
+      return;
+    }
+    //Validación nombre
+    if (/\d/.test(nombre)) {
+      setErrorNombre(true);
+      toast.error("El nombre no puede contener números.");
+      return;
+    }
+
+    // Validación de que el teléfono solo contenga números
+    if (!/^\d+$/.test(telefono)) {
+      setErrorTelefono(true);
+      toast.error("El teléfono solo puede contener números.");
+      return;
+    }
+
+    // Validación de correo electrónico
+    if (!correoValido.test(correo)) {
+      setErrorCorreo(true);
+      toast.error("Ingrese un correo electrónico válido.");
       return;
     }
 
@@ -157,25 +205,47 @@ const CitasConfirmacion = ({ setDataCita, dataCita }) => {
                 variant="outlined"
                 fullWidth
                 value={nombre}
-                onChange={(event) => setNombre(event.target.value)}
+                onChange={(event) => {
+                  setNombre(event.target.value);
+                  setErrorNombre(false); // Reiniciar error al escribir
+                }}
+                error={errorNombre}
+                helperText={errorNombre ? "Nombre requerido" : ""}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Teléfono*"
+                label="Teléfono (10 dígitos)*"
                 variant="outlined"
                 fullWidth
                 value={telefono}
-                onChange={(event) => setTelefono(event.target.value)}
+                onChange={(event) => {
+                  setTelefono(event.target.value);
+                  if (event.target.value.length !== 10) {
+                    setErrorTelefono(true);
+                  } else {
+                    setErrorTelefono(false);
+                  } // Reiniciar error al escribir
+                }}
+                error={errorTelefono}
+                helperText={
+                  errorTelefono &&
+                  errorTelefono.length != 10 &&
+                  "Ingresa 10 dígitos"
+                }
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Correo electrónico"
+                label="Correo electrónico*"
                 variant="outlined"
                 fullWidth
+                error={errorCorreo}
                 value={correo}
-                onChange={(event) => setCorreo(event.target.value)}
+                onChange={(event) => {
+                  setCorreo(event.target.value);
+                  setErrorCorreo(false);
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -190,18 +260,18 @@ const CitasConfirmacion = ({ setDataCita, dataCita }) => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Button
                 variant="contained"
                 color="primary"
                 type="submit"
                 fullWidth
-                disabled={nombre == ""}
+                disabled={nombre == "" || telefono == ""}
                 sx={{ mt: 5 }}
               >
-                Confirmar
+                Confirmar &nbsp; <SendIcon />
               </Button>
-            </Grid>
+            </Grid> */}
           </Grid>
         </form>
       </CardContent>

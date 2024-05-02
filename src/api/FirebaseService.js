@@ -24,7 +24,11 @@ export async function autenticarUsuarioFB(email, password) {
 }
 
 export async function autenticarUsuarioConGoogle() {
+ const googleClientId ='358256203753-1bj65m8mamc2on567ehfk3s0u1iumivm.apps.googleusercontent.com'
     const provider = new GoogleAuthProvider();
+     provider.setCustomParameters({
+      'client_id': googleClientId
+    });
     // const auth = getAuth();
     try {
       const result = await signInWithPopup(auth, provider);

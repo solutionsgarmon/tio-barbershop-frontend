@@ -52,8 +52,8 @@ const theme = createTheme();
 
 export default function Login({ showModalRegistro, setShowModalRegistro }) {
   const [formData, setFormData] = useState({
-    Correo: "admin@gmail.com",
-    Password: "admin",
+    Correo: "",
+    Password: "",
   });
   const { Correo, Password } = formData;
 
@@ -184,7 +184,7 @@ export default function Login({ showModalRegistro, setShowModalRegistro }) {
         sm={4}
         md={7}
         sx={{
-          backgroundImage: `url(https://img.freepik.com/vector-premium/plantilla-logotipo-barberia-vintage_441059-26.jpg)`,
+          backgroundImage: `url(/images/sliders/principal/1.jpg)`,
           backgroundRepeat: "no-repeat",
           backgroundColor: (t) =>
             t.palette.mode === "light"
@@ -244,7 +244,7 @@ export default function Login({ showModalRegistro, setShowModalRegistro }) {
               value={Password}
               autoComplete="current-password"
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               control={
                 <Checkbox
                   sx={{ m: "auto" }}
@@ -256,7 +256,7 @@ export default function Login({ showModalRegistro, setShowModalRegistro }) {
                 />
               }
               label="Recordar datos"
-            />
+            /> */}
 
             <Grid container direction="column" alignItems="center" spacing={2}>
               <Grid item>

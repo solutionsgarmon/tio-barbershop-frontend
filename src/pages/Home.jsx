@@ -25,8 +25,8 @@ const MainPage = ({ services, products }) => {
   const banners = [
     {
       image: "/images/sliders/principal/1.jpg",
-      text1: "La  barbería #1 en México",
-      text2: "Te presentamos",
+      text1: "",
+      text2: "",
       component: <></>,
       // (
       //   <Button variant="outlined" sx={{ width: 300, fontWeight: "bold" }}>
@@ -39,7 +39,13 @@ const MainPage = ({ services, products }) => {
       text1: "Nuestras Sucursales",
       text2: "Conoce",
       component: (
-        <Button variant="outlined" sx={{ width: 300, fontWeight: "bold" }}>
+        <Button
+          onClick={() => {
+            navigate("/sucursales");
+          }}
+          variant="outlined"
+          sx={{ width: 300, fontWeight: "bold" }}
+        >
           Ver sucursales
         </Button>
       ),
@@ -49,7 +55,13 @@ const MainPage = ({ services, products }) => {
       text1: "Agenda una Cita",
       text2: "Conciéntete",
       component: (
-        <Button variant="outlined" sx={{ width: 300, fontWeight: "bold" }}>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            navigate("/citas");
+          }}
+          sx={{ width: 300, fontWeight: "bold" }}
+        >
           Agendar
         </Button>
       ),
@@ -60,7 +72,13 @@ const MainPage = ({ services, products }) => {
       text1: "Nuestros Productos",
       text2: "Adquiere",
       component: (
-        <Button variant="outlined" sx={{ width: 300, fontWeight: "bold" }}>
+        <Button
+          onClick={() => {
+            navigate("/tienda");
+          }}
+          variant="outlined"
+          sx={{ width: 300, fontWeight: "bold" }}
+        >
           Visitar Tienda
         </Button>
       ),
@@ -70,7 +88,13 @@ const MainPage = ({ services, products }) => {
       text1: "Nuestras Sucursales",
       text2: "Conoce",
       component: (
-        <Button variant="outlined" sx={{ width: 300, fontWeight: "bold" }}>
+        <Button
+          onClick={() => {
+            navigate("/sucursales");
+          }}
+          variant="outlined"
+          sx={{ width: 300, fontWeight: "bold" }}
+        >
           Ver sucursales
         </Button>
       ),
@@ -93,7 +117,9 @@ const MainPage = ({ services, products }) => {
   return (
     <Box sx={{ mt: -10 }}>
       <PrincipalSlider banners={banners} />
-      <Box sx={{ backgroundColor: "#000", width: "100%", height: "500px" }}>
+      <Box
+        sx={{ backgroundColor: "#000", height: "500px", overflowX: "hidden" }}
+      >
         <Typography
           gutterBottom
           variant={"h4"}
@@ -107,8 +133,12 @@ const MainPage = ({ services, products }) => {
         >
           NUESTROS SERVICIOS
         </Typography>
-        <Box sx={{ overflowX: "auto" }}>
-          <Stack direction={"row"} spacing={2}>
+        <Box
+          sx={{
+            overflowX: "auto",
+          }}
+        >
+          <Stack direction={"row"} spacing={2} sx={{ mx: 1.5 }}>
             {services?.map((servicio, index) => (
               <Box key={index} sx={{ m: 2 }}>
                 <CardServicesMainSlider
@@ -138,7 +168,6 @@ const MainPage = ({ services, products }) => {
           sx={{
             textAlign: "center",
             height: 75,
-
             color: "#e2b753",
           }}
         >
@@ -202,6 +231,7 @@ const MainPage = ({ services, products }) => {
         >
           CLIENTES QUE NOS RECOMIENDAN
         </Typography>
+
         <AutoplaySlider />
       </Box>
 

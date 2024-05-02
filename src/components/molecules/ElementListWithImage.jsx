@@ -4,7 +4,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, Box } from "@mui/material";
 
 export default function ElementListWithImage({
   primaryText,
@@ -22,8 +22,8 @@ export default function ElementListWithImage({
       alignItems="flex-start"
       sx={{
         backgroundColor: "#FFF",
-        border: "1px solid transparent",
-        borderRadius: "10px",
+        borderRadius: 2,
+        position: "relative", // Agregamos posición relativa para que el botón se pueda posicionar absolutamente dentro de este componente
         "&:hover": {
           border: "1px solid #ff9800",
           backgroundColor: "#FAFEBB",
@@ -33,7 +33,11 @@ export default function ElementListWithImage({
       onClick={handleClickItem}
     >
       <ListItemAvatar>
-        <Avatar alt={primaryText} src={image} />
+        <Avatar
+          alt={primaryText}
+          src={image.url}
+          sx={{ width: 50, height: 50, mr: 2 }}
+        />
       </ListItemAvatar>
       <Stack direction={"column"}>
         <ListItemText
@@ -62,13 +66,22 @@ export default function ElementListWithImage({
             </React.Fragment>
           }
         />
-
-        <Button
-          sx={{ alignSelf: "flex-start" }}
-          onClick={() => handleVerHorario()}
+        <Box
+          sx={{
+            position: "absolute", // Posicionamos absolutamente el botón dentro de este componente
+            top: 15,
+            right: 40,
+            transform: "translate(50%, -50%)", // Ajustamos el botón a la esquina superior derecha
+          }}
         >
-          Ver Horario
-        </Button>
+          <Button
+            size="small"
+            variant="text"
+            onClick={() => handleVerHorario()}
+          >
+            Horario
+          </Button>
+        </Box>
       </Stack>
     </ListItem>
   );

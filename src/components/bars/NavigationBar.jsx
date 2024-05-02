@@ -23,6 +23,7 @@ import ModalMisCitasBarbero from "../modals/ModalMisCitasBarbero";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonIcon from "@mui/icons-material/Person";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import { scrollToTop } from "../../utils/screen";
 
 const PAGES_ADMIN = [
   { title: "Citas", url: "/citas" },
@@ -116,6 +117,7 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
   }, []);
 
   const handleClickPage = (url) => {
+    scrollToTop();
     console.log("handleClickPage()", url);
     handleCloseNavMenu();
     if (url == "/administracion") setShowNavigationBar(false);
@@ -199,7 +201,7 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
               color: "inherit",
               textDecoration: "none",
               cursor: "pointer",
-              color: "yellow",
+              color: "#E2b753",
             }}
           >
             EL TÍO BARBERSHOP
@@ -259,7 +261,7 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
                     sx={{
                       cursor: "pointer",
                       "&:hover": {
-                        color: "yellow", // Cambia el color a amarillo al hacer hover
+                        color: "#E2b753", // Cambia el color a amarillo al hacer hover
                       },
                     }}
                   >
@@ -279,7 +281,7 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
                   color: "white",
                   display: "block",
                   "&:hover": {
-                    color: "yellow", // Cambia el color a amarillo al hacer hover
+                    color: "#E2b753", // Cambia el color a amarillo al hacer hover
                   },
                 }}
               >
@@ -296,7 +298,7 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: "45px" }}
+              sx={{ mt: "30px" }}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
@@ -328,7 +330,7 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
                     <Typography variant="h6" gutterBottom>
                       <strong>{sessionDataStorage.nombre}</strong>
                     </Typography>
-                    <Typography variant="h6" gutterBottom>
+                    <Typography variant="h6">
                       {sessionDataStorage?.rol}
                     </Typography>
                   </Box>

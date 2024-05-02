@@ -54,7 +54,7 @@ const CardServicesMainSlider = ({
     <Card
       sx={{
         backgroundColor: "transparent", // Cambia el color de fondo si está seleccionado
-        minWidth: 250,
+        width: { xs: 220, sm: 350 },
       }}
     >
       <CardMedia

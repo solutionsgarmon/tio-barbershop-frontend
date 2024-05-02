@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TableHorario from "../molecules/TableHorario";
+import { scrollToBottom } from "../../utils/screen";
 
 const CardCitaBarbershop = ({
   barbershop,
@@ -27,6 +28,7 @@ const CardCitaBarbershop = ({
   }, [dataCita]);
 
   const handleMouseEnter = () => {
+    setImageIndex(1);
     setHovered(true);
   };
 
@@ -38,6 +40,7 @@ const CardCitaBarbershop = ({
   const handleSelect = () => {
     onSelect(barbershop);
     setIsSelected(true);
+    scrollToBottom();
   };
 
   React.useEffect(() => {
@@ -55,8 +58,10 @@ const CardCitaBarbershop = ({
   return (
     <Card
       sx={{
+        width: 300,
         border: isSelected ? "3px solid blue" : "none",
         backgroundColor: isSelected ? "#f0f0f0" : "transparent",
+        cursor: "pointer",
         "&:hover": {
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
           transform: "scale(1.01)",
@@ -64,6 +69,7 @@ const CardCitaBarbershop = ({
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={handleSelect}
     >
       <CardMedia
         component="img"
@@ -88,7 +94,7 @@ const CardCitaBarbershop = ({
           {barbershop?.direccion.colonia}, {barbershop?.direccion.ciudad}
         </Typography>
         <div style={{ margin: "auto" }}>
-          <Accordion>
+          <Accordion onClick={(event) => event.stopPropagation()}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1-content"

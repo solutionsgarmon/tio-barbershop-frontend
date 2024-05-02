@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Navigator from "./Navigator";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 
 import Header from "./Header";
 import { useState } from "react";
@@ -40,13 +41,15 @@ import FeedIcon from "@mui/icons-material/Feed";
 import EventIcon from "@mui/icons-material/Event";
 import DescriptionIcon from "@mui/icons-material/Description";
 import Citas from "./citas/Citas";
+import ReportesBarbero from "./reportes/ReportesBarbero";
+import ReportesAdministrador from "./reportes/ReportesAdministrador";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
       {"El Tío Barbershop © "}
-      <Link color="inherit" href="https://mui.com/">
-        www.eltiobarbershop.com.mx -
+      <Link color="inherit" href="https:// www.eltiobarbershop.com/">
+        www.eltiobarbershop.com -
       </Link>{" "}
       {new Date().getFullYear()}.
     </Typography>
@@ -200,6 +203,18 @@ const drawerWidth = 256;
 
 const categories_administrador = [
   {
+    id: "REPORTES",
+
+    children: [
+      {
+        id: "General",
+        icon: <SummarizeIcon />,
+        tabs: ["Balance"],
+        component: <ReportesAdministrador />,
+      },
+    ],
+  },
+  {
     id: "USUARIOS",
 
     children: [
@@ -281,12 +296,6 @@ const categories_administrador = [
         tabs: ["Citas"],
         component: <Citas />,
       },
-      {
-        id: "Reportes",
-        icon: <SummarizeIcon />,
-        tabs: ["Reportes", "Ventas", "Importar Datos"],
-        component: <Posts />,
-      },
     ],
   },
   {
@@ -303,18 +312,18 @@ const categories_administrador = [
 ];
 
 const categories_barbero = [
-  {
-    id: "Mi Perfil",
+  // {
+  //   id: "Mi Perfil",
 
-    children: [
-      {
-        id: "Mis datos ",
-        icon: <FeedIcon />,
-        tabs: ["Mis Datos"],
-        component: <Barbers />,
-      },
-    ],
-  },
+  //   children: [
+  //     {
+  //       id: "Mis datos ",
+  //       icon: <FeedIcon />,
+  //       tabs: ["Mis Datos"],
+  //       component: <Barbers />,
+  //     },
+  //   ],
+  // },
   {
     id: "Citas",
 
@@ -328,17 +337,28 @@ const categories_barbero = [
     ],
   },
   {
-    id: "Publicaciones",
-
+    id: "Reportes",
     children: [
       {
-        id: "Lista de Publicaciones",
-        icon: <DescriptionIcon />,
-        tabs: ["Clientes", "Citas"],
-        component: <Users />,
+        id: "Mis reportes",
+        icon: <AssessmentIcon />,
+        tabs: ["Mis reportes"],
+        component: <ReportesBarbero />,
       },
     ],
   },
+  // {
+  //   id: "Publicaciones",
+
+  //   children: [
+  //     {
+  //       id: "Lista de Publicaciones",
+  //       icon: <DescriptionIcon />,
+  //       tabs: ["Clientes", "Citas"],
+  //       component: <Users />,
+  //     },
+  //   ],
+  // },
 ];
 
 export default function Paperbase() {

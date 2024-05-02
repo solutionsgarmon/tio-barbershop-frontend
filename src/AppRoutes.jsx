@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import SobreNosotros from "./pages/SobreNosotros";
 import Servicios from "./pages/Servicios";
@@ -46,7 +46,7 @@ function AppRoutes() {
           setShowModalRegistro={setShowModalRegistro}
         />
       )}
-      <Box sx={{ margin: "auto", pt: 10, pb: 1, minHeight: "60vh" }}>
+      <Box sx={{ margin: "auto", pt: 10, minHeight: "60vh" }}>
         <Routes>
           {/* <Route path="/provocarError" element={<ComponentWithError />} /> */}
           <Route
@@ -62,7 +62,7 @@ function AppRoutes() {
           <Route path="/sucursales" element={<Sucursales />} />
 
           <Route path="/citas" element={<Citas />} />
-          <Route path="/citas" element={<Citas />} />
+
           <Route path="/cursos" element={<Cursos />} />
           <Route
             path="/login"

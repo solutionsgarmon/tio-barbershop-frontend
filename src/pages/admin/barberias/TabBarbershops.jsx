@@ -38,34 +38,26 @@ import {
 } from "../../../api/updates";
 import { getBarbershops } from "../../../api/gets";
 
-const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
+const Table = ({
+  setBarbershopSelected,
+  setReloadData,
+  isLoading,
+  barbershops,
+}) => {
   const [validationErrors, setValidationErrors] = useState({});
   const [isLoadingData, setIsLoadingData] = useState(true); // poner loading girando
   const [isUpdateData, setIsUpdateData] = useState(false); //Bloquear la modal y boton
-  const [barbershops, setBarbershops] = useState([]);
+
   const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
-    async function fetchData() {
-      setBarbershops(await getBarbershops());
-    }
-    fetchData();
-    setIsLoadingData(false);
-  }, []);
-
-  useEffect(() => {
     setIsLoadingData(isLoading);
+    setIsUpdateData(isLoading);
   }, [isLoading]);
 
-  const reloadData = async () => {
-    setSelectedRow(null);
+  const reloadData = () => {
     setReloadData((prev) => !prev);
   };
-
-  useEffect(() => {
-    setIsLoadingData(false);
-    setIsUpdateData(false);
-  }, [barbershops]);
 
   const propertiesToExcludeCreate = ["imagen"];
   const propertiesToExcludeUpdate = ["imagen"];
@@ -337,12 +329,14 @@ const Table = ({ setBarbershopSelected, setReloadData, isLoading }) => {
 const queryClient = new QueryClient();
 
 const TabBarbershops = ({
+  barbershops,
   setBarbershopSelected,
   setReloadData,
   isLoading,
 }) => (
   <QueryClientProvider client={queryClient}>
     <Table
+      barbershops={barbershops}
       setBarbershopSelected={setBarbershopSelected}
       setReloadData={setReloadData}
       isLoading={isLoading}

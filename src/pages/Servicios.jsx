@@ -10,8 +10,16 @@ import { getServices } from "../api/gets";
 const Servicios = ({ services }) => {
   return (
     <Box>
-      <h1>Servicios que Ofrecemos</h1>
-
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          flexWrap: "wrap",
+          mt: 2,
+        }}
+      >
+        <h1>Nuestros Servicios</h1>
+      </Box>
       <Box sx={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}>
         {services?.map((servicio) => (
           <Box sx={{ m: 2, maxWidth: 500 }}>

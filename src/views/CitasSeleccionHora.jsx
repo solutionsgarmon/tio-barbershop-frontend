@@ -5,20 +5,24 @@ import { getHorarioDisponibleBarber } from "../api/gets";
 import { useAppContext } from "../context/AppProvider";
 import CalendarSeleccionCita from "../components/atoms/CalendarSeleccionCita";
 import CircularProgress from "@mui/material/CircularProgress";
+import { scrollToBottom } from "../utils/screen";
+
+const fechaHoy = dayjs().format("YYYY-MM-DD").toUpperCase();
 
 const CitasSeleccionHora = ({ setEnableButton, dataCita, setDataCita }) => {
-  const fechaHoy = dayjs().format("YYYY-MM-DD").toUpperCase();
   const { setIsLoadingApp } = useAppContext();
   const [horaSeleccionada, setHoraSeleccionada] = useState("");
-  const [fechaSeleccionada, setFechaSeleccionada] = useState("");
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(fechaHoy);
   const [horasDisponibles, setHorasDisponibles] = useState([]);
   const [totalHorasDisponibles, setTotalHorasDisponibles] = useState(null);
   const [loading, setloading] = useState(false);
 
   // Obtener todo el horario disponible de los próximos 15 días y las horas disponibles de HOY
   useEffect(() => {
-    setloading(true);
     console.log("useEffect []");
+    setloading(true);
+    handleChangeCalendar(fechaSeleccionada);
+
     async function fetchData() {
       const horario_disponible_15_dias = await getHorarioDisponibleBarber(
         dataCita.id_barbero,
@@ -48,6 +52,7 @@ const CitasSeleccionHora = ({ setEnableButton, dataCita, setDataCita }) => {
 
   // Función para manejar el cambio de hora seleccionada
   const handleChangeHora = (event) => {
+    scrollToBottom();
     const rangoHora = event.target.value;
 
     setHoraSeleccionada(rangoHora);
@@ -60,6 +65,7 @@ const CitasSeleccionHora = ({ setEnableButton, dataCita, setDataCita }) => {
 
   const handleChangeCalendar = (dateSelected) => {
     console.log("[ejecución] handleChangeCalendar()");
+    setHoraSeleccionada("");
     setFechaSeleccionada(dateSelected);
     setDataCita((prevDataCita) => ({
       ...prevDataCita,
@@ -94,13 +100,19 @@ const CitasSeleccionHora = ({ setEnableButton, dataCita, setDataCita }) => {
           sx={{ mt: { xs: -3, md: 0 } }}
         >
           <MenuItem value="" disabled>
-            {horasDisponibles.length == 0
+            {horasDisponibles?.length == 0
               ? "DESCANSO DEL BARBERO"
               : "SELECCIONA UN HORARIO"}
           </MenuItem>
 
           {horasDisponibles?.map((hora, index) => (
-            <MenuItem key={index} value={hora} disabled={false}>
+            <MenuItem
+              key={index}
+              value={hora}
+              disabled={
+                fechaHoy === fechaSeleccionada && hora < dayjs().format("HH:mm")
+              }
+            >
               {`${hora} - ${sumarDuracion(hora, dataCita.duracion)}`}
             </MenuItem>
           ))}

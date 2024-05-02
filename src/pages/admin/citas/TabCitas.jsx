@@ -36,17 +36,28 @@ import PasswordTypography from "../../../components/atoms/PasswordTypography";
 const ROLES = ["Cliente", "Barbero", "Administrador"];
 
 const Example = () => {
+  const { isLoadingApp, setIsLoadingApp, sessionDataStorage } = useAppContext();
   const [validationErrors, setValidationErrors] = useState({});
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
   const [isUpdateData, setIsUpdateData] = useState(false); //Bloquear la modal y boton
   const [citas, setCitas] = useState([]);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
-      setCitas(await getCitas());
+      if (sessionDataStorage?.rol === "BARBERO") {
+        const citas = await getCitas();
+        setCitas(
+          citas.filter(
+            (cita) => cita.barbero_asignado == sessionDataStorage._id
+          )
+        );
+      } else if (sessionDataStorage?.rol === "ADMINISTRADOR") {
+        setCitas(await getCitas());
+      }
     }
     fetchData();
-  }, []);
+  }, [sessionDataStorage, reload]);
 
   useEffect(() => {
     setIsLoadingUsers(false);
@@ -67,16 +78,27 @@ const Example = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "cliente",
+        accessorKey: "datos_cliente.nombre",
         header: "Cliente",
         muiEditTextFieldProps: {
           required: true,
         },
       },
+      {
+        accessorKey: "estatus",
+        header: "Estatus",
+      },
 
       {
         accessorKey: "nombre_servicio_asignado",
         header: "Servicio",
+        muiEditTextFieldProps: {
+          required: true,
+        },
+      },
+      {
+        accessorKey: "costo",
+        header: "Costo",
         muiEditTextFieldProps: {
           required: true,
         },
@@ -102,6 +124,7 @@ const Example = () => {
           required: true,
         },
       },
+
       {
         accessorKey: "hora_fin_asignada",
         header: "Hora Fin",
@@ -110,8 +133,8 @@ const Example = () => {
         },
       },
       {
-        accessorKey: "fecha",
-        header: "fecha",
+        accessorKey: "fecha_asignada",
+        header: "Fecha",
         muiEditTextFieldProps: {
           required: true,
         },
@@ -191,7 +214,7 @@ const Example = () => {
 
   const handleReloadData = async () => {
     setIsLoadingUsers(true);
-    setCitas(await getUsers());
+    setReload(!reload);
   };
 
   const table = useMaterialReactTable({
@@ -272,7 +295,7 @@ const Example = () => {
             <RefreshIcon color="inherit" sx={{ display: "block" }} />
           </IconButton>
         </Tooltip>
-        <Button
+        {/* <Button
           variant="contained"
           onClick={() => {
             table.setCreatingRow(true); //simplest way to open the create row modal with no default values
@@ -285,7 +308,7 @@ const Example = () => {
           }}
         >
           + Agregar
-        </Button>
+        </Button> */}
       </Box>
     ),
     state: {

@@ -46,10 +46,11 @@ export function updateBarber(values, idBarber) {
   console.log("> updateBarber()")
   return new Promise((resolve, reject) => {
     axios.patch(
-      `${import.meta.env.VITE_BARBERS_URL}/${idBarber}`,
+      `${import.meta.env.VITE_BARBERS_URL}/update/${idBarber}`,
       values
     )
       .then((response) => {
+        console.log("response 30"),response
         if (!response.data.success) {
           console.error("No se pudo realizar correctamente la petición updateBarber():", response.data);
           reject(response);

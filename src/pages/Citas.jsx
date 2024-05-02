@@ -10,6 +10,7 @@ import {
 import React from "react";
 import CardServices from "../components/cards/CardServices";
 import CitasConfirmacion from "../views/CitasConfirmacion";
+import SendIcon from "@mui/icons-material/Send";
 
 import { useState } from "react";
 import Stepper from "../components/molecules/Stepper";
@@ -21,6 +22,8 @@ import CitasSeleccionServicio from "../views/CitasSeleccionServicio";
 import CitasSeleccionHora from "../views/CitasSeleccionHora";
 import CitasDatosCliente from "../views/CitasDatosCliente";
 import CardCitaBarbershop from "../components/cards/CardCitaBarbershop";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const STEPS = ["Barbería", "Barbero", "Servicio", "Hora", "Confirmación"];
 const STEPS_DESC = [
@@ -30,7 +33,12 @@ const STEPS_DESC = [
   "Fecha y Hora",
   "Confirmación",
 ];
-
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
 const Citas = () => {
   const { isLoadingApp, setIsLoadingApp, sessionDataStorage } = useAppContext();
   const [dataCita, setDataCita] = useState({
@@ -54,10 +62,11 @@ const Citas = () => {
   const [barbershops, setBarbershops] = useState([]);
   const [barbers, setBarbers] = useState([]);
   const [services, setServices] = useState([]);
-  const [barbershopSelected, setBarbershopSelected] = useState(null);
+  const [confirmacion, setConfirmacion] = useState(false);
+
   const [enableButton, setEnableButton] = useState(false);
 
-  const [reloadData, setReloadData] = useState(false);
+  //Iniciliazar informacion de la cita dependiendo del ROL
   useEffect(() => {
     if (sessionDataStorage?.rol === "BARBERO") {
       const barberiaAsignada = sessionDataStorage.barberia_asignada;
@@ -77,32 +86,12 @@ const Citas = () => {
       setDataCita((prevData) => ({
         ...prevData,
         nombre_cliente: sessionDataStorage.nombre || "",
-        telefono_cliente: sessionDataStorage.datos_personales?.telefono || "",
+        telefono_cliente: sessionDataStorage.telefono || "",
         correo_cliente: sessionDataStorage.correo || "",
         imagen_cliente: sessionDataStorage.imagen || "",
       }));
     }
   }, [sessionDataStorage, barbershops]);
-
-  // useEffect(() => {
-  //   if (sessionDataStorage.rol == "CLIENTE") {
-  //     setDataCita((prevData) => ({
-  //       ...prevData,
-  //       nombre_cliente: sessionDataStorage?.nombre || "",
-  //       telefono_cliente: sessionDataStorage?.datos_personales?.telefono || "",
-  //       correo_cliente: sessionDataStorage?.correo || "",
-  //       imagen_cliente: sessionDataStorage?.imagen || "",
-  //     }));
-  //   } else if (sessionDataStorage.rol == "BARBERO") {
-  //     setDataCita((prevData) => ({
-  //       ...prevData,
-  //       nombre_cliente: ,
-  //       telefono_cliente: "",
-  //       correo_cliente: sessionDataStorage?.correo || "",
-  //       imagen_cliente: sessionDataStorage?.imagen || "",
-  //     }));
-  //   }
-  // }, [sessionDataStorage]);
 
   useEffect(() => {
     console.log("dataCita", dataCita);
@@ -114,13 +103,11 @@ const Citas = () => {
       setBarbershops(await getBarbershops());
       setBarbers(await getBarbers());
       setServices(await getServices());
-      // setProducts(await getProducts());
-      setIsLoadingApp(false); // Mover aquí para que se establezca en false después de obtener los datos
+      setIsLoadingApp(false);
     }
 
     fetchData();
-    setBarbershopSelected(null);
-  }, [reloadData]);
+  }, []);
 
   const handleSelectBarbershop = (barberia) => {
     setDataCita((prevDataCita) => ({
@@ -134,6 +121,7 @@ const Citas = () => {
   const handleContinue = () => {
     setCurrentStep(currentStep + 1);
     setEnableButton(false);
+    //scrollToTop();
   };
 
   const handleBack = () => {
@@ -243,28 +231,73 @@ const Citas = () => {
                   setEnableButton={setEnableButton}
                   setDataCita={setDataCita}
                   dataCita={dataCita}
+                  confirmacion={confirmacion}
+                  setConfirmacion={setConfirmacion}
                 />
               )}
             </Box>
           )}
-          <Box
-            sx={{ display: "flex", justifyContent: "flex-end", m: 2, mt: 5 }}
+          <Stack
+            onClick={scrollToTop}
+            direction={"row"}
+            sx={{
+              textAlign: "center",
+              mt: 5,
+              mx: { xs: 2, sm: 10 },
+            }}
           >
             {currentStep !== 0 && (
-              <Button onClick={handleBack}>Regresar</Button>
-            )}
-            {currentStep === STEPS.length - 1 ? null : (
               <Button
-                variant="contained"
-                disabled={!enableButton}
-                onClick={handleContinue}
-                fullWidth
-                sx={{ py: 2 }}
+                variant="outlined"
+                onClick={handleBack}
+                sx={{ px: { xs: 3, sm: 10 } }}
               >
-                Continuar
+                <ArrowBackIcon />
+                &nbsp;Atrás
               </Button>
             )}
-          </Box>
+            {currentStep === STEPS.length - 1 ? (
+              <Button
+                variant="contained"
+                onClick={(event) => {
+                  setConfirmacion(true);
+                  event.stopPropagation();
+                }}
+                fullWidth
+                sx={{ py: 1, ml: 1 }}
+              >
+                Confirmar cita &nbsp; <SendIcon />
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                onClick={handleContinue}
+                fullWidth
+                sx={{ py: 1, ml: 1 }}
+              >
+                Siguiente Paso &nbsp; <ArrowForwardIcon />
+              </Button>
+              // <button
+              //   style={{
+              //     display: "inline-block",
+              //     backgroundColor: "#1976d2",
+              //     color: "white",
+              //     border: "none",
+              //     padding: "10px 20px",
+              //     fontSize: "16px",
+              //     borderRadius: "4px",
+              //     cursor: "pointer",
+              //     outline: "none",
+              //     width: "100%",
+              //     marginLeft: "10px",
+              //   }}
+              //   onClick={handleContinue}
+              //   disabled={!enableButton}
+              // >
+              //   Siguiente Paso <ArrowForwardIcon sx={{ mb: -0.8 }} />
+              // </button>
+            )}
+          </Stack>
         </>
       )}
     </Box>

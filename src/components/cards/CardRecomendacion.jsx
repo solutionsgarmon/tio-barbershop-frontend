@@ -11,7 +11,7 @@ import {
 
 const CardRecomendacion = () => {
   return (
-    <Card sx={{ maxWidth: 800, m: "auto" }}>
+    <Card sx={{ m: "auto" }}>
       <CardContent>
         <Stack direction={"column"} alignItems="center" mb={2}>
           <div style={{ position: "relative", display: "inline-block" }}>
@@ -33,7 +33,7 @@ const CardRecomendacion = () => {
               }}
             />
           </div>
-          <Typography variant="h4" component="div" sx={{ mt: 2 }}>
+          <Typography variant="h5" component="div" sx={{ mt: 2 }}>
             Carlos Zambrano López
           </Typography>
         </Stack>
@@ -41,7 +41,7 @@ const CardRecomendacion = () => {
         <Typography
           variant="h6"
           color="text.secondary"
-          sx={{ textAlign: "justify", mt: 2, mx: { xs: 1, sm: 5 } }}
+          sx={{ textAlign: "justify", mt: 2, mx: { xs: 1, sm: 4 } }}
         >
           ¡Increíble experiencia en esta barbería! Desde que entré por la
           puerta, me recibieron con una sonrisa cálida y un ambiente acogedor.

@@ -80,7 +80,7 @@ const Table = ({ setServiceSelected }) => {
       },
       {
         accessorKey: "duracion",
-        header: "Duración (minutos)",
+        header: "Duración (minutos)*",
       },
 
       {
@@ -175,7 +175,9 @@ const Table = ({ setServiceSelected }) => {
       }
     } catch (error) {
       console.error("Error al modificar:", error);
-      toast.error("Error al modificar.");
+      toast.error(
+        "No se pudo modificar, verifica que los datos sean correctos."
+      );
     }
     setIsUpdateData(false);
   };
@@ -211,9 +213,16 @@ const Table = ({ setServiceSelected }) => {
   //VERIFICAR FORMULARIO
   const verifyForm = (values) => {
     console.log("values", values);
-    if (!values["nombre"] || !values["categorias"] || !values["duracion"])
+    if (!values["nombre"] || !values["categorias"] || !values["duracion"]) {
+      toast.warning("Por favor ingresa los datos obligatorios");
       return false;
-    else return true;
+    }
+    if (isNaN(values["duracion"]) || isNaN(values["precio"])) {
+      toast.warning("Por favor ingresa números en duración y precio");
+      return false;
+    }
+
+    return true;
   };
 
   //CLIC IN ROW

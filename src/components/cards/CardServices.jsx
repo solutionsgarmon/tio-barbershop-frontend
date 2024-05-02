@@ -57,6 +57,7 @@ const CardServices = ({ servicio, onSelect, dataCita, withButtons = true }) => {
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={handleSelect}
     >
       <CardMedia
         component="img"
@@ -84,7 +85,6 @@ const CardServices = ({ servicio, onSelect, dataCita, withButtons = true }) => {
         <CardActions>
           <Button
             size="small"
-            onClick={handleSelect}
             fullWidth
             sx={{
               backgroundColor: isSelected ? "blue" : "#f0f0f0",

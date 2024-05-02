@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useEffect } from "react";
 import { useState } from "react";
+import { scrollToBottom } from "../../utils/screen";
 
 const CardCitaBarber = ({
   barbero,
@@ -17,6 +18,7 @@ const CardCitaBarber = ({
   const [hovered, setHovered] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
   const [isSelected, setIsSelected] = useState(false);
+  const [showAllDescription, setShowAllDescription] = useState(false);
 
   useEffect(() => {
     if (dataCita?.id_barbero == barbero._id) setIsSelected(true);
@@ -35,6 +37,7 @@ const CardCitaBarber = ({
   const handleSelect = () => {
     onSelect(barbero);
     setIsSelected(true); // Marca el barbero como seleccionado
+    scrollToBottom();
   };
 
   useEffect(() => {
@@ -57,8 +60,10 @@ const CardCitaBarber = ({
   return (
     <Card
       sx={{
+        width: { xs: 150, sm: 220 },
         border: isSelected ? "3px solid blue" : "none",
         backgroundColor: isSelected ? "#f0f0f0" : "transparent",
+        cursor: "pointer",
         "&:hover": {
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
           transform: "scale(1.01)",
@@ -66,11 +71,12 @@ const CardCitaBarber = ({
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={handleSelect}
     >
       <CardMedia
         component="img"
         alt={barbero.nombre}
-        height="250"
+        height="300"
         image={
           hovered
             ? barbero?.imagenes[imageIndex]?.url
@@ -78,23 +84,33 @@ const CardCitaBarber = ({
         }
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
+        <Typography gutterBottom variant="h6" component="div">
           {barbero?.nombre}
         </Typography>
-        {/* <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ height: 70, textAlign: "justify" }}
-        >
-          {barbero?.descripcion}
-        </Typography> */}
+
+        {isSelected ? (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ textAlign: "left" }}
+          >
+            {barbero?.descripcion}
+          </Typography>
+        ) : (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ textAlign: "left", mx: { xs: -1, sm: 0 } }}
+          >
+            {barbero?.descripcion.substring(0, 70)}...
+          </Typography>
+        )}
       </CardContent>
       {withButtons && (
         <CardActions>
           <Button
             size="small"
             fullWidth
-            onClick={handleSelect}
             sx={{
               backgroundColor: isSelected ? "blue" : "#f0f0f0",
               color: isSelected ? "white" : "black",

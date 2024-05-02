@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Grid, Stack } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import MyMap from "../components/molecules/MyMap";
 import ElementListWithImage from "../components/molecules/ElementListWithImage";
 import { useAppContext } from "../context/AppProvider";
@@ -21,47 +21,50 @@ const Sucursales = () => {
   };
 
   return (
-    <Grid container sx={{ p: 2 }}>
-      <Grid
-        xs={4}
-        md={4}
-        sx={{
-          maxHeight: 600,
-          overflowY: "auto",
-          "&::-webkit-scrollbar": {
-            width: "12px",
-            height: "12px",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "goldenrod",
-            borderRadius: "6px",
-            border: "2px solid transparent",
-            backgroundClip: "padding-box",
-          },
-          "&::-webkit-scrollbar-track": {
-            backgroundColor: "transparent",
-          },
-        }}
-      >
-        <h2>SUCURSALES</h2>
-        {barbershops.map((barbershop, index) => (
-          <Box sx={{ m: 1 }}>
-            <ElementListWithImage
-              setSucursalSelected={setSucursalSelected}
-              image={barbershop.imagen}
-              primaryText={barbershop.nombre}
-              secondaryText={`${barbershop.direccion.calle},${barbershop.direccion.colonia} ${barbershop.direccion.ciudad}`}
-              index={index}
-              handleVerHorario={handleVerHorario}
-            />
-          </Box>
-        ))}
+    <Grid container spacing={0} sx={{ mt: 0.5 }}>
+      <Grid item xs={12} md={4}>
+        <h2 style={{ textAlign: "center" }}>SUCURSALES</h2>
+        <Box
+          sx={{
+            maxHeight: { xs: "28vh", sm: "80vh" },
+            overflowY: "auto",
+            mt: -2,
+          }}
+        >
+          {barbershops.map((barbershop, index) => (
+            <Box
+              sx={{ m: 1, borderRadius: 2 }}
+              key={index}
+              border={1}
+              borderColor="#E2b753"
+            >
+              <ElementListWithImage
+                setSucursalSelected={setSucursalSelected}
+                image={barbershop.imagenes[0]}
+                primaryText={barbershop.nombre}
+                secondaryText={`${barbershop.direccion.calle},${barbershop.direccion.colonia} ${barbershop.direccion.ciudad}`}
+                index={index}
+                handleVerHorario={handleVerHorario}
+              />
+            </Box>
+          ))}
+        </Box>
       </Grid>
-      <Grid xs={8} md={8}>
-        <MyMap
-          lat={parseFloat(barbershops[sucursalSelected]?.coordenadas.latitud)}
-          lng={parseFloat(barbershops[sucursalSelected]?.coordenadas.longitud)}
-        />
+      <Grid item xs={12} md={8} sx={{ mt: { xs: 0, sm: 2 } }}>
+        <Box
+          border={1}
+          borderColor="#E2b753"
+          sx={{ height: { xs: "50vh", sm: "80vh" }, mt: 1, m: 1 }}
+        >
+          <MyMap
+            lat={parseFloat(barbershops[sucursalSelected]?.coordenadas.latitud)}
+            lng={parseFloat(
+              barbershops[sucursalSelected]?.coordenadas.longitud
+            )}
+            height="100%"
+            width="100%"
+          />
+        </Box>
       </Grid>
       <CustomSwalModal
         horario={barbershops[sucursalSelected]?.horario || {}}

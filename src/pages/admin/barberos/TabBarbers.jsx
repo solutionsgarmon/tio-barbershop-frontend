@@ -174,6 +174,7 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
       {
         accessorKey: "descripcion",
         header: "Descripción",
+        Cell: ({ cell }) => cell.getValue().substring(0, 30) + "...",
       },
       {
         accessorKey: "password",
@@ -235,17 +236,16 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
       if (resp.data.success) {
         toast.success("Se modificó correctamente.");
         table.setEditingRow(null);
-        setIsLoadingData(true);
+        setIsLoadingData(false);
         await reloadData();
       } else {
         toast.error("No se pudo modificar.");
-        setIsUpdateData(false);
       }
     } catch (error) {
       console.error("Error en handleUpdate:", error);
       toast.error("Error al modificar el registro.");
-      setIsUpdateData(false);
     }
+    setIsUpdateData(false);
   };
 
   //DELETE action

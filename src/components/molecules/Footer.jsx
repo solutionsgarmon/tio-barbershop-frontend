@@ -5,10 +5,11 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import EmailIcon from "@mui/icons-material/Email";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/Twitter";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
 const Footer = () => {
   return (
-    <Box sx={{ backgroundColor: "#333", py: 4, mt: 2 }}>
+    <Box sx={{ backgroundColor: "#333", mt: 2 }}>
       <div
         style={{
           margin: "0 auto",
@@ -18,9 +19,9 @@ const Footer = () => {
           justifyContent: "center",
         }}
       >
-        <div className="col-sm-5 col-xs-12 text-center">
+        {/* <div className="col-sm-5 col-xs-12 text-center">
           <img src="images/icon-tio2.png" height="80px" alt="Garmon Logo" />
-        </div>
+        </div> */}
         <div
           className="col-xs-12 col-sm-7 text-center footer-icons"
           style={{
@@ -38,7 +39,18 @@ const Footer = () => {
                 rel="noopener noreferrer"
               >
                 <IconButton style={{ fontSize: "36px" }}>
-                  <FacebookIcon style={{ fontSize: "36px" }} />
+                  <FacebookIcon style={{ fontSize: "36px", color: "white" }} />
+                </IconButton>
+              </a>
+            </li>
+            <li style={{ display: "inline-block", marginRight: "10px" }}>
+              <a
+                href="https://www.facebook.com/eltiobarbershop"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <IconButton style={{ fontSize: "36px" }}>
+                  <WhatsAppIcon style={{ fontSize: "36px", color: "white" }} />
                 </IconButton>
               </a>
             </li>
@@ -88,9 +100,9 @@ const Footer = () => {
             </li> */}
           </ul>
         </div>
-        <div className="col-sm-5 col-xs-12 text-center">
+        {/* <div className="col-sm-5 col-xs-12 text-center">
           <img src="images/icon-tio2.png" height="80px" alt="Garmon Logo" />
-        </div>
+        </div> */}
       </div>
     </Box>
   );

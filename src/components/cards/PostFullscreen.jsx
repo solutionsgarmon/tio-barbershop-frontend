@@ -40,7 +40,7 @@ export default function RecipeReviewCard({
   };
 
   return (
-    <Card sx={{ maxWidth: 600, minWidth: 500, mx: "auto", my: 1 }}>
+    <Card sx={{ mx: "auto", my: 1 }}>
       <CardHeader
         avatar={
           <Avatar

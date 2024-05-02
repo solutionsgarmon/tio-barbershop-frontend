@@ -29,7 +29,12 @@ export default function Navigator(props) {
   const { ...other } = props;
   const { setIndexTabSelected } = useAppContext();
 
+  React.useEffect(() => {
+    props.setIdCategorieSelected("General");
+  }, []);
+
   const handleClickCategorie = (idCategorie) => {
+    console.log("idCategorie", idCategorie);
     setIndexTabSelected(0);
     props.setIdCategorieSelected(idCategorie);
   };

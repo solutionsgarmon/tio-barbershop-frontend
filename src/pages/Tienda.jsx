@@ -1,5 +1,6 @@
 import CardProduct from "../components/cards/CardProduct";
-import { Box, Grid, Typography } from "@mui/material";
+import HelpIcon from "@mui/icons-material/Help";
+import { Box, Grid, Tooltip, Typography } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { useEffect } from "react";
@@ -33,9 +34,16 @@ const Tienda = () => {
 
   return (
     <Box sx={{ py: 3, backgroundColor: "#000" }}>
-      <Typography variant="h4" align="center" color={"yellow"}>
+      <Typography variant="h4" align="center" color={"#E2b753"}>
         Tienda
+        <Tooltip
+          title="Los productos puedes adquirirlos directamente en cualquiera de nuestras sucursales"
+          arrow
+        >
+          <HelpIcon sx={{ width: 30, height: 30, mb: -0.5, ml: 1 }} />
+        </Tooltip>
       </Typography>
+
       <Box sx={{ display: "flex", justifyContent: "center", mx: 1 }}>
         <Grid container>
           {currentProducts.map((producto) => (

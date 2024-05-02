@@ -4,7 +4,15 @@ import { Box, Stack } from "@mui/material";
 
 const Cursos = () => {
   return (
-    <Stack direction="column" sx={{ textAlign: "center", m: "auto", mt: 3 }}>
+    <Stack
+      direction="column"
+      sx={{
+        textAlign: "center",
+        m: "auto",
+        mt: 3,
+        maxWidth: { xs: 350, sm: 600 },
+      }}
+    >
       <PostFullscreen
         title={"Curso de cómo realizar un Fade"}
         subtitle={"20 de mayo de 2024"}

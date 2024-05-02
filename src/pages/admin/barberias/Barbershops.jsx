@@ -28,23 +28,23 @@ const Barbershops = () => {
 
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true);
       setBarbershops(await getBarbershops());
       setBarbers(await getBarbers());
       setServices(await getServices());
       setProducts(await getProducts());
-      setIsLoading(false); // Mover aquí para que se establezca en false después de obtener los datos
+      setIsLoading(false);
     }
-
-    fetchData();
+    setIsLoading(true);
     setBarbershopSelected(null);
     setIndexTabSelected(0);
+    fetchData();
   }, [reloadData]);
 
   return (
     <Box>
       {indexTabSelected == 0 && (
         <TabBarbershops
+          barbershops={barbershops}
           setBarbershopSelected={setBarbershopSelected}
           setReloadData={setReloadData}
           isLoading={isLoading}

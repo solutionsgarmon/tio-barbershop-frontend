@@ -3,6 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CardRecomendacion from "../cards/CardRecomendacion";
+import { Box } from "@mui/material";
 
 const AutoplaySlider = () => {
   const settings = {
@@ -16,14 +17,16 @@ const AutoplaySlider = () => {
   };
 
   return (
-    <Slider {...settings}>
-      <div>
-        <CardRecomendacion />
-      </div>
-      <div>
-        <CardRecomendacion />
-      </div>
-    </Slider>
+    <Box sx={{ mx: 4 }}>
+      <Slider {...settings}>
+        <div>
+          <CardRecomendacion />
+        </div>
+        <div>
+          <CardRecomendacion />
+        </div>
+      </Slider>
+    </Box>
   );
 };
 
