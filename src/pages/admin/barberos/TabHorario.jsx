@@ -141,10 +141,7 @@ const TabHorario = ({ barberSelected, setReloadData }) => {
             <Typography variant="h5" gutterBottom>
               Horario del Barbero [{barberSelected.nombre}]
             </Typography>{" "}
-            <Avatar
-              src={barberSelected?.datos_personales.imagen}
-              sx={{ ml: 1 }}
-            />
+            <Avatar src={barberSelected?.imagenes[0].url} sx={{ ml: 1 }} />
           </Stack>
           <form onSubmit={handleSubmit}>
             <Paper elevation={3} style={{ width: "fit-content", padding: 20 }}>

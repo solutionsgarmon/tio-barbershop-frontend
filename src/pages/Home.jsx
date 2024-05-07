@@ -118,7 +118,12 @@ const MainPage = ({ services, products }) => {
     <Box sx={{ mt: -10 }}>
       <PrincipalSlider banners={banners} />
       <Box
-        sx={{ backgroundColor: "#000", height: "500px", overflowX: "hidden" }}
+        sx={{
+          backgroundColor: "#000",
+          height: "500px",
+          overflowX: "hidden",
+          textAlign: "center",
+        }}
       >
         <Typography
           gutterBottom
@@ -136,6 +141,7 @@ const MainPage = ({ services, products }) => {
         <Box
           sx={{
             overflowX: "auto",
+            textAlign: "center",
           }}
         >
           <Stack direction={"row"} spacing={2} sx={{ mx: 1.5 }}>

@@ -23,16 +23,14 @@ import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import EventIcon from "@mui/icons-material/Event";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import FolderOffIcon from "@mui/icons-material/FolderOff";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CancelIcon from "@mui/icons-material/Cancel";
+import WatchLaterIcon from "@mui/icons-material/WatchLater";
 
 import ContentCutIcon from "@mui/icons-material/ContentCut";
-import { sumarMinutosAHora } from "../../helpers/fechaYhora";
-import {
-  getCitas,
-  getCitasByCorreo,
-  getCitasCanceladasByIdBarbero,
-  getCitasCompletadasByIdBarbero,
-  getCitasPendientesByIdBarbero,
-} from "../../api/gets";
+import { deleteCita } from "../../api/deletes";
+import { postCitaregistro } from "../../api/posts";
+import { getCitasByCorreo, getCitasRegistroByCorreo } from "../../api/gets";
 import { updateCita } from "../../api/updates";
 
 const ModalMisCitasCliente = ({ handleClose, open, handleOk }) => {
@@ -44,23 +42,27 @@ const ModalMisCitasCliente = ({ handleClose, open, handleOk }) => {
     console.log("filtroCitas", filtroCitas);
     if (sessionDataStorage && open) {
       async function fetchData() {
-        if (sessionDataStorage.rol == "CLIENTE") {
-          const allCitas = await getCitasByCorreo(sessionDataStorage.correo);
-
-          setCitas(allCitas.filter((cita) => cita.estatus == filtroCitas));
-        } else if (sessionDataStorage.rol == "BARBERO") {
-          if (filtroCitas == "PENDIENTE")
-            setCitas(
-              await getCitasPendientesByIdBarbero(sessionDataStorage._id)
+        if (sessionDataStorage.rol === "CLIENTE") {
+          console.log("ES CLIENTE...");
+          if (filtroCitas === "PENDIENTE") {
+            setCitas(await getCitasByCorreo(sessionDataStorage.correo));
+          }
+          if (filtroCitas === "COMPLETADA") {
+            const citasRegistro = await getCitasRegistroByCorreo(
+              sessionDataStorage.correo
             );
-          else if (filtroCitas == "COMPLETADA")
             setCitas(
-              await getCitasCompletadasByIdBarbero(sessionDataStorage._id)
+              citasRegistro.filter((cita) => cita.estatus === "COMPLETADA")
             );
-          else if (filtroCitas == "CANCELADA")
+          }
+          if (filtroCitas === "CANCELADA") {
+            const citasRegistro = await getCitasRegistroByCorreo(
+              sessionDataStorage.correo
+            );
             setCitas(
-              await getCitasCanceladasByIdBarbero(sessionDataStorage._id)
+              citasRegistro.filter((cita) => cita.estatus === "CANCELADA")
             );
+          }
         }
       }
       fetchData();
@@ -72,39 +74,28 @@ const ModalMisCitasCliente = ({ handleClose, open, handleOk }) => {
       if (sessionDataStorage.rol == "CLIENTE") {
         const allCitas = await getCitasByCorreo(sessionDataStorage.correo);
         setCitas(allCitas.filter((cita) => cita.estatus == filtroCitas));
-      } else if (sessionDataStorage.rol == "BARBERO") {
-        if (filtroCitas == "PENDIENTE")
-          setCitas(await getCitasPendientesByIdBarbero(sessionDataStorage._id));
-        else if (filtroCitas == "COMPLETADA")
-          setCitas(
-            await getCitasCompletadasByIdBarbero(sessionDataStorage._id)
-          );
-        else if (filtroCitas == "CANCELADA")
-          setCitas(await getCitasCanceladasByIdBarbero(sessionDataStorage._id));
       }
     }
   };
 
   const handleCancelarCita = async (cita) => {
-    const id = cita._id;
-    const values = { estatus: "CANCELADA" };
-    await handleUpdate(values, id);
+    const nuevaCita = JSON.parse(JSON.stringify(cita));
+    nuevaCita.estatus = "CANCELADA";
+    await handleUpdateStatus(nuevaCita);
   };
 
   // UPDATE ACTION //
-  const handleUpdate = async (values, id) => {
+  // 1. Eliminar la cita, 2. Crear esa misma cita pero con estatus cambiado en citas_registro
+  const handleUpdateStatus = async (cita) => {
     try {
-      const resp = await updateCita(values, id);
-      console.log("resprespresp =>>>>", resp);
-      if (resp.data.success) {
-        toast.success("Cita Cancelada");
-        await reload();
-      } else {
-        toast.error("No se pudo Cancelar.");
-      }
+      await deleteCita(cita._id);
+      await postCitaregistro(cita);
+
+      toast.success("Estatus de citamodificado.");
+      await reload();
     } catch (error) {
-      console.error("Error al Cancelar Cita:", error);
-      toast.error("Error al Cancelar Cita.");
+      console.error("Error al modificar:", error);
+      toast.error("Error al modificar el estatus.");
     }
   };
 
@@ -112,8 +103,8 @@ const ModalMisCitasCliente = ({ handleClose, open, handleOk }) => {
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle
         style={{
-          backgroundColor: "#1976d2", // Color de Fondo
-          color: "white", // Color del Texto
+          backgroundColor: "#E2b753 ", // Color de Fondo
+          color: "black", // Color del Texto
         }}
       >
         <Stack direction={"row"}>
@@ -122,12 +113,12 @@ const ModalMisCitasCliente = ({ handleClose, open, handleOk }) => {
             src={sessionDataStorage.imagenes[0]?.url}
             sx={{ height: 50, width: 50, mr: 3 }}
           />
-          <Typography style={{ fontSize: "35px" }}>
+          <Typography style={{ fontSize: "30px" }}>
             <strong>Mis citas</strong>
           </Typography>
         </Stack>
       </DialogTitle>
-      <DialogContent dividers>
+      <DialogContent dividers sx={{ width: 300 }}>
         <Select
           value={filtroCitas}
           onChange={(e) => setFiltroCitas(e.target.value)}
@@ -135,14 +126,14 @@ const ModalMisCitasCliente = ({ handleClose, open, handleOk }) => {
           defaultValue={"PENDIENTE"}
           sx={{ m: "auto", mb: 2, textAlign: "center", height: 50 }}
         >
-          <MenuItem value="COMPLETADA">COMPLETAS</MenuItem>
+          <MenuItem value="COMPLETADA">COMPLETADAS</MenuItem>
           <MenuItem value="CANCELADA">CANCELADAS</MenuItem>
           <MenuItem value="PENDIENTE">PENDIENTES</MenuItem>
         </Select>
         {citas.length == 0 && (
           <Box sx={{ m: "auto", textAlign: "center" }}>
-            <Typography variant="h4" gutterBottom sx={{ m: 2 }}>
-              No tienes citas con el estatus {filtroCitas}
+            <Typography variant="h5" gutterBottom sx={{ m: 2 }}>
+              No tienes ninguna cita {filtroCitas}
             </Typography>
             <FolderOffIcon sx={{ width: 100, height: 100 }} />
           </Box>
@@ -150,9 +141,10 @@ const ModalMisCitasCliente = ({ handleClose, open, handleOk }) => {
         {citas.map((cita) => (
           <Card
             sx={{
-              maxWidth: 200,
+              maxWidth: 250,
               margin: "auto",
               marginTop: 0,
+              marginBottom: 1,
               paddingX: 2,
             }}
           >
@@ -202,28 +194,31 @@ const ModalMisCitasCliente = ({ handleClose, open, handleOk }) => {
                   {cita.hora_inicio_asignada}
                 </Typography>
               </Stack>
-              {cita.estatus !== "PENDIENTE" && (
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  sx={{
-                    textAlign: "center",
-                    backgroundColor:
-                      cita.estatus == "CANCELADA" ? "red" : "inherit",
-                    borderRadius: 5,
-                    mt: 1,
-                  }}
-                >
-                  <strong> {cita.estatus}</strong>
+
+              <Stack direction="row" sx={{ textAlign: "center", mt: 1 }}>
+                {cita.estatus === "CANCELADA" && (
+                  <CancelIcon
+                    color="error"
+                    sx={{ width: 35, height: 35, mr: -2 }}
+                  />
+                )}
+
+                {cita.estatus === "COMPLETADA" && (
+                  <CheckCircleOutlineIcon
+                    color="success"
+                    sx={{ width: 35, height: 35, mr: 0 }}
+                  />
+                )}
+                {cita.estatus === "PENDIENTE" && (
+                  <WatchLaterIcon
+                    color="main"
+                    sx={{ width: 35, height: 35, mr: -2 }}
+                  />
+                )}
+                <Typography variant="h6" sx={{ m: "auto", mb: 2 }}>
+                  {cita.estatus}
                 </Typography>
-              )}
-              {/* <Stack direction="row">
-              <AccessTimeIcon />
-              <Typography variant="subtitle1" gutterBottom sx={{ ml: 1 }}>
-                {sumarMinutosAHora(dataCita.hora, dataCita.duracion)} - Salida
-                Aprox.
-              </Typography>
-            </Stack> */}{" "}
+              </Stack>
               {cita.estatus == "PENDIENTE" && (
                 <Button
                   fullWidth
@@ -241,7 +236,12 @@ const ModalMisCitasCliente = ({ handleClose, open, handleOk }) => {
         ))}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cerrar</Button>
+        <Button onClick={handleClose} variant="outlined">
+          <Typography>
+            Cerrar
+            {/* <CloseIcon sx={{ mb: -0.8 }} /> */}
+          </Typography>
+        </Button>
       </DialogActions>
     </Dialog>
   );

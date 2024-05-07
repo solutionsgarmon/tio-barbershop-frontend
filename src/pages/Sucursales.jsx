@@ -40,7 +40,7 @@ const Sucursales = () => {
             >
               <ElementListWithImage
                 setSucursalSelected={setSucursalSelected}
-                image={barbershop.imagenes[0]}
+                image={barbershop.imagenes[0].url}
                 primaryText={barbershop.nombre}
                 secondaryText={`${barbershop.direccion.calle},${barbershop.direccion.colonia} ${barbershop.direccion.ciudad}`}
                 index={index}

@@ -116,6 +116,20 @@ export function postCita(data) {
   });
 }
 
+export function postCitaregistro(data) {
+  console.log("[ejecución] postCita()", data)
+  return new Promise((resolve, reject) => {
+    axios.post(import.meta.env.VITE_CITAS_REGISTRO_URL, data)
+      .then((response) => {
+        resolve(response); 
+      })
+      .catch((error) => {
+        console.error("Error en postCitaregistro():", error);
+        reject(error); 
+      });
+  });
+}
+
 
 
 

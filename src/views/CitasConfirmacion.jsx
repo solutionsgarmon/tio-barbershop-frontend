@@ -154,6 +154,9 @@ const CitasConfirmacion = ({
           alt="Imagen del barbero"
           style={{ maxWidth: "100%", borderRadius: "50%", marginBottom: 5 }}
         />
+        <Typography variant="text.secondary" sx={{ textAlign: "center" }}>
+          Barbero
+        </Typography>
         <Typography variant="h5" sx={{ textAlign: "center" }}>
           {dataCita.barbero}
         </Typography>

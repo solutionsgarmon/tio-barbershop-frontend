@@ -293,22 +293,22 @@ const categories_administrador = [
       {
         id: "Citas",
         icon: <CalendarMonthIcon />,
-        tabs: ["Citas"],
+        tabs: ["Citas Pendientes", "Citas Terminadas"],
         component: <Citas />,
       },
     ],
   },
-  {
-    id: "CONFIGURACIÓN",
-    children: [
-      {
-        id: "Personalización",
-        icon: <SettingsIcon />,
-        tabs: ["Preferencias", "Ajustes"],
-        component: <Posts />,
-      },
-    ],
-  },
+  // {
+  //   id: "CONFIGURACIÓN",
+  //   children: [
+  //     {
+  //       id: "Personalización",
+  //       icon: <SettingsIcon />,
+  //       tabs: ["Preferencias", "Ajustes"],
+  //       component: <Posts />,
+  //     },
+  //   ],
+  // },
 ];
 
 const categories_barbero = [
@@ -386,8 +386,12 @@ export default function Paperbase() {
     if (sessionDataStorage) {
       if (sessionDataStorage.rol == "ADMINISTRADOR")
         setCategoriasMapear(categories_administrador);
-      else if (sessionDataStorage.rol == "BARBERO")
-        setCategoriasMapear(categories_barbero);
+      else if (sessionDataStorage.rol == "BARBERO") {
+        if (sessionDataStorage?.esAdmin === "SI")
+          setCategoriasMapear(categories_administrador);
+        if (sessionDataStorage?.esAdmin === "NO")
+          setCategoriasMapear(categories_barbero);
+      }
     } else {
       console.error("No se encontro la sesionDataStorage del Usuario");
     }

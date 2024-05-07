@@ -64,7 +64,7 @@ const ModalRegistroUsuario = ({ open, handleClose }) => {
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle
         style={{
-          backgroundColor: "#1976d2", // Color de Fondo
+          backgroundColor: "#E2b753 ", // Color de Fondo
           color: "white", // Color del Texto
         }}
       >

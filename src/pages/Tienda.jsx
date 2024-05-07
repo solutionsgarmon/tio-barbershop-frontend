@@ -36,12 +36,6 @@ const Tienda = () => {
     <Box sx={{ py: 3, backgroundColor: "#000" }}>
       <Typography variant="h4" align="center" color={"#E2b753"}>
         Tienda
-        <Tooltip
-          title="Los productos puedes adquirirlos directamente en cualquiera de nuestras sucursales"
-          arrow
-        >
-          <HelpIcon sx={{ width: 30, height: 30, mb: -0.5, ml: 1 }} />
-        </Tooltip>
       </Typography>
 
       <Box sx={{ display: "flex", justifyContent: "center", mx: 1 }}>
@@ -61,9 +55,18 @@ const Tienda = () => {
           justifyContent: "space-between",
           alignItems: "center",
           mt: 5,
+          m: 2,
         }}
         spacing={2}
       >
+        <Typography
+          variant="h5"
+          color={"white"}
+          sx={{ textAlign: "justify", fontSize: { xs: 18, sm: 22 }, py: 1 }}
+        >
+          Estos productos los puedes adquirir con tu barbero, en cualquiera de
+          nuestras sucursales.
+        </Typography>
         <Pagination
           count={Math.ceil(products.length / productsPerPage)} // Calcula el número total de páginas
           page={page}

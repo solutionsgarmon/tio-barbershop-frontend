@@ -7,6 +7,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { useState } from "react";
 import { useEffect } from "react";
+import { Paper } from "@mui/material";
 
 export default function CalendarSeleccionCita({ handleChangeCalendar }) {
   const [value, setValue] = useState(dayjs());
@@ -32,16 +33,14 @@ export default function CalendarSeleccionCita({ handleChangeCalendar }) {
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DemoContainer components={["DateCalendar", "DateCalendar"]}>
-        <DemoItem>
-          <DateCalendar
-            value={value}
-            onChange={(newValue) => handleChange(newValue)}
-            shouldDisableDate={disableDates}
-          />
-        </DemoItem>
-      </DemoContainer>
-    </LocalizationProvider>
+    <Paper>
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+        <DateCalendar
+          value={value}
+          onChange={(newValue) => handleChange(newValue)}
+          shouldDisableDate={disableDates}
+        />
+      </LocalizationProvider>
+    </Paper>
   );
 }

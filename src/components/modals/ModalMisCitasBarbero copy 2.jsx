@@ -23,6 +23,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -51,14 +52,10 @@ import { deleteCita } from "../../api/deletes";
 const ModalMisCitasBarbero = ({ handleClose, open, handleOk }) => {
   const { setIsLoadingApp, sessionDataStorage } = useAppContext();
   const [filtroCitas, setFiltroCitas] = useState("PENDIENTE");
-  // const [citasRegistro, setCitasRegistro] = useState([]);
-  // const [citasPendientes, setCitasPendientes] = useState([]);
+  const [citasRegistro, setCitasRegistro] = useState([]);
+  const [citas, setCitas] = useState([]);
   const [citasFiltradas, setCitasFiltradas] = useState([]);
   const [fechaSel, setFechaSel] = useState(dayjs());
-  const [fechasUnicas, setFechasUnicas] = useState([]);
-  const [reload, setReload] = useState(false);
-  const [fechasPermitidas, setFechasPermitidas] = useState([]);
-  // const fechasPermitidas = ["2024-05-10", "2024-05-20", "2024-05-30"];
 
   //Al abrir, se mostrarán las citas pendientes (cuando es pendientes no se filtra, la coleccion tiene puras pendientes)
   useEffect(() => {
@@ -69,7 +66,7 @@ const ModalMisCitasBarbero = ({ handleClose, open, handleOk }) => {
         const citasPendientes = await getCitasPendientesByIdBarbero(
           sessionDataStorage._id
         );
-        // setCitasPendientes(citasPendientes);
+        setCitas(citasPendientes);
 
         const citasFiltradasFecha = citasPendientes.filter(
           (cita) => cita.fecha_asignada == fechaFormateada
@@ -79,85 +76,70 @@ const ModalMisCitasBarbero = ({ handleClose, open, handleOk }) => {
         console.log("citasPendientes", citasPendientes);
         console.log("citasFiltradasFecha", citasFiltradasFecha);
         setCitasFiltradas(citasFiltradasFecha);
-
-        ///// Bloquear Fechas que no tienen cita en PENDIENTES
-        const fechas = citasPendientes.map((cita) => cita.fecha_asignada);
-        const fechasUnicas = [...new Set(fechas)];
-        setFechasPermitidas(fechasUnicas);
       }
       fetchData();
     }
   }, [open]);
 
-  ///// Bloquear Fechas que no tienen cita en COMPLETADAS o CANCELADAS
-  // useEffect(() => {
-  //   if (filtroCitas == "CANCELADA") {
-  //   }
-  //   if (filtroCitas == "COMPLETADA") {
-  //   }
-  //   const fechas = citasPendientes.map((cita) => cita.fecha_asignada);
-  //   const fechasUnicas = [...new Set(fechas)];
-  //   console.log(">>>>>>> fechasUnicas", fechasUnicas);
-  //   setFechasPermitidas(fechasUnicas);
-  // }, [filtroCitas]);
+  useEffect(() => {
+    const fechaFormateada = fechaSel.format("YYYY-MM-DD");
+    console.log("fechaFormateada", fechaFormateada);
+    console.log("citas", citas);
+    console.log("Se cambio la fecha", fechaSel.format("YYYY-MM-DD"));
+    const citasFechaSel = citas.filter(
+      (cita) => cita.fecha_asignada == fechaFormateada
+    );
+    setCitas(citasFechaSel);
+  }, [fechaSel]);
 
   //Al cambiar el filtro, dependiendo del filtro trae los datos de la BD y cambia las citas que se muestran
   useEffect(() => {
     const fechaFormateada = fechaSel.format("YYYY-MM-DD");
     console.log("Cambio el FILTRO:", filtroCitas);
-
     if (sessionDataStorage && open) {
       async function fetchData() {
         if (filtroCitas === "PENDIENTE") {
-          const citasPendientesReload = await getCitasPendientesByIdBarbero(
-            sessionDataStorage._id
-          );
-
-          const citasFiltradasFecha = citasPendientesReload.filter(
+          const citasFiltradasFecha = citasPendientes.filter(
             (cita) => cita.fecha_asignada == fechaFormateada
           );
           setCitasFiltradas(citasFiltradasFecha);
-          ///// Bloquear Fechas que no tienen cita en PENDIENTES
-          const fechas = citasPendientesReload.map(
-            (cita) => cita.fecha_asignada
-          );
-          const fechasUnicas = [...new Set(fechas)];
-          setFechasPermitidas(fechasUnicas);
-          ///// Bloquear Fechas que no tienen cita en PENDIENTES
         }
         if (filtroCitas === "COMPLETADA") {
-          const citasCompletadas = await getCitasCompletadasByIdBarbero(
+          const registroCitas = await getCitasCompletadasByIdBarbero(
             sessionDataStorage._id
           );
-          const citasCompletadasFiltradasByFecha = citasCompletadas.filter(
-            (cita) => cita.fecha_asignada == fechaFormateada
+          setCitas(
+            registroCitas.filter((cita) => cita.estatus === "COMPLETADA")
           );
-          setCitasFiltradas(citasCompletadasFiltradasByFecha);
-          ///// Bloquear Fechas que no tienen cita en COMPLETADA
-          const fechas = citasCompletadas.map((cita) => cita.fecha_asignada);
-          const fechasUnicas = [...new Set(fechas)];
-          setFechasPermitidas(fechasUnicas);
-          ///// Bloquear Fechas que no tienen cita en COMPLETADA
         }
         if (filtroCitas === "CANCELADA") {
-          const citasCanceladas = await getCitasCanceladasByIdBarbero(
+          const citasRegistro = await getCitasCanceladasByIdBarbero(
             sessionDataStorage._id
           );
-          const citasCanceladasFiltradasByFecha = citasCanceladas.filter(
-            (cita) => cita.fecha_asignada == fechaFormateada
-          );
-          setCitasFiltradas(citasCanceladasFiltradasByFecha);
-          ///// Bloquear Fechas que no tienen cita en CANCELADA
-          const fechas = citasCanceladas.map((cita) => cita.fecha_asignada);
-          const fechasUnicas = [...new Set(fechas)];
-          setFechasPermitidas(fechasUnicas);
-          ///// Bloquear Fechas que no tienen cita en CANCELADA
+          setCitas(citasRegistro);
         }
       }
 
       fetchData();
     }
-  }, [filtroCitas, fechaSel, reload]);
+  }, [filtroCitas]);
+
+  const reload = async () => {
+    if (sessionDataStorage && open) {
+      if (sessionDataStorage.rol == "CLIENTE") {
+        setCitas(await getCitasByCorreo(sessionDataStorage.correo));
+      } else if (sessionDataStorage.rol == "BARBERO") {
+        if (filtroCitas == "PENDIENTE")
+          setCitas(await getCitasPendientesByIdBarbero(sessionDataStorage._id));
+        else if (filtroCitas == "COMPLETADA")
+          setCitas(
+            await getCitasCompletadasByIdBarbero(sessionDataStorage._id)
+          );
+        else if (filtroCitas == "CANCELADA")
+          setCitas(await getCitasCanceladasByIdBarbero(sessionDataStorage._id));
+      }
+    }
+  };
 
   //Cambiar de pendiente a cancelado/terminado
   const handleCancelarCita = async (cita) => {
@@ -181,25 +163,11 @@ const ModalMisCitasBarbero = ({ handleClose, open, handleOk }) => {
       await postCitaregistro(cita);
 
       toast.success("Estatus de citamodificado.");
-      setReload(!reload);
+      await reload();
     } catch (error) {
       console.error("Error al modificar:", error);
       toast.error("Error al modificar el estatus.");
     }
-  };
-
-  function formatearFecha(fechaString) {
-    const fecha = new Date(fechaString);
-    const dia = (fecha.getDate() + 1).toString().padStart(2, "0");
-    const mes = (fecha.getMonth() + 1).toString().padStart(2, "0"); // Sumar 1 aquí
-    const año = fecha.getFullYear();
-
-    return `${dia}-${mes}-${año}`;
-  }
-
-  const disableDates = (date) => {
-    const dateString = date.format("YYYY-MM-DD");
-    return !fechasPermitidas.includes(dateString);
   };
 
   return (
@@ -241,15 +209,14 @@ const ModalMisCitasBarbero = ({ handleClose, open, handleOk }) => {
             </Select>
           </Paper>
           <Paper sx={{ mb: 1, ml: 1 }}>
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DesktopDatePicker
                 value={fechaSel}
                 onChange={(newValue) => setFechaSel(newValue)}
                 sx={{ width: 140 }}
-                shouldDisableDate={disableDates}
               />
             </LocalizationProvider>
-          </Paper>
+          </Paper>{" "}
         </Stack>
         {citasFiltradas.length == 0 && (
           <Box sx={{ m: "auto", textAlign: "center" }}>
@@ -262,6 +229,7 @@ const ModalMisCitasBarbero = ({ handleClose, open, handleOk }) => {
         {citasFiltradas.map((cita) => (
           <Card
             sx={{
+              maxWidth: 250,
               margin: "auto",
               marginBottom: 1,
               paddingX: 2,
@@ -301,11 +269,10 @@ const ModalMisCitasBarbero = ({ handleClose, open, handleOk }) => {
                   {cita.costo} pesos
                 </Typography>
               </Stack>
-
               <Stack direction={"row"}>
                 <EventIcon />
                 <Typography variant="subtitle1" gutterBottom sx={{ ml: 1 }}>
-                  {formatearFecha(cita.fecha_asignada)}
+                  {cita.fecha_asignada}
                 </Typography>
               </Stack>
               <Stack direction="row">
@@ -317,32 +284,25 @@ const ModalMisCitasBarbero = ({ handleClose, open, handleOk }) => {
             </CardContent>
             <Stack direction="row" sx={{ textAlign: "center" }}>
               {cita.estatus === "CANCELADA" && (
-                <Typography variant="h6" sx={{ m: "auto", mb: 2 }}>
-                  <CancelIcon
-                    color="error"
-                    sx={{ width: 30, height: 30, mr: 1, mb: -1 }}
-                  />
-                  {cita.estatus}
-                </Typography>
+                <CancelIcon
+                  color="error"
+                  sx={{ width: 35, height: 35, mr: -2 }}
+                />
               )}
               {cita.estatus === "COMPLETADA" && (
-                <Typography variant="h6" sx={{ m: "auto", mb: 2 }}>
-                  <CheckCircleOutlineIcon
-                    color="success"
-                    sx={{ width: 30, height: 30, mr: 1, mb: -1 }}
-                  />
-                  {cita.estatus}
-                </Typography>
+                <CheckCircleOutlineIcon
+                  color="success"
+                  sx={{ width: 35, height: 35, mr: 0 }}
+                />
               )}
 
               {cita.estatus === "PENDIENTE" && (
-                <Typography variant="h6" sx={{ m: "auto", mb: 2 }}>
-                  <WatchLaterIcon
-                    sx={{ width: 30, height: 30, mr: 1, mb: -1 }}
-                  />
-                  {cita.estatus}
-                </Typography>
+                <WatchLaterIcon sx={{ width: 30, height: 30, ml: 2, mr: -5 }} />
               )}
+
+              <Typography variant="h6" sx={{ m: "auto", mb: 2 }}>
+                {cita.estatus}
+              </Typography>
             </Stack>
             {cita.estatus == "PENDIENTE" && (
               <Stack direction="row" sx={{ mb: 2 }}>
@@ -350,7 +310,7 @@ const ModalMisCitasBarbero = ({ handleClose, open, handleOk }) => {
                   onClick={() => handleCancelarCita(cita)}
                   variant={"contained"}
                   color="error"
-                  sx={{ mx: 0.5, minWidth: 90, py: 1 }}
+                  sx={{ mx: 0.5, width: "40%", py: 1 }}
                 >
                   Cancelar
                 </Button>
@@ -358,7 +318,6 @@ const ModalMisCitasBarbero = ({ handleClose, open, handleOk }) => {
                   onClick={() => handleCompletarCita(cita)}
                   variant={"contained"}
                   sx={{ mx: 0.5, py: 1 }}
-                  fullWidth
                 >
                   Completar
                 </Button>
@@ -368,8 +327,8 @@ const ModalMisCitasBarbero = ({ handleClose, open, handleOk }) => {
         ))}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} variant="outlined" fullWidth>
-          <Typography color={"error"}>
+        <Button onClick={handleClose} variant="outlined">
+          <Typography>
             Cerrar
             {/* <CloseIcon sx={{ mb: -0.8 }} /> */}
           </Typography>

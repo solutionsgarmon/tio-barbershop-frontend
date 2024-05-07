@@ -27,17 +27,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useAppContext } from "../../../context/AppProvider";
 import { postUser } from "../../../api/posts";
-import { deleteUser } from "../../../api/deletes";
+import {
+  deleteCita,
+  deleteCitaRegistro,
+  deleteUser,
+} from "../../../api/deletes";
 import Swal from "sweetalert2";
 import { updateProduct, updateUser } from "../../../api/updates";
-import {
-  getCitas,
-  getCitasByIdBarbero,
-  getCitasCanceladasByIdBarbero,
-  getCitasCompletadasByIdBarbero,
-  getCitasRegistro,
-  getUsers,
-} from "../../../api/gets";
+import { getCitas, getCitasRegistro, getUsers } from "../../../api/gets";
+import PasswordTypography from "../../../components/atoms/PasswordTypography";
 
 const ROLES = ["Cliente", "Barbero", "Administrador"];
 
@@ -55,25 +53,15 @@ const Example = () => {
     async function fetchData() {
       if (sessionDataStorage?.rol === "BARBERO") {
         setIsBarber(true);
-        const citasPendientes = await getCitasByIdBarbero(
-          sessionDataStorage._id
+        const citas = await getCitasRegistro();
+        setCitas(
+          citas.filter(
+            (cita) => cita.barbero_asignado == sessionDataStorage._id
+          )
         );
-        const citasCanceladas = await getCitasCanceladasByIdBarbero(
-          sessionDataStorage._id
-        );
-        const citasCompletadas = await getCitasCompletadasByIdBarbero(
-          sessionDataStorage._id
-        );
-
-        const combinedCitas = [
-          ...citasPendientes,
-          ...citasCanceladas,
-          ...citasCompletadas,
-        ];
-        setCitas(combinedCitas);
       } else if (sessionDataStorage?.rol === "ADMINISTRADOR") {
         setIsAdmin(true);
-        setCitas(await getCitas());
+        setCitas(await getCitasRegistro());
       }
     }
     fetchData();
@@ -186,17 +174,16 @@ const Example = () => {
     console.log("row", row.original);
     Swal.fire({
       title: "¿Estás seguro?",
-      text: `Se eliminará el Usuario "${row.original.name}", ¿Desea continuar?`,
+      text: `Se eliminará la Cita", ¿Desea continuar?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminarlo",
+      confirmButtonText: "Sí, eliminarla",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const resp = await deleteUser(row.original._id);
+        const resp = await deleteCitaRegistro(row.original._id);
         toast.success("Se eliminó correctamente.");
-
         await handleReloadData();
       }
     });
@@ -326,10 +313,10 @@ const Example = () => {
 
 const queryClient = new QueryClient();
 
-const TabCitas = () => (
+const TabCitasRegistro = () => (
   <QueryClientProvider client={queryClient}>
     <Example />
   </QueryClientProvider>
 );
 
-export default TabCitas;
+export default TabCitasRegistro;

@@ -231,6 +231,30 @@ export function getCitas() {
   });
 }
 
+export function getCitasRegistro() {
+  return new Promise((resolve, reject) => {
+      axios.get(import.meta.env.VITE_CITAS_REGISTRO_URL)
+    .then((response) => {
+        const data = response.data;
+        console.log("getCitasRegistro()", data);
+        if (!data.success) {
+          console.error("No se pudo realizar correctamente la petición getCitasRegistro():", data);
+          reject(data); 
+        } else if (data.length === 0) {
+          console.info("🛈 No se encontraron elementos para getCitasRegistro():");
+          resolve([]); 
+        } else  {
+          console.log("getCitasRegistro -> CITAS", data.data);
+          resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
+        }
+      })
+      .catch((error) => {
+        console.error("Error en getCitasRegistro():", error);
+        reject(error); // Rechaza la promesa en caso de error
+      });
+  });
+}
+
 export function getCitasByCorreo(correo) {
   return new Promise((resolve, reject) => {
       axios.get(`${import.meta.env.VITE_CITAS_URL}/getByIdCorreo/${correo}`)
@@ -254,6 +278,33 @@ export function getCitasByCorreo(correo) {
       });
   });
 }
+
+export function getCitasRegistroByCorreo(correo) {
+  return new Promise((resolve, reject) => {
+      axios.get(`${import.meta.env.VITE_CITAS_REGISTRO_URL}/getByIdCorreo/${correo}`)
+    .then((response) => {
+        const data = response.data;
+        console.log("getCitasByCorreo()", data);
+        if (!data.success) {
+          console.error("No se pudo realizar correctamente la petición getCitasByCorreo():", data);
+          reject(data); 
+        } else if (data.length === 0) {
+          console.info("🛈 No se encontraron elementos para getCitasByCorreo():");
+          resolve([]); 
+        } else  {
+          console.log("getCitasByCorreo -> CITAS", data.data);
+          resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
+        }
+      })
+      .catch((error) => {
+        console.error("Error en getCitasByCorreo():", error);
+        reject(error); // Rechaza la promesa en caso de error
+      });
+  });
+}
+
+
+
 
 export function getCitasByIdBarbero(id) {
   return new Promise((resolve, reject) => {
@@ -307,10 +358,10 @@ export function getCitasPendientesByIdBarbero(id) {
 
 export function getCitasCompletadasByIdBarbero(id) {
   return new Promise((resolve, reject) => {
-      axios.get(`${import.meta.env.VITE_CITAS_URL}/getCompletadasByIdBarbero/${id}`)
+      axios.get(`${import.meta.env.VITE_CITAS_REGISTRO_URL}/getCompletadasByIdBarbero/${id}`)
     .then((response) => {
         const data = response.data;
-        console.log("getCitasByCorreoBarbero()", data);
+        console.log("getCitasCompletadasByIdBarbero()", data);
         if (!data.success) {
           console.error("No se pudo realizar correctamente la petición getCitasCompletadasByIdBarbero():", data);
           reject(data); 
@@ -318,7 +369,7 @@ export function getCitasCompletadasByIdBarbero(id) {
           console.info("🛈 No se encontraron elementos para getCitasCompletadasByIdBarbero():");
           resolve([]); 
         } else  {
-          console.log("getCitasCompletadasByIdBarbero -> CITAS", data.data);
+          console.log("getCitasCompletadasByIdBarbero -> CITAS COMPLETADAS", data.data);
           resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
         }
       })
@@ -331,7 +382,7 @@ export function getCitasCompletadasByIdBarbero(id) {
 
 export function getCitasCanceladasByIdBarbero(id) {
   return new Promise((resolve, reject) => {
-      axios.get(`${import.meta.env.VITE_CITAS_URL}/getCanceladasByIdBarbero/${id}`)
+      axios.get(`${import.meta.env.VITE_CITAS_REGISTRO_URL}/getCanceladasByIdBarbero/${id}`)
     .then((response) => {
         const data = response.data;
         console.log("getCitasCanceladasByIdBarbero()", data);

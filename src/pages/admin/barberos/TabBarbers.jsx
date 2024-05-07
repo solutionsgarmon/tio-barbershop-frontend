@@ -67,9 +67,9 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
         const barberoEncontrado = barberos.find(
           (barbero) => sessionDataStorage._id === barbero._id
         );
-        console.log("barberoEncontrado"), barberoEncontrado;
         if (barberoEncontrado) {
-          setBarbers([barberoEncontrado]);
+          if (barberoEncontrado.esAdmin == "SI") setBarbers(barberos);
+          else setBarbers([barberoEncontrado]);
         } else {
           setBarbers([]);
         }
@@ -92,9 +92,9 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
       const barberoEncontrado = barberos.find(
         (barbero) => sessionDataStorage._id === barbero._id
       );
-      console.log("barberoEncontrado"), barberoEncontrado;
       if (barberoEncontrado) {
-        setBarbers([barberoEncontrado]);
+        if (barberoEncontrado.esAdmin == "SI") setBarbers(barberos);
+        else setBarbers([barberoEncontrado]);
       } else {
         setBarbers([]);
       }
@@ -127,6 +127,15 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
         header: "Correo Electrónico",
         muiEditTextFieldProps: {
           required: true,
+        },
+      },
+      {
+        accessorKey: "esAdmin",
+        header: "¿Es Admin?",
+        editVariant: "select",
+        editSelectOptions: ["NO", "SI"],
+        muiEditTextFieldProps: {
+          select: true,
         },
       },
       {

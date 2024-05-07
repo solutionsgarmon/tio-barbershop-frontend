@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { Select, MenuItem, Box, Stack } from "@mui/material";
+import { Select, MenuItem, Box, Stack, Paper } from "@mui/material";
 import { getHorarioDisponibleBarber } from "../api/gets";
 import { useAppContext } from "../context/AppProvider";
 import CalendarSeleccionCita from "../components/atoms/CalendarSeleccionCita";
@@ -92,31 +92,34 @@ const CitasSeleccionHora = ({ setEnableButton, dataCita, setDataCita }) => {
       <Stack direction={"column"}>
         <CalendarSeleccionCita handleChangeCalendar={handleChangeCalendar} />
 
-        <Select
-          value={horaSeleccionada}
-          onChange={handleChangeHora}
-          displayEmpty
-          fullWidth
-          sx={{ mt: { xs: -3, md: 0 } }}
-        >
-          <MenuItem value="" disabled>
-            {horasDisponibles?.length == 0
-              ? "DESCANSO DEL BARBERO"
-              : "SELECCIONA UN HORARIO"}
-          </MenuItem>
-
-          {horasDisponibles?.map((hora, index) => (
-            <MenuItem
-              key={index}
-              value={hora}
-              disabled={
-                fechaHoy === fechaSeleccionada && hora < dayjs().format("HH:mm")
-              }
-            >
-              {`${hora} - ${sumarDuracion(hora, dataCita.duracion)}`}
+        <Paper sx={{ mt: 1 }}>
+          <Select
+            value={horaSeleccionada}
+            onChange={handleChangeHora}
+            displayEmpty
+            fullWidth
+            sx={{ mt: { xs: -3, md: 0 } }}
+          >
+            <MenuItem value="" disabled>
+              {horasDisponibles?.length == 0
+                ? "DESCANSO DEL BARBERO"
+                : "SELECCIONA UN HORARIO"}
             </MenuItem>
-          ))}
-        </Select>
+
+            {horasDisponibles?.map((hora, index) => (
+              <MenuItem
+                key={index}
+                value={hora}
+                disabled={
+                  fechaHoy === fechaSeleccionada &&
+                  hora < dayjs().format("HH:mm")
+                }
+              >
+                {`${hora} - ${sumarDuracion(hora, dataCita.duracion)}`}
+              </MenuItem>
+            ))}
+          </Select>
+        </Paper>
       </Stack>
     </div>
   );

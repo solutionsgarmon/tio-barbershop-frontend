@@ -24,6 +24,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonIcon from "@mui/icons-material/Person";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { scrollToTop } from "../../utils/screen";
+import ModalMiPerfilCliente from "../modals/ModalMiPerfilCliente";
 
 const PAGES_ADMIN = [
   { title: "Citas", url: "/citas" },
@@ -72,6 +73,7 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [scrollY, setScrollY] = useState(0);
   const [showNModalMisCitas, setShowModalMisCitas] = useState(false);
+  const [showNModalMiPerfil, setShowModalMiPerfil] = useState(false);
   const [pages, setPages] = useState(PAGES_CLIENTE);
 
   const backgroundColor = scrollY === 0 ? "rgba(0, 0, 0, 0)" : "#333"; // Cambia el color dependiendo de la posición del scroll
@@ -149,11 +151,12 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
         navigate("/login");
         break;
       case "Mi perfil":
-        navigate("/mi-perfil");
+        setShowModalMiPerfil(true);
         break;
       case "Mis citas":
         setShowModalMisCitas(true);
         break;
+
       case "Cerrar sesión":
         handleCerrarSesion();
         break;
@@ -168,6 +171,10 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
 
   const handleCloseModalMisCitas = () => {
     setShowModalMisCitas(false);
+  };
+
+  const handleCloseModalMiPerfil = () => {
+    setShowModalMiPerfil(false);
   };
 
   return (
@@ -360,6 +367,7 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
           </Box>
         </Toolbar>
       </Container>
+      {/* MODAles */}
       {sessionDataStorage?.rol == "BARBERO" && (
         <ModalMisCitasBarbero
           open={showNModalMisCitas}
@@ -371,6 +379,13 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
         <ModalMisCitasCliente
           open={showNModalMisCitas}
           handleClose={handleCloseModalMisCitas}
+        />
+      )}
+
+      {sessionDataStorage?.rol == "CLIENTE" && (
+        <ModalMiPerfilCliente
+          open={showNModalMiPerfil}
+          handleClose={handleCloseModalMiPerfil}
         />
       )}
     </AppBar>

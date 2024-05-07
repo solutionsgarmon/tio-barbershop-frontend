@@ -49,8 +49,9 @@ const ReportesBarbero = () => {
   useEffect(() => {
     async function fetchData() {
       setServices(await getServices());
-
-      const allCitas = await getCitas();
+      const Citas = await getCitas();
+      const CitasRegistro = await getCitasRegistro();
+      const allCitas = [...Citas, ...CitasRegistro];
       const citasBarbero = allCitas.filter(
         (cita) => cita.barbero_asignado == sessionDataStorage._id
       );

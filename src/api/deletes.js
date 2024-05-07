@@ -106,6 +106,24 @@ export const deleteCita = async (id) => {
     }
 };
 
+export const deleteCitaRegistro = async (id) => {
+    try {
+        const response = await axios.delete(`${import.meta.env.VITE_CITAS_REGISTRO_URL}/${id}`, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                id: id 
+            }
+        });
+    return response
+ 
+    } catch (error) {
+      console.log("Error en deleteCita()",error)
+       return false
+    }
+};
+
 export const deleteService = async (id) => {
     try {
          const response = await axios.delete(`${import.meta.env.VITE_SERVICES_URL}/${id}`, {

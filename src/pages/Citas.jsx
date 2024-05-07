@@ -272,6 +272,7 @@ const Citas = () => {
               <Button
                 variant="contained"
                 onClick={handleContinue}
+                disabled={!enableButton}
                 fullWidth
                 sx={{ py: 1, ml: 1 }}
               >
@@ -280,7 +281,7 @@ const Citas = () => {
               // <button
               //   style={{
               //     display: "inline-block",
-              //     backgroundColor: "#1976d2",
+              //     backgroundColor: "#E2b753 ",
               //     color: "white",
               //     border: "none",
               //     padding: "10px 20px",

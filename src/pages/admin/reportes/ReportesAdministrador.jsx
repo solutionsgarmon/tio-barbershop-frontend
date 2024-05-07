@@ -6,6 +6,7 @@ import {
   getBarbers,
   getBarbershops,
   getCitas,
+  getCitasRegistro,
   getServices,
 } from "../../../api/gets";
 import { useAppContext } from "../../../context/AppProvider";
@@ -57,7 +58,9 @@ const ReportesAdministrador = () => {
       setServices(await getServices());
       setBarbers(await getBarbers()); // Obtener lista de barberos
 
-      const allCitas = await getCitas();
+      const Citas = await getCitas();
+      const CitasRegistro = await getCitasRegistro();
+      const allCitas = [...Citas, ...CitasRegistro];
 
       const uniqueDates = Array.from(
         new Set(allCitas.map((cita) => cita.fecha_asignada))
@@ -240,8 +243,109 @@ const ReportesAdministrador = () => {
         )}
       </Paper>
 
-      <Paper sx={{ mb: 1 }}>
-        <Stack direction="row">
+      <Paper sx={{ mb: 1, py: 2 }}>
+        <Stack
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: { xs: "column", sm: "row" },
+          }}
+        >
+          {/* GRAFICA PASTEL / AVATAR*/}
+          {selectedDateRange == "TODOS" &&
+            selectedBarbero == "TODOS" &&
+            selectedStatus == "TODOS" && (
+              <Box>
+                <Box
+                  title={
+                    <Stack>
+                      {calcularCitasPorEstatus().map((entry, index) => (
+                        <Box
+                          key={index}
+                          sx={{ display: "flex", alignItems: "center", mr: 1 }}
+                        >
+                          <Chip
+                            label={`${entry.name}: ${entry.value}`}
+                            style={{
+                              backgroundColor: customColors[index],
+                              color: "#fff",
+                            }}
+                          />
+                        </Box>
+                      ))}
+                    </Stack>
+                  }
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexDirection: "column",
+                      mr: -3,
+                    }}
+                  >
+                    <Typography variant="h6" gutterBottom>
+                      <strong>Estado de Citas</strong>
+                    </Typography>
+
+                    <PieChart width={230} height={230}>
+                      <Pie
+                        data={calcularCitasPorEstatus()}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label
+                      >
+                        {calcularCitasPorEstatus().map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={customColors[index]}
+                          />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </Box>
+                </Box>
+              </Box>
+            )}
+
+          {selectedBarbero !== "TODOS" && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {console.log("imageSelectedBarber", imageSelectedBarber)}
+              <Avatar
+                src={imageSelectedBarber}
+                sx={{
+                  width: { xs: 120, sm: 150 },
+                  height: { xs: 120, sm: 250 },
+                  mt: 0,
+                  ml: 3,
+                  mr: -2,
+                }}
+              />
+              <MuiTooltip title="Balance Total">
+                <Chip
+                  icon={<MonetizationOnIcon sx={{ width: 26, height: 26 }} />}
+                  label={totalGanancias}
+                  variant="outlined"
+                  sx={{ mt: 1, ml: 5 }}
+                  style={{ fontSize: "18px" }}
+                />
+              </MuiTooltip>
+            </Box>
+          )}
+          {/* GRAFICA BARRAS*/}
           <ResponsiveContainer width="100%" height={400}>
             <BarChart
               data={[calcularCostoPorServicio()]}
@@ -261,95 +365,6 @@ const ReportesAdministrador = () => {
               ))}
             </BarChart>
           </ResponsiveContainer>
-
-          {selectedDateRange == "TODOS" &&
-            selectedBarbero == "TODOS" &&
-            selectedStatus == "TODOS" && (
-              <MuiTooltip
-                title={
-                  <Stack>
-                    {calcularCitasPorEstatus().map((entry, index) => (
-                      <Box
-                        key={index}
-                        sx={{ display: "flex", alignItems: "center", mr: 1 }}
-                      >
-                        <Chip
-                          label={`${entry.name}: ${entry.value}`}
-                          style={{
-                            backgroundColor: customColors[index],
-                            color: "#fff",
-                          }}
-                        />
-                      </Box>
-                    ))}
-                  </Stack>
-                }
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Typography variant="subtitle1" gutterBottom>
-                    <strong>Estado de Citas</strong>
-                  </Typography>
-
-                  <PieChart width={200} height={200}>
-                    <Pie
-                      data={calcularCitasPorEstatus()}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label
-                    >
-                      {calcularCitasPorEstatus().map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={customColors[index]}
-                        />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </Box>
-              </MuiTooltip>
-            )}
-
-          {selectedBarbero !== "TODOS" && (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {console.log("imageSelectedBarber", imageSelectedBarber)}
-              <Avatar
-                src={imageSelectedBarber}
-                sx={{
-                  width: { xs: 80, sm: 150 },
-                  height: { xs: 130, sm: 250 },
-                  mt: 0,
-                  ml: -1,
-                }}
-              />
-              <MuiTooltip title="Balance Total">
-                <Chip
-                  icon={<MonetizationOnIcon sx={{ width: 26, height: 26 }} />}
-                  label={totalGanancias}
-                  variant="outlined"
-                  sx={{ mt: 1 }}
-                  style={{ fontSize: "18px" }}
-                />
-              </MuiTooltip>
-            </Box>
-          )}
         </Stack>
       </Paper>
 

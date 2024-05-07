@@ -88,7 +88,7 @@ const CardProduct = ({ producto }) => {
         <Stack direction={"row"} sx={{ m: "auto" }}>
           <Typography
             variant="h5"
-            color="white"
+            color="primary"
             sx={{ textAlign: "center", margin: "auto" }}
           >
             ${producto.precio}

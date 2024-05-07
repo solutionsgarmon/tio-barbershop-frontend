@@ -8,7 +8,6 @@ import { useEffect } from "react";
 import Century_Gothic from "./fonts/Century_Gothic.ttf";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorPage from "./pages/ErrorPage";
-
 import { CssBaseline } from "@mui/material";
 
 function App() {
@@ -22,10 +21,16 @@ function App() {
     typography: {
       fontFamily: [Century_Gothic, "Arial", "sans-serif"].join(","),
     },
+    palette: {
+      primary: {
+        main: "#E2b753 ", // Dorado
+      },
+    },
   });
 
   return (
     <ThemeProvider theme={main_theme}>
+      <CssBaseline />
       <Box sx={{ backgroundColor: "#000" }}>
         <HashRouter>
           <ErrorBoundary fallback={<ErrorPage />}>

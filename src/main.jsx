@@ -9,8 +9,7 @@ const scrollbarStyles = `
   /* Estilo del scrollbar */
   ::-webkit-scrollbar {
     width: 6px; 
-    
-      background-color: #000;
+    background-color: #000;
   }
 
   /* Estilo del thumb (la parte que puedes arrastrar) */
