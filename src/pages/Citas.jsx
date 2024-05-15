@@ -11,6 +11,7 @@ import React from "react";
 import CardServices from "../components/cards/CardServices";
 import CitasConfirmacion from "../views/CitasConfirmacion";
 import SendIcon from "@mui/icons-material/Send";
+import EventIcon from "@mui/icons-material/Event";
 
 import { useState } from "react";
 import Stepper from "../components/molecules/Stepper";
@@ -119,6 +120,7 @@ const Citas = () => {
   };
 
   const handleContinue = () => {
+    console.log(">>>> handleContinue");
     setCurrentStep(currentStep + 1);
     setEnableButton(false);
     //scrollToTop();
@@ -135,20 +137,23 @@ const Citas = () => {
         minHeight: "85vh",
         maxWidth: 1000,
         textAlign: "center",
-        mt: 4,
+        my: 4,
       }}
     >
       {/* <h1>{STEPS_DESC[currentStep]}</h1> */}
-      <Paper sx={{ pt: 2, pb: 1, mt: { xs: -1.5, sm: 1 } }}>
+      <Paper sx={{ pt: 2, pb: 1, mt: { xs: -1.5, sm: 1 }, mb: 3 }}>
         <Stepper steps={STEPS} currenStep={currentStep} />
         {!sessionDataStorage && (
           <Alert variant="filled" severity="warning" sx={{ mt: 1, mx: 1 }}>
-            <Typography>
-              <strong>
-                Usted no está autenticado, aún así su cita si se guardará, si
-                desea consultarla o modificarla deberá crear una cuenta con el
-                e-mail registrado en el formulario.
-              </strong>
+            <Typography
+              sx={{
+                fontSize: { xs: "0.7rem", sm: "1rem" },
+                fontFamily: "Century Gothic",
+              }}
+            >
+              Usted no está autenticado, aún así su cita si se guardará, si
+              desea consultarla o modificarla deberá crear una cuenta con el
+              e-mail registrado en el formulario.
             </Typography>
           </Alert>
         )}
@@ -250,7 +255,7 @@ const Citas = () => {
               <Button
                 variant="outlined"
                 onClick={handleBack}
-                sx={{ px: { xs: 3, sm: 10 } }}
+                sx={{ px: { xs: 3, sm: 10 }, fontFamily: "Century Gothic" }}
               >
                 <ArrowBackIcon />
                 &nbsp;Atrás
@@ -266,7 +271,7 @@ const Citas = () => {
                 fullWidth
                 sx={{ py: 1, ml: 1 }}
               >
-                Confirmar cita &nbsp; <SendIcon />
+                Confirmar cita &nbsp; <EventIcon />
               </Button>
             ) : (
               <Button
@@ -274,7 +279,7 @@ const Citas = () => {
                 onClick={handleContinue}
                 disabled={!enableButton}
                 fullWidth
-                sx={{ py: 1, ml: 1 }}
+                sx={{ py: 1, ml: 1, fontFamily: "Century Gothic" }}
               >
                 Siguiente Paso &nbsp; <ArrowForwardIcon />
               </Button>

@@ -41,7 +41,7 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <b>El Tío - Barbershop </b>
+      <b style={{ fontFamily: "Century Gothic" }}>El Tío - Barbershop </b>
       {new Date().getFullYear()}
       {"."}
     </Typography>

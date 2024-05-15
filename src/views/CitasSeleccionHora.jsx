@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import dayjs from "dayjs";
 import { Select, MenuItem, Box, Stack, Paper } from "@mui/material";
 import { getHorarioDisponibleBarber } from "../api/gets";
 import { useAppContext } from "../context/AppProvider";
 import CalendarSeleccionCita from "../components/atoms/CalendarSeleccionCita";
 import CircularProgress from "@mui/material/CircularProgress";
+import { scrollToTop } from "../utils/screen";
 import { scrollToBottom } from "../utils/screen";
 
 const fechaHoy = dayjs().format("YYYY-MM-DD").toUpperCase();
@@ -16,6 +17,11 @@ const CitasSeleccionHora = ({ setEnableButton, dataCita, setDataCita }) => {
   const [horasDisponibles, setHorasDisponibles] = useState([]);
   const [totalHorasDisponibles, setTotalHorasDisponibles] = useState(null);
   const [loading, setloading] = useState(false);
+  const containerRef = useRef(null); // Referencia al contenedor del componente
+
+  useEffect(() => {
+    scrollToTop();
+  }, []);
 
   // Obtener todo el horario disponible de los próximos 15 días y las horas disponibles de HOY
   useEffect(() => {
@@ -48,11 +54,13 @@ const CitasSeleccionHora = ({ setEnableButton, dataCita, setDataCita }) => {
       setHorasDisponibles(horario_disponible_hoy);
     }
     setloading(false);
+    //scrollToBottom();
   }, [fechaSeleccionada]);
 
   // Función para manejar el cambio de hora seleccionada
   const handleChangeHora = (event) => {
-    scrollToBottom();
+    //scrollToBottom();
+
     const rangoHora = event.target.value;
 
     setHoraSeleccionada(rangoHora);
@@ -83,6 +91,7 @@ const CitasSeleccionHora = ({ setEnableButton, dataCita, setDataCita }) => {
 
   return (
     <div
+      ref={containerRef}
       style={{
         display: "flex",
         justifyContent: "center", // Centrado horizontal
@@ -98,7 +107,6 @@ const CitasSeleccionHora = ({ setEnableButton, dataCita, setDataCita }) => {
             onChange={handleChangeHora}
             displayEmpty
             fullWidth
-            sx={{ mt: { xs: -3, md: 0 } }}
           >
             <MenuItem value="" disabled>
               {horasDisponibles?.length == 0
@@ -110,11 +118,14 @@ const CitasSeleccionHora = ({ setEnableButton, dataCita, setDataCita }) => {
               <MenuItem
                 key={index}
                 value={hora}
+                //TODO: AQUI ES EL PROBLEMA
                 disabled={
                   fechaHoy === fechaSeleccionada &&
                   hora < dayjs().format("HH:mm")
                 }
               >
+                {console.log("hora", hora)}
+                {console.log("dayjs().format", dayjs().format("HH:mm"))}
                 {`${hora} - ${sumarDuracion(hora, dataCita.duracion)}`}
               </MenuItem>
             ))}

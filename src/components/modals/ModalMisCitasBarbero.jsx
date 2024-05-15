@@ -188,6 +188,7 @@ const ModalMisCitasBarbero = ({ handleClose, open, handleOk }) => {
     }
   };
 
+  //Formatear fecha de  AAAA-MM-DD a DD-MM-AAAA
   function formatearFecha(fechaString) {
     const fecha = new Date(fechaString);
     const dia = (fecha.getDate() + 1).toString().padStart(2, "0");

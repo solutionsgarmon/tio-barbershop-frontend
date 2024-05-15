@@ -105,7 +105,13 @@ const Table = () => {
     setIsUpdateData(true); //loading button
 
     try {
-      const resp = await postAdmin(values);
+      let newValues = { ...values };
+      newValues.imagenes = {
+        url: "https://firebasestorage.googleapis.com/v0/b/storage-eltio-barbershop.appspot.com/o/admin%2Fimagen_2024-04-27_144702917.png?alt=media&token=4d8c9f11-7156-4303-8aab-1d6d0facae94",
+        id: "66041e14-e89f-438e-eee3-a1fbae222543",
+        path: "admin/imagen_2024-04-27_144702917.png",
+      };
+      const resp = await postAdmin(newValues);
       console.log("resp", resp.data.success);
       if (resp.data.success) {
         toast.success("Registro Exitoso");
@@ -276,6 +282,7 @@ const Table = () => {
         </Tooltip>
         <Button
           variant="contained"
+          sx={{ backgroundColor: "#E2b753" }}
           onClick={() => {
             table.setCreatingRow(true);
           }}

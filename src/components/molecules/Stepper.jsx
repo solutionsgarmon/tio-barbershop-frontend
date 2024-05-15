@@ -13,7 +13,7 @@ export default function HorizontalLinearAlternativeLabelStepper({
       <Stepper activeStep={currenStep} alternativeLabel>
         {steps.map((label) => (
           <Step key={label}>
-            <StepLabel>{label}</StepLabel>
+            <StepLabel sx={{ fontFamily: "Century Gothic" }}>{label}</StepLabel>
           </Step>
         ))}
       </Stepper>

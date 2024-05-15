@@ -285,6 +285,7 @@ const Example = () => {
           </IconButton>
         </Tooltip>
         {/* <Button
+         sx={{ backgroundColor: "#E2b753" }}
           variant="contained"
           onClick={() => {
             table.setCreatingRow(true); //simplest way to open the create row modal with no default values

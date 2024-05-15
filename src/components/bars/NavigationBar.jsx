@@ -25,21 +25,22 @@ import PersonIcon from "@mui/icons-material/Person";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { scrollToTop } from "../../utils/screen";
 import ModalMiPerfilCliente from "../modals/ModalMiPerfilCliente";
+import Century_Gothic from "../../fonts/Century_Gothic.ttf";
 
 const PAGES_ADMIN = [
   { title: "Citas", url: "/citas" },
   { title: "Servicios", url: "/servicios" },
-  { title: "Cursos", url: "/cursos" },
+  // { title: "Cursos", url: "/cursos" },
   { title: "Tienda", url: "/tienda" },
   { title: "Sucursales", url: "/sucursales" },
   { title: "Sobre Nosotros", url: "/sobre-nosotros" },
-  { title: "Administrar", url: "/administracion" },
+  // { title: "Administrar", url: "/administracion" },
 ];
 
 const PAGES_CLIENTE = [
   { title: "Citas", url: "/citas" },
   { title: "Servicios", url: "/servicios" },
-  { title: "Cursos", url: "/cursos" },
+  // { title: "Cursos", url: "/cursos" },
   { title: "Tienda", url: "/tienda" },
   { title: "Sucursales", url: "/sucursales" },
   { title: "Sobre Nosotros", url: "/sobre-nosotros" },
@@ -48,14 +49,15 @@ const PAGES_CLIENTE = [
 const PAGES_BARBERO = [
   { title: "Citas", url: "/citas" },
   { title: "Servicios", url: "/servicios" },
-  { title: "Cursos", url: "/cursos" },
+  // { title: "Cursos", url: "/cursos" },
   { title: "Tienda", url: "/tienda" },
   { title: "Sucursales", url: "/sucursales" },
   { title: "Sobre Nosotros", url: "/sobre-nosotros" },
-  { title: "Administrar", url: "/administracion" },
+  // { title: "Administrar", url: "/administracion" },
 ];
 
-const SETTINGS_AUTENTICATED = ["Mi perfil", "Mis citas", "Cerrar sesión"];
+//let SETTINGS_AUTENTICATED = ["Mis citas", "Administrar", "Cerrar sesión"];
+let SETTINGS_AUTENTICATED_CLIENT = ["Mi perfil", "Mis citas", "Cerrar sesión"];
 const SETTINGS_NO_AUTENTICATED = ["Iniciar sesión", "Registrarse"];
 
 function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
@@ -75,6 +77,11 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
   const [showNModalMisCitas, setShowModalMisCitas] = useState(false);
   const [showNModalMiPerfil, setShowModalMiPerfil] = useState(false);
   const [pages, setPages] = useState(PAGES_CLIENTE);
+  const [SETTINGS_AUTENTICATED, SETSETTINGS_AUTENTICATED] = useState([
+    "Mis citas",
+    "Administrar",
+    "Cerrar sesión",
+  ]);
 
   const backgroundColor = scrollY === 0 ? "rgba(0, 0, 0, 0)" : "#333"; // Cambia el color dependiendo de la posición del scroll
 
@@ -96,6 +103,12 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
       switch (sessionDataStorage?.rol) {
         case "ADMINISTRADOR":
           setPages(PAGES_ADMIN);
+          const indexToRemove = SETTINGS_AUTENTICATED.indexOf("Mis citas");
+          // Si el elemento existe en el array, elimínalo
+          if (indexToRemove !== -1) {
+            SETTINGS_AUTENTICATED.splice(indexToRemove, 1);
+          }
+          SETSETTINGS_AUTENTICATED(SETTINGS_AUTENTICATED);
           break;
         case "BARBERO":
           setPages(PAGES_BARBERO);
@@ -157,6 +170,10 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
         setShowModalMisCitas(true);
         break;
 
+      case "Administrar":
+        navigate("/administracion");
+        break;
+
       case "Cerrar sesión":
         handleCerrarSesion();
         break;
@@ -202,13 +219,14 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
               ml: 1,
               mr: 8,
               display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
+
               fontWeight: 700,
               letterSpacing: ".1rem",
               color: "inherit",
               textDecoration: "none",
               cursor: "pointer",
               color: "#E2b753",
+              fontFamily: "Century Gothic",
             }}
           >
             EL TÍO BARBERSHOP
@@ -225,10 +243,10 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
+              color="white"
               sx={{ ml: -2 }}
             >
-              <MenuIcon />
+              <MenuIcon sx={{ color: "white", width: 30, height: 30 }} />
             </IconButton>
 
             {windowWidth <= 768 && (
@@ -266,6 +284,7 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
                   <Typography
                     textAlign="center"
                     sx={{
+                      fontFamily: "Century Gothic",
                       cursor: "pointer",
                       "&:hover": {
                         color: "#E2b753", // Cambia el color a amarillo al hacer hover
@@ -292,7 +311,16 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
                   },
                 }}
               >
-                {page.title}
+                <Typography
+                  sx={{
+                    fontFamily: "Century Gothic", // Cambia la fuente a Century Gothic
+                    fontWeight: 400, // Cambia el peso de la fuente
+                    fontSize: "1rem", // Cambia el tamaño de la fuente
+                    textTransform: "uppercase", // Cambia a mayúsculas
+                  }}
+                >
+                  {page.title}
+                </Typography>
               </Button>
             ))}
           </Box>
@@ -300,7 +328,7 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
             <Tooltip title="Menú de Usuario">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <AccountCircleOutlinedIcon
-                  sx={{ color: "white", width: 26, height: 26 }}
+                  sx={{ color: "white", width: 30, height: 30 }}
                 />
               </IconButton>
             </Tooltip>
@@ -342,14 +370,30 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
                     </Typography>
                   </Box>
                   <Divider sx={{ marginTop: "20px", marginBottom: "20px" }} />
-                  {SETTINGS_AUTENTICATED.map((setting) => (
-                    <MenuItem
-                      key={setting}
-                      onClick={() => handleClickSetting(setting)}
-                    >
-                      <Typography>{setting}</Typography>
-                    </MenuItem>
-                  ))}
+                  {sessionDataStorage?.rol == "ADMINISTRADOR" ||
+                  sessionDataStorage?.rol == "BARBERO" ? (
+                    <>
+                      {SETTINGS_AUTENTICATED.map((setting) => (
+                        <MenuItem
+                          key={setting}
+                          onClick={() => handleClickSetting(setting)}
+                        >
+                          <Typography>{setting}</Typography>
+                        </MenuItem>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      {SETTINGS_AUTENTICATED_CLIENT.map((setting) => (
+                        <MenuItem
+                          key={setting}
+                          onClick={() => handleClickSetting(setting)}
+                        >
+                          <Typography>{setting}</Typography>
+                        </MenuItem>
+                      ))}
+                    </>
+                  )}
                 </Box>
               ) : (
                 <>

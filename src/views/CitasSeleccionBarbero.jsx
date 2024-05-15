@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import CardServices from "../components/cards/CardServices";
 import { useEffect } from "react";
 import CardCitaBarber from "../components/cards/CardCitaBarber";
+import { scrollToTop } from "../utils/screen";
 
 const CitasSeleccionBarbero = ({
   setEnableButton,
@@ -14,18 +15,16 @@ const CitasSeleccionBarbero = ({
   const [barberosLocal, setBarberosLocal] = useState([]);
 
   useEffect(() => {
-    console.log("barberosLocal", barberosLocal);
-  }, [barberosLocal]);
+    scrollToTop();
+  }, []);
 
   useEffect(() => {
-    console.log("barbers", barbers);
-    console.log("dataCita.id_barberia", dataCita.id_barberia);
     if (barbers && barbers.length > 0) {
       console.log("barbers", barbers);
       const barberosFiltrados = barbers.filter(
         (barbero) => barbero.barberia_asignada === dataCita.id_barberia
       );
-      console.log("barberosFiltrados antes de set", barberosFiltrados);
+
       setBarberosLocal(barberosFiltrados);
     }
   }, [barbers]);
@@ -46,13 +45,15 @@ const CitasSeleccionBarbero = ({
         display: "flex",
         justifyContent: "center",
         flexWrap: "wrap",
+        mx: 0,
+        px: 0,
       }}
     >
       {barberosLocal?.map(
         (barbero, index) =>
           index % 2 === 0 && (
             <React.Fragment key={barbero.id}>
-              <Box sx={{ m: 1, maxWidth: 350 }}>
+              <Box sx={{ m: { xs: 0.5, sm: 1 }, maxWidth: 350 }}>
                 <CardCitaBarber
                   barbero={barbero}
                   onSelect={handleSelectCard}
@@ -60,7 +61,7 @@ const CitasSeleccionBarbero = ({
                 />
               </Box>
               {index + 1 < barberosLocal.length && (
-                <Box sx={{ m: 1, maxWidth: 350 }}>
+                <Box sx={{ m: { xs: 0.5, sm: 1 }, maxWidth: 350 }}>
                   <CardCitaBarber
                     barbero={barberosLocal[index + 1]}
                     onSelect={handleSelectCard}

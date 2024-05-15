@@ -58,6 +58,7 @@ export default function RecipeReviewCard({
         subheader={subtitle}
       />
       <CardMedia
+        sx={{ p: isSelected ? 0 : 0.5 }}
         component="img"
         height="194"
         image={

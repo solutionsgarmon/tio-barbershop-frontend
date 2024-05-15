@@ -231,6 +231,31 @@ export function getCitas() {
   });
 }
 
+
+export function getAppSettings() {
+  return new Promise((resolve, reject) => {
+      axios.get(import.meta.env.VITE_APP_SETTINGS_URL)
+    .then((response) => {
+        const data = response.data;
+        console.log("getAppSettings()", data);
+        if (!data.success) {
+          console.error("No se pudo realizar correctamente la petición getAppSettings():", data);
+          reject(data); 
+        } else if (data.length === 0) {
+          console.info("🛈 No se encontraron elementos para getAppSettings():");
+          resolve([]); 
+        } else  {
+          console.log("getAppSettings -> SETTINGS", data.data);
+          resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
+        }
+      })
+      .catch((error) => {
+        console.error("Error en getAppSettings():", error);
+        reject(error); // Rechaza la promesa en caso de error
+      });
+  });
+}
+
 export function getCitasRegistro() {
   return new Promise((resolve, reject) => {
       axios.get(import.meta.env.VITE_CITAS_REGISTRO_URL)

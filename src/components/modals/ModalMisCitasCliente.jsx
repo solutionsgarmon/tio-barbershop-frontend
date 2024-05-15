@@ -45,23 +45,31 @@ const ModalMisCitasCliente = ({ handleClose, open, handleOk }) => {
         if (sessionDataStorage.rol === "CLIENTE") {
           console.log("ES CLIENTE...");
           if (filtroCitas === "PENDIENTE") {
+            console.log(
+              "await getCitasByCorreo(sessionDataStorage.correo)",
+              await getCitasByCorreo(sessionDataStorage.correo)
+            );
             setCitas(await getCitasByCorreo(sessionDataStorage.correo));
           }
-          if (filtroCitas === "COMPLETADA") {
+          if (filtroCitas === "COMPLETADA" || filtroCitas === "CANCELADA") {
             const citasRegistro = await getCitasRegistroByCorreo(
               sessionDataStorage.correo
             );
-            setCitas(
-              citasRegistro.filter((cita) => cita.estatus === "COMPLETADA")
-            );
-          }
-          if (filtroCitas === "CANCELADA") {
-            const citasRegistro = await getCitasRegistroByCorreo(
-              sessionDataStorage.correo
-            );
-            setCitas(
-              citasRegistro.filter((cita) => cita.estatus === "CANCELADA")
-            );
+            if (citasRegistro !== null) {
+              if (citasRegistro) {
+                const citaas = citasRegistro.filter(
+                  (cita) => cita.estatus === filtroCitas
+                );
+                console.log(" citaas", citaas);
+                setCitas(citaas);
+              } else {
+                console.log("setCitas([]);");
+                setCitas([]);
+              }
+            } else {
+              console.log("setCitas([]);");
+              setCitas([]); // No hay citas registradas, establece citas como un array vacío
+            }
           }
         }
       }
@@ -73,7 +81,15 @@ const ModalMisCitasCliente = ({ handleClose, open, handleOk }) => {
     if (sessionDataStorage && open) {
       if (sessionDataStorage.rol == "CLIENTE") {
         const allCitas = await getCitasByCorreo(sessionDataStorage.correo);
-        setCitas(allCitas.filter((cita) => cita.estatus == filtroCitas));
+
+        if (allCitas) {
+          const citass = allCitas.filter((cita) => cita.estatus == filtroCitas);
+          console.log("citass", citass);
+          setCitas(citass);
+        } else {
+          console.log("citas []");
+          setCitas([]);
+        }
       }
     }
   };
@@ -91,7 +107,7 @@ const ModalMisCitasCliente = ({ handleClose, open, handleOk }) => {
       await deleteCita(cita._id);
       await postCitaregistro(cita);
 
-      toast.success("Estatus de citamodificado.");
+      toast.success("Estatus de cita modificado.");
       await reload();
     } catch (error) {
       console.error("Error al modificar:", error);
@@ -236,7 +252,12 @@ const ModalMisCitasCliente = ({ handleClose, open, handleOk }) => {
         ))}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} variant="outlined">
+        <Button
+          onClick={handleClose}
+          variant="outlined"
+          fullWidth
+          color="error"
+        >
           <Typography>
             Cerrar
             {/* <CloseIcon sx={{ mb: -0.8 }} /> */}

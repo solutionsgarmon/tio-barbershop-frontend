@@ -59,8 +59,8 @@ const CardCitaBarbershop = ({
     <Card
       sx={{
         width: 300,
-        border: isSelected ? "3px solid blue" : "none",
-        backgroundColor: isSelected ? "#f0f0f0" : "transparent",
+        border: isSelected ? "5px solid #E2b753 " : "none",
+        backgroundColor: isSelected ? "#FFF" : "#f1f1f1",
         cursor: "pointer",
         "&:hover": {
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
@@ -72,6 +72,7 @@ const CardCitaBarbershop = ({
       onClick={handleSelect}
     >
       <CardMedia
+        sx={{ p: isSelected ? 0 : 0.5 }}
         component="img"
         alt="green iguana"
         height="150"
@@ -82,13 +83,22 @@ const CardCitaBarbershop = ({
         }
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
+        <Typography
+          sx={{ color: "#E2b753 ", fontFamily: "Century Gothic" }}
+          gutterBottom
+          variant="h5"
+          component="div"
+        >
           {barbershop?.nombre}
         </Typography>
         <Typography
           variant="body2"
           color="text.secondary"
-          sx={{ height: 35, textAlign: "justify" }}
+          sx={{
+            height: 35,
+            textAlign: "justify",
+            fontFamily: "Century Gothic",
+          }}
         >
           {barbershop?.direccion.calle}
           {barbershop?.direccion.colonia}, {barbershop?.direccion.ciudad}
@@ -100,7 +110,9 @@ const CardCitaBarbershop = ({
               aria-controls="panel1-content"
               id="panel1-header"
             >
-              <Typography> Ver Horario</Typography>
+              <Typography sx={{ fontFamily: "Century Gothic" }}>
+                Ver Horario
+              </Typography>
             </AccordionSummary>
             <AccordionDetails sx={{ mt: -4 }}>
               <TableHorario horario={barbershop?.horario} />
@@ -116,7 +128,8 @@ const CardCitaBarbershop = ({
             fullWidth
             variant="outlined"
             sx={{
-              backgroundColor: isSelected ? "blue" : "#f0f0f0",
+              fontFamily: "Century Gothic",
+              backgroundColor: isSelected ? "#E2b753 " : "#f0f0f0",
               color: isSelected ? "white" : "black",
               p: 1,
             }} // Cambia el color de fondo y texto si está seleccionado

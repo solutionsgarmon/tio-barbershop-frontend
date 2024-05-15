@@ -12,7 +12,14 @@ const Administracion = ({ setShowNavigationBar }) => {
   }, []);
 
   return (
-    <Box sx={{ mt: -11, maxWidth: "100%", overflowX: "auto" }}>
+    <Box
+      sx={{
+        mt: -11,
+        maxWidth: "100%",
+        overflowX: "auto",
+        backgroundColor: "#EEE",
+      }}
+    >
       <Paperbase />
     </Box>
   );

@@ -4,7 +4,8 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import { Button, Stack, Box } from "@mui/material";
+import { Button, Stack, Box, Tooltip } from "@mui/material";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 export default function ElementListWithImage({
   primaryText,
@@ -25,8 +26,8 @@ export default function ElementListWithImage({
         borderRadius: 2,
         position: "relative", // Agregamos posición relativa para que el botón se pueda posicionar absolutamente dentro de este componente
         "&:hover": {
-          border: "1px solid #ff9800",
-          backgroundColor: "#FAFEBB",
+          border: "1px solid #E2b753 ",
+          backgroundColor: "#E2b753 ",
           cursor: "pointer",
         },
       }}
@@ -35,7 +36,7 @@ export default function ElementListWithImage({
       <ListItemAvatar>
         <Avatar
           alt={primaryText}
-          src={image.url}
+          src={image}
           sx={{ width: 50, height: 50, mr: 2 }}
         />
       </ListItemAvatar>
@@ -69,18 +70,27 @@ export default function ElementListWithImage({
         <Box
           sx={{
             position: "absolute", // Posicionamos absolutamente el botón dentro de este componente
-            top: 15,
-            right: 40,
+            top: 18,
+            right: 25,
             transform: "translate(50%, -50%)", // Ajustamos el botón a la esquina superior derecha
           }}
         >
-          <Button
-            size="small"
-            variant="text"
-            onClick={() => handleVerHorario()}
-          >
-            Horario
-          </Button>
+          <Tooltip title="Ver horarios de esta barbershop">
+            <Button
+              size="small"
+              variant="text"
+              onClick={() => handleVerHorario()}
+              sx={{
+                fontFamily: "Century Gothic",
+              }}
+            >
+              <AccessTimeIcon
+                sx={{
+                  color: "#1f1f1f",
+                }}
+              />
+            </Button>
+          </Tooltip>
         </Box>
       </Stack>
     </ListItem>

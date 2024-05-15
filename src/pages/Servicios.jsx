@@ -6,6 +6,7 @@ import { useState } from "react";
 import MapFrame from "../components/atoms/MapFrame";
 import { useEffect } from "react";
 import { getServices } from "../api/gets";
+import { Typography } from "antd";
 
 const Servicios = ({ services }) => {
   return (
@@ -15,10 +16,12 @@ const Servicios = ({ services }) => {
           display: "flex",
           justifyContent: "center",
           flexWrap: "wrap",
-          mt: 2,
+          mt: 4,
         }}
       >
-        <h1>Nuestros Servicios</h1>
+        <h2 style={{ color: "#E2b753 ", fontFamily: "Century Gothic" }}>
+          Nuestros Servicios
+        </h2>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}>
         {services?.map((servicio) => (

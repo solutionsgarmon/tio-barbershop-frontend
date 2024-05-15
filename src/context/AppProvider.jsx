@@ -2,7 +2,7 @@ import React, { createContext, useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { getFromLocalStorage } from "../helpers/localStorageHelper";
-import { getBarbershops } from "../api/gets";
+import { getAppSettings, getBarbershops } from "../api/gets";
 
 const AppContext = createContext();
 
@@ -22,11 +22,16 @@ const AppProvider = ({ children }) => {
   const [reload, setReload] = useState(false);
   const [isLoadingApp, setIsLoadingApp] = useState(false);
   const [sessionDataStorage, setSessionDataStorage] = useState(null);
+  const [appSettings, setAppSettings] = useState([]);
+  // const settings = await getAppSettings();
+  // setAppSettings(settings[0]);
 
   useEffect(() => {
     async function fetchData() {
       verifySession();
       setBarbershops(await getBarbershops());
+      const settings = await getAppSettings();
+      setAppSettings(settings[0]);
       // setBarbers(await getBarbers());
       // setServices(await getServices());
       // setProducts(await getProducts());
@@ -95,6 +100,9 @@ const AppProvider = ({ children }) => {
     isLoadingApp,
     sessionDataStorage,
     setSessionDataStorage,
+
+    appSettings,
+    setAppSettings,
   };
   return (
     <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>

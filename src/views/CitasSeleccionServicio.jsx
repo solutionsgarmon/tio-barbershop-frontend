@@ -1,7 +1,8 @@
 import { Box } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import CardServices from "../components/cards/CardServices";
-import { scrollToBottom } from "../utils/screen";
+import { scrollToTop } from "../utils/screen";
+import CardSelectectionServices from "../components/cards/CardSelectectionServices";
 
 const CitasSeleccionBarbero = ({
   setEnableButton,
@@ -10,6 +11,7 @@ const CitasSeleccionBarbero = ({
   services,
 }) => {
   const [selected, setSelected] = useState(null);
+  const containerRef = useRef(null); // Referencia al contenedor de las tarjetas
 
   const handleSelectCard = (servicio) => {
     setDataCita((prevDataCita) => ({
@@ -20,11 +22,15 @@ const CitasSeleccionBarbero = ({
       costo: servicio.precio,
     }));
     setEnableButton(true);
-    scrollToBottom();
   };
+
+  useEffect(() => {
+    scrollToTop(containerRef.current);
+  }, []);
 
   return (
     <Box
+      ref={containerRef}
       sx={{
         display: "flex",
         justifyContent: "center",
@@ -37,7 +43,7 @@ const CitasSeleccionBarbero = ({
           index % 2 === 0 && (
             <React.Fragment key={servicio.id}>
               <Box sx={{ m: 1, maxWidth: 350 }}>
-                <CardServices
+                <CardSelectectionServices
                   dataCita={dataCita}
                   servicio={servicio}
                   isSelected={selected === servicio}
@@ -46,7 +52,7 @@ const CitasSeleccionBarbero = ({
               </Box>
               {index + 1 < services.length && (
                 <Box sx={{ m: 1, maxWidth: 350 }}>
-                  <CardServices
+                  <CardSelectectionServices
                     dataCita={dataCita}
                     servicio={services[index + 1]}
                     isSelected={selected === services[index + 1]}

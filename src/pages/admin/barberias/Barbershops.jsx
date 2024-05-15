@@ -60,20 +60,20 @@ const Barbershops = () => {
         />
       )}
 
-      {indexTabSelected == 2 && (
+      {/* {indexTabSelected == 2 && (
         <TabProductos
           products={products}
           barbershopSelected={barbershopSelected}
           setReloadData={setReloadData}
         />
-      )}
-      {indexTabSelected == 3 && (
+      )} */}
+      {indexTabSelected == 2 && (
         <TabHorario
           barbershopSelected={barbershopSelected}
           setReloadData={setReloadData}
         />
       )}
-      {indexTabSelected == 4 && (
+      {indexTabSelected == 3 && (
         <TabImagenes
           barbershopSelected={barbershopSelected}
           setReloadData={setReloadData}

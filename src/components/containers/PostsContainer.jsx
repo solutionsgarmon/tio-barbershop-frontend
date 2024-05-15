@@ -21,7 +21,13 @@ export default function StandardImageList() {
     >
       <ImageList sx={{ width: 360 }} cols={1} rowHeight={360}>
         <Button
-          sx={{ mb: 0, height: 100, width: 360, fontSize: "larger" }}
+          sx={{
+            mb: 0,
+            height: 100,
+            width: 360,
+            fontSize: "larger",
+            backgroundColor: "#E2b753",
+          }}
           component="label"
           variant="contained"
           tabIndex={-1}

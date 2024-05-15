@@ -74,7 +74,7 @@ const ModalRegistroUsuario = ({ open, handleClose }) => {
       </DialogTitle>
       <DialogContent dividers>
         <TextField
-          label="Nombre Completo"
+          label="Nombre Completo*"
           value={nombreCompleto}
           onChange={(e) => setNombreCompleto(e.target.value)}
           fullWidth
@@ -88,7 +88,7 @@ const ModalRegistroUsuario = ({ open, handleClose }) => {
           sx={{ mb: 1 }}
         />
         <TextField
-          label="Numero telefónico"
+          label="Numero telefónico*"
           value={telefono}
           onChange={(e) => setTelefono(e.target.value)}
           fullWidth
@@ -96,7 +96,7 @@ const ModalRegistroUsuario = ({ open, handleClose }) => {
         />
         <Stack direction={"row"}>
           <TextField
-            label="Contraseña"
+            label="Contraseña*"
             type="password"
             value={contrasena}
             onChange={(e) => setContrasena(e.target.value)}
@@ -105,7 +105,7 @@ const ModalRegistroUsuario = ({ open, handleClose }) => {
           />
 
           <TextField
-            label="Confirmar Contraseña"
+            label="Confirmar Contraseña*"
             type="password"
             value={confirmarContrasena}
             onChange={(e) => setConfirmarContrasena(e.target.value)}

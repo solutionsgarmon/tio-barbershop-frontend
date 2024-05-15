@@ -10,7 +10,6 @@ import Citas from "./pages/Citas";
 import NavigationBar from "./components/bars/NavigationBar";
 import { Box } from "@mui/material";
 import Footer from "./components/molecules/Footer";
-import ErrorPage from "./pages/ErrorPage";
 import Administracion from "./pages/Administracion";
 import Login from "./pages/Login";
 import { getServices, getProducts } from "./api/gets";
@@ -39,16 +38,15 @@ function AppRoutes() {
   }, []);
 
   return (
-    <Box sx={{ backgroundColor: "#EEE", m: "auto" }}>
+    <Box sx={{ backgroundColor: "#1f1f1f", m: "auto" }}>
       {showNavigationBar && (
         <NavigationBar
           setShowNavigationBar={setShowNavigationBar}
           setShowModalRegistro={setShowModalRegistro}
         />
       )}
-      <Box sx={{ margin: "auto", pt: 10, minHeight: "60vh" }}>
+      <Box sx={{ margin: "auto", mb: -2, pt: 10, minHeight: "60vh" }}>
         <Routes>
-          {/* <Route path="/provocarError" element={<ComponentWithError />} /> */}
           <Route
             path="/"
             element={<Home services={services} products={products} />}

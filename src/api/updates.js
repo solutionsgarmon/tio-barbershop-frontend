@@ -41,16 +41,17 @@ export function updateProduct(values, idProduct) {
       });
   });
 }
-
+//No me manda response
 export function updateBarber(values, idBarber) {
-  console.log("> updateBarber()")
+  console.log("> updateBarber() - > Values",values)
+    console.log("> updateBarber() - > idBarber",idBarber)
   return new Promise((resolve, reject) => {
     axios.patch(
       `${import.meta.env.VITE_BARBERS_URL}/update/${idBarber}`,
       values
     )
       .then((response) => {
-        console.log("response 30"),response
+        console.log("response updateBarber"),response
         if (!response.data.success) {
           console.error("No se pudo realizar correctamente la petición updateBarber():", response.data);
           reject(response);
@@ -82,6 +83,29 @@ export function updatePassworsBarber(values, idBarber) {
       })
       .catch((error) => {
         console.error("Error en updateBarber():", error);
+        reject(error);
+      });
+  });
+}
+
+
+export function updateAppSettings(values, id) {
+  console.log("> updatePassworsBarber()")
+  return new Promise((resolve, reject) => {
+    axios.patch(
+      `${import.meta.env.VITE_APP_SETTINGS_URL}/${id}`,
+      values
+    )
+      .then((response) => {
+        if (!response.data.success) {
+          console.error("No se pudo realizar correctamente la petición updateAppSettings():", response.data);
+          reject(response);
+        } else {
+          resolve(response);
+        }
+      })
+      .catch((error) => {
+        console.error("Error en updateAppSettings():", error);
         reject(error);
       });
   });

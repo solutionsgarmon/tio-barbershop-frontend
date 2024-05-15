@@ -7,7 +7,6 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useEffect } from "react";
 import { useState } from "react";
-import { scrollToBottom } from "../../utils/screen";
 
 const CardServices = ({ servicio, onSelect, dataCita, withButtons = true }) => {
   const [hovered, setHovered] = useState(false);
@@ -15,6 +14,8 @@ const CardServices = ({ servicio, onSelect, dataCita, withButtons = true }) => {
   const [isSelected, setIsSelected] = useState(false);
 
   useEffect(() => {
+    // console.log("servicio._id", servicio._id);
+    // console.log("dataCita?.id_servicio", dataCita?.id_servicio);
     if (dataCita?.id_servicio == servicio._id) setIsSelected(true);
     else setIsSelected(false);
   }, [dataCita]);
@@ -30,7 +31,6 @@ const CardServices = ({ servicio, onSelect, dataCita, withButtons = true }) => {
 
   const handleSelect = () => {
     onSelect(servicio);
-    scrollToBottom();
   };
 
   React.useEffect(() => {
@@ -48,7 +48,7 @@ const CardServices = ({ servicio, onSelect, dataCita, withButtons = true }) => {
   return (
     <Card
       sx={{
-        border: isSelected ? "3px solid #FFF " : "none",
+        border: isSelected ? "3px solid #E2b753 " : "none",
         backgroundColor: isSelected ? "#f0f0f0" : "transparent", // Cambia el color de fondo si está seleccionado
         "&:hover": {
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
@@ -60,7 +60,6 @@ const CardServices = ({ servicio, onSelect, dataCita, withButtons = true }) => {
       onClick={handleSelect}
     >
       <CardMedia
-        sx={{ p: isSelected ? 0 : 0.5 }}
         component="img"
         alt="green iguana"
         height="150"
@@ -71,17 +70,12 @@ const CardServices = ({ servicio, onSelect, dataCita, withButtons = true }) => {
         }
       />
       <CardContent>
-        <Typography
-          sx={{ color: "#E2b753" }}
-          gutterBottom
-          variant="h5"
-          component="div"
-        >
+        <Typography gutterBottom variant="h5" component="div">
           {servicio?.nombre}
         </Typography>
         <Typography
           variant="body2"
-          color="white"
+          color="text.secondary"
           sx={{ height: 70, textAlign: "justify", fontSize: "1.1rem" }}
         >
           {servicio?.descripcion}

@@ -81,10 +81,12 @@ const CitasConfirmacion = ({
     }
 
     // Validación de correo electrónico
-    if (!correoValido.test(correo)) {
-      setErrorCorreo(true);
-      toast.error("Ingrese un correo electrónico válido.");
-      return;
+    if (correo !== "") {
+      if (!correoValido.test(correo)) {
+        setErrorCorreo(true);
+        toast.error("Ingrese un correo electrónico válido.");
+        return;
+      }
     }
 
     const values = {
@@ -139,10 +141,20 @@ const CitasConfirmacion = ({
     setIsLoadingApp(false);
   };
 
+  //Formatear fecha de  AAAA-MM-DD a DD-MM-AAAA
+  function formatearFecha(fechaString) {
+    const fecha = new Date(fechaString);
+    const dia = (fecha.getDate() + 1).toString().padStart(2, "0");
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, "0"); // Sumar 1 aquí
+    const año = fecha.getFullYear();
+
+    return `${dia}-${mes}-${año}`;
+  }
+
   return (
     <Card
       sx={{
-        maxWidth: 250,
+        maxWidth: 300,
         margin: "auto",
         marginTop: 0,
         paddingX: 2,
@@ -154,46 +166,76 @@ const CitasConfirmacion = ({
           alt="Imagen del barbero"
           style={{ maxWidth: "100%", borderRadius: "50%", marginBottom: 5 }}
         />
-        <Typography variant="text.secondary" sx={{ textAlign: "center" }}>
+        <Typography
+          variant="text.secondary"
+          sx={{ textAlign: "center", fontFamily: "Century Gothic" }}
+        >
           Barbero
         </Typography>
-        <Typography variant="h5" sx={{ textAlign: "center" }}>
+        <Typography
+          variant="h5"
+          sx={{ textAlign: "center", fontFamily: "Century Gothic" }}
+        >
           {dataCita.barbero}
         </Typography>
         <br /> <br />
         <Stack direction="row">
           <BusinessIcon />
-          <Typography variant="subtitle1" gutterBottom sx={{ ml: 1 }}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ ml: 1, fontFamily: "Century Gothic" }}
+          >
             {dataCita.barberia}
           </Typography>
         </Stack>
         <Stack direction="row">
           <ContentCutIcon />
-          <Typography variant="subtitle1" gutterBottom sx={{ ml: 1 }}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ ml: 1, fontFamily: "Century Gothic" }}
+          >
             {dataCita.servicio}
           </Typography>
         </Stack>
         <Stack direction="row">
           <MonetizationOnIcon />
-          <Typography variant="subtitle1" gutterBottom sx={{ ml: 1 }}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ ml: 1, fontFamily: "Century Gothic" }}
+          >
             {dataCita.costo} pesos
           </Typography>
         </Stack>
         <Stack direction={"row"}>
           <EventIcon />
-          <Typography variant="subtitle1" gutterBottom sx={{ ml: 1 }}>
-            {dataCita.fecha}
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ ml: 1, fontFamily: "Century Gothic" }}
+          >
+            {formatearFecha(dataCita.fecha)}
           </Typography>
         </Stack>
         <Stack direction="row">
           <AccessTimeIcon />
-          <Typography variant="subtitle1" gutterBottom sx={{ ml: 1 }}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ ml: 1, fontFamily: "Century Gothic" }}
+          >
             {dataCita.hora} - Hora cita
           </Typography>
         </Stack>
         <Stack direction="row">
           <AccessTimeIcon />
-          <Typography variant="subtitle1" gutterBottom sx={{ ml: 1 }}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ ml: 1, fontFamily: "Century Gothic" }}
+          >
             {sumarMinutosAHora(dataCita.hora, dataCita.duracion)} - Salida
             Aprox.
           </Typography>
@@ -240,7 +282,7 @@ const CitasConfirmacion = ({
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Correo electrónico*"
+                label="Correo electrónico"
                 variant="outlined"
                 fullWidth
                 error={errorCorreo}
@@ -263,18 +305,6 @@ const CitasConfirmacion = ({
                 fullWidth
               />
             </Grid>
-            {/* <Grid item xs={12}>
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                fullWidth
-                disabled={nombre == "" || telefono == ""}
-                sx={{ mt: 5 }}
-              >
-                Confirmar &nbsp; <SendIcon />
-              </Button>
-            </Grid> */}
           </Grid>
         </form>
       </CardContent>

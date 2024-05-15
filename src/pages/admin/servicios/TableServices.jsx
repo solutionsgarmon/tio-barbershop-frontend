@@ -49,6 +49,7 @@ const Table = ({ setServiceSelected }) => {
   const [isLoadingData, setIsLoadingData] = useState(true); // poner loading girando
   const [isUpdateData, setIsUpdateData] = useState(false); //Bloquear la modal y boton
   const [services, setServices] = useState([]);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -62,6 +63,7 @@ const Table = ({ setServiceSelected }) => {
     setIsLoadingData(true);
     setServices(await getServices());
     setServiceSelected(null);
+    setSelectedRow(null);
   };
 
   useEffect(() => {
@@ -227,6 +229,7 @@ const Table = ({ setServiceSelected }) => {
 
   //CLIC IN ROW
   const handleClickRow = (dataSelected) => {
+    setSelectedRow(dataSelected);
     // console.log("dataSelected", dataSelected);
     setServiceSelected(dataSelected);
     toast.success(`El servicio "${dataSelected.nombre}" fué Selecionado`);
@@ -242,6 +245,10 @@ const Table = ({ setServiceSelected }) => {
     muiTableBodyRowProps: ({ row }) => ({
       onClick: () => {
         handleClickRow(row.original);
+      },
+      sx: {
+        backgroundColor: row.original === selectedRow ? "#E2b753 " : "inherit", // Aplica el color amarillo si la fila está seleccionada
+        cursor: "pointer",
       },
     }),
 
@@ -309,6 +316,7 @@ const Table = ({ setServiceSelected }) => {
           </IconButton>
         </Tooltip>
         <Button
+          sx={{ backgroundColor: "#E2b753" }}
           variant="contained"
           onClick={() => {
             table.setCreatingRow(true);

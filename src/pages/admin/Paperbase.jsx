@@ -43,6 +43,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import Citas from "./citas/Citas";
 import ReportesBarbero from "./reportes/ReportesBarbero";
 import ReportesAdministrador from "./reportes/ReportesAdministrador";
+import Configuracion from "./configuraciones/Configuracion";
 
 function Copyright() {
   return (
@@ -60,7 +61,7 @@ let theme = createTheme({
   palette: {
     primary: {
       light: "#63ccff",
-      main: "#009be5",
+      main: "#E2b753 ",
       dark: "#006db3",
     },
   },
@@ -221,7 +222,9 @@ const categories_administrador = [
       {
         id: "Clientes",
         icon: <Groups2Icon />,
-        tabs: ["Clientes", "Citas"],
+
+        // tabs: ["Clientes", "Citas"],
+        tabs: ["Clientes"],
         component: <Users />,
       },
 
@@ -258,7 +261,7 @@ const categories_administrador = [
       {
         id: "Barberías",
         icon: <StorefrontIcon />,
-        tabs: ["Barberias", "Barberos", "Productos", "Horario", "Imágenes"],
+        tabs: ["Barberias", "Barberos", "Horario", "Imágenes"],
         component: <Barbershops />,
       },
       {
@@ -269,46 +272,46 @@ const categories_administrador = [
       },
     ],
   },
+  // {
+  //   id: "APLICACIÓN",
+  //   children: [
+  //     {
+  //       id: "Posts",
+  //       icon: <NewspaperIcon />,
+  //       tabs: ["Publicaciones"],
+  //       component: <Posts />,
+  //     },
+  // {
+  //   id: "Recomendaciones",
+  //   icon: <RecommendIcon />,
+  //   tabs: [],
+  //   component: <Posts />,
+  // },
+  // {
+  //   id: "Galeria",
+  //   icon: <CollectionsIcon />,
+  //   tabs: ["Barberos", "Servicios", "Barberías"],
+  //   component: <Posts />,
+  // },
+  // {
+  //   id: "Citas",
+  //   icon: <CalendarMonthIcon />,
+  //   tabs: ["Citas Pendientes", "Citas Terminadas"],
+  //   component: <Citas />,
+  // },
+  // ],
+  // },
   {
-    id: "APLICACIÓN",
+    id: "CONFIGURACIÓN",
     children: [
       {
-        id: "Posts",
-        icon: <NewspaperIcon />,
-        tabs: ["Publicaciones"],
-        component: <Posts />,
-      },
-      {
-        id: "Recomendaciones",
-        icon: <RecommendIcon />,
-        tabs: [],
-        component: <Posts />,
-      },
-      {
-        id: "Galeria",
-        icon: <CollectionsIcon />,
-        tabs: ["Barberos", "Servicios", "Barberías"],
-        component: <Posts />,
-      },
-      {
-        id: "Citas",
-        icon: <CalendarMonthIcon />,
-        tabs: ["Citas Pendientes", "Citas Terminadas"],
-        component: <Citas />,
+        id: "Personalización",
+        icon: <SettingsIcon />,
+        tabs: ["Banner Principal", "Redes Sociales", "Colores", "Typografía"],
+        component: <Configuracion />,
       },
     ],
   },
-  // {
-  //   id: "CONFIGURACIÓN",
-  //   children: [
-  //     {
-  //       id: "Personalización",
-  //       icon: <SettingsIcon />,
-  //       tabs: ["Preferencias", "Ajustes"],
-  //       component: <Posts />,
-  //     },
-  //   ],
-  // },
 ];
 
 const categories_barbero = [

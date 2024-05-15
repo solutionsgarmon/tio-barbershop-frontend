@@ -21,9 +21,9 @@ const Sucursales = () => {
   };
 
   return (
-    <Grid container spacing={0} sx={{ mt: 0.5 }}>
+    <Grid container spacing={0} sx={{ mt: 1.5 }}>
       <Grid item xs={12} md={4}>
-        <h2 style={{ textAlign: "center" }}>SUCURSALES</h2>
+        <h2 style={{ textAlign: "center", color: "#FFF" }}>SUCURSALES</h2>
         <Box
           sx={{
             maxHeight: { xs: "28vh", sm: "80vh" },

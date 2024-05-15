@@ -324,7 +324,7 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
         handleClickRow(row.original);
       },
       sx: {
-        backgroundColor: row.original === selectedRow ? "#009be5" : "inherit", // Aplica el color amarillo si la fila está seleccionada
+        backgroundColor: row.original === selectedRow ? "#E2b753 " : "inherit", // Aplica el color amarillo si la fila está seleccionada
         cursor: "pointer",
       },
     }),
@@ -410,6 +410,7 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
           </IconButton>
         </Tooltip>
         <Button
+          sx={{ backgroundColor: "#E2b753" }}
           variant="contained"
           onClick={() => {
             table.setCreatingRow(true);

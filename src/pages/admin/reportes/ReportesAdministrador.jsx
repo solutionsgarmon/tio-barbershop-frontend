@@ -139,7 +139,7 @@ const ReportesAdministrador = () => {
   };
 
   const customColors = [
-    "#8884d8",
+    "#1f1f1f",
     "#82ca9d",
     "#ffc658",
     "#ff7f0e",
@@ -297,7 +297,7 @@ const ReportesAdministrador = () => {
                         cy="50%"
                         innerRadius={60}
                         outerRadius={80}
-                        fill="#8884d8"
+                        fill="#1f1f1f"
                         dataKey="value"
                         label
                       >

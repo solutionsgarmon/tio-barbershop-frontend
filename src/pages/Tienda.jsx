@@ -33,7 +33,7 @@ const Tienda = () => {
   const currentProducts = products.slice(startIndex, endIndex);
 
   return (
-    <Box sx={{ py: 3, backgroundColor: "#000" }}>
+    <Box sx={{ py: 3, backgroundColor: "#1f1f1f" }}>
       <Typography variant="h4" align="center" color={"#E2b753"}>
         Tienda
       </Typography>
@@ -62,9 +62,14 @@ const Tienda = () => {
         <Typography
           variant="h5"
           color={"white"}
-          sx={{ textAlign: "justify", fontSize: { xs: 18, sm: 22 }, py: 1 }}
+          sx={{
+            fontFamily: "Century Gothic",
+            textAlign: "center",
+            fontSize: { xs: 16, sm: 20 },
+            py: 1,
+          }}
         >
-          Estos productos los puedes adquirir con tu barbero, en cualquiera de
+          Estos productos los puedes adquirir con tu barbero o en cualquiera de
           nuestras sucursales.
         </Typography>
         <Pagination
@@ -72,7 +77,13 @@ const Tienda = () => {
           page={page}
           onChange={handleChange}
           color="primary"
-          sx={{ textAlign: "center", margin: "auto" }}
+          sx={{
+            textAlign: "center",
+            margin: "auto",
+            "& .MuiPaginationItem-text": {
+              color: "#fff", // Cambiar color paginación
+            },
+          }}
         />
       </Stack>
     </Box>

@@ -9,15 +9,21 @@ const scrollbarStyles = `
   /* Estilo del scrollbar */
   ::-webkit-scrollbar {
     width: 6px; 
-    background-color: #000;
+    background-color: #1f1f1f;
   }
 
   /* Estilo del thumb (la parte que puedes arrastrar) */
   ::-webkit-scrollbar-thumb {
     background-color: #E2b753 ; /* Color del thumb */
-    border-radius: 8px; /* Radio de borde del thumb */
+    border-radius: 1px; /* Radio de borde del thumb */
 
   }
+    /* Estilo de la línea en la que se encuentra el thumb */
+  ::-webkit-scrollbar-track {
+    background-color: #1f1f1f; /* Color de la línea */
+    border-radius: 2px; /* Radio de borde de la línea */
+  }
+
 
   /* Cambio de color del thumb cuando se le pasa el mouse */
   ::-webkit-scrollbar-thumb:hover {

@@ -40,15 +40,15 @@ const CardProduct = ({ producto }) => {
           display: "flex",
           flexDirection: "column",
           minWidth: { xs: 120, sm: 250 },
-          height: { xs: 340, sm: 410 },
-          backgroundColor: "#000",
+          height: { xs: 330, sm: 450 },
+          backgroundColor: "#1f1f1f",
           border: "1px solid #fff",
         }}
       >
         <CardActionArea>
           <CardMedia
             component="img"
-            sx={{ height: { xs: 150, sm: 220 } }}
+            sx={{ height: { xs: 170, sm: 250 } }}
             image={producto.imagenes[0].url}
             alt={producto.nombre}
           />
@@ -58,15 +58,15 @@ const CardProduct = ({ producto }) => {
               component="div"
               sx={{
                 textAlign: "center",
-                height: { xs: 75, sm: 50 },
+                height: { xs: 60, sm: 55 },
                 m: { xs: -1, sm: 0 },
-                color: "white",
+                color: "#E2b753 ",
+
+                fontSize: { xs: "0.9rem", sm: "1.2rem" },
               }}
             >
-              <strong>
-                {isMobile
-                  ? truncateTitleMovil(producto.nombre)
-                  : truncateTitle(producto.nombre)}
+              <strong style={{ fontFamily: "Century Gothic" }}>
+                {isMobile ? producto.nombre : producto.nombre}
               </strong>
             </Typography>
             <Typography
@@ -76,11 +76,14 @@ const CardProduct = ({ producto }) => {
                 textAlign: { xs: "left", sm: "justify" },
 
                 m: { xs: -1, sm: 0 },
-                height: { xs: 46, sm: 40 },
+                height: { xs: 40, sm: 50 },
+                fontSize: { xs: "0.8rem", sm: "1.1rem" },
+                overflowY: "auto",
               }}
             >
               {isMobile
-                ? truncateDescriptionMovil(producto.descripcion)
+                ? // ? truncateDescriptionMovil(producto.descripcion)
+                  producto.descripcion
                 : truncateDescription(producto.descripcion)}
             </Typography>
           </CardContent>
@@ -89,13 +92,23 @@ const CardProduct = ({ producto }) => {
           <Typography
             variant="h5"
             color="primary"
-            sx={{ textAlign: "center", margin: "auto" }}
+            sx={{
+              textAlign: "center",
+              margin: "auto",
+            }}
           >
             ${producto.precio}
           </Typography>
           <Typography
-            color="text.secondary"
-            sx={{ textAlign: "center", margin: "auto", mt: -0.2 }}
+            color="primary"
+            sx={{
+              textAlign: "center",
+              margin: "auto",
+              mt: -0.1,
+              ml: 0.3,
+
+              fontSize: "0.9rem",
+            }}
           >
             00
           </Typography>

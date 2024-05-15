@@ -221,6 +221,7 @@ const Table = () => {
           </IconButton>
         </Tooltip>
         <Button
+          sx={{ backgroundColor: "#E2b753" }}
           variant="contained"
           onClick={() => {
             table.setCreatingRow(true);

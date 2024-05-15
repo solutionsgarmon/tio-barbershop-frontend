@@ -48,7 +48,13 @@ export default function StandardImageList({
       >
         <ImageListItem>
           <Button
-            sx={{ mb: 0, height: "100%", width: "100%", fontSize: "larger" }}
+            sx={{
+              mb: 0,
+              height: "100%",
+              width: "100%",
+              fontSize: "larger",
+              backgroundColor: "#E2b753",
+            }}
             component="label"
             role={undefined}
             variant="contained"

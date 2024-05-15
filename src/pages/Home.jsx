@@ -1,105 +1,15 @@
-import React, { useEffect } from "react";
-import {
-  Avatar,
-  Box,
-  Button,
-  Stack,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Avatar, Box, Button, Stack, Typography } from "@mui/material";
 import FloatingAddButton from "../components/atoms/FloatingButtons";
 import PrincipalSlider from "../components/sliders/PrincipalSlider";
 import { useAppContext } from "../context/AppProvider";
-import GoogleMap from "../components/molecules/GoogleMap";
 import { useNavigate } from "react-router-dom";
-import Tooltip from "@mui/material/Tooltip";
-import CardServices from "../components/cards/CardServices";
 import CardServicesMainSlider from "../components/cards/CardServicesMainSlider";
-import AutoplaySlider from "../components/sliders/AutoplaySlider";
-import CardRecomendacion from "../components/cards/CardRecomendacion";
+import Century_Gothic from "../fonts/Century_Gothic.ttf";
 
 const MainPage = ({ services, products }) => {
-  const { setFlagTransparent } = useAppContext();
+  const { setFlagTransparent, appSettings } = useAppContext();
   const navigate = useNavigate();
-
-  const banners = [
-    {
-      image: "/images/sliders/principal/1.jpg",
-      text1: "",
-      text2: "",
-      component: <></>,
-      // (
-      //   <Button variant="outlined" sx={{ width: 300, fontWeight: "bold" }}>
-      //     Conócelos
-      //   </Button>
-      // ),
-    },
-    {
-      image: "/images/sliders/principal/2.jpg",
-      text1: "Nuestras Sucursales",
-      text2: "Conoce",
-      component: (
-        <Button
-          onClick={() => {
-            navigate("/sucursales");
-          }}
-          variant="outlined"
-          sx={{ width: 300, fontWeight: "bold" }}
-        >
-          Ver sucursales
-        </Button>
-      ),
-    },
-    {
-      image: "/images/sliders/principal/3.jpg",
-      text1: "Agenda una Cita",
-      text2: "Conciéntete",
-      component: (
-        <Button
-          variant="outlined"
-          onClick={() => {
-            navigate("/citas");
-          }}
-          sx={{ width: 300, fontWeight: "bold" }}
-        >
-          Agendar
-        </Button>
-      ),
-    },
-    {
-      image: "/images/sliders/principal/4.jpg",
-
-      text1: "Nuestros Productos",
-      text2: "Adquiere",
-      component: (
-        <Button
-          onClick={() => {
-            navigate("/tienda");
-          }}
-          variant="outlined"
-          sx={{ width: 300, fontWeight: "bold" }}
-        >
-          Visitar Tienda
-        </Button>
-      ),
-    },
-    {
-      image: "/images/sliders/principal/5.jpg",
-      text1: "Nuestras Sucursales",
-      text2: "Conoce",
-      component: (
-        <Button
-          onClick={() => {
-            navigate("/sucursales");
-          }}
-          variant="outlined"
-          sx={{ width: 300, fontWeight: "bold" }}
-        >
-          Ver sucursales
-        </Button>
-      ),
-    },
-  ];
 
   useEffect(() => {
     setFlagTransparent(true);
@@ -116,13 +26,17 @@ const MainPage = ({ services, products }) => {
 
   return (
     <Box sx={{ mt: -10 }}>
-      <PrincipalSlider banners={banners} />
+      <PrincipalSlider banners={appSettings.main_slider} />
       <Box
         sx={{
-          backgroundColor: "#000",
-          height: "500px",
-          overflowX: "hidden",
+          backgroundColor: "#1f1f1f",
+          height: "560px", //ALTURA DEL BOX NEGRO
+
           textAlign: "center",
+          overflowX: "scroll",
+          WebkitOverflowScrolling: "touch",
+          maxWidth: "100%",
+          "&::-webkit-scrollbar": { height: "5px" },
         }}
       >
         <Typography
@@ -133,7 +47,10 @@ const MainPage = ({ services, products }) => {
             textAlign: "center",
             height: 75,
             pt: { xs: 5, sm: 5 },
+            pb: { xs: 7, sm: 9 },
             color: "#e2b753",
+            fontSize: { xs: "1.5rem", sm: "2rem" },
+            fontFamily: "Century Gothic",
           }}
         >
           NUESTROS SERVICIOS
@@ -142,6 +59,7 @@ const MainPage = ({ services, products }) => {
           sx={{
             overflowX: "auto",
             textAlign: "center",
+            "&::-webkit-scrollbar": { height: "6px" },
           }}
         >
           <Stack direction={"row"} spacing={2} sx={{ mx: 1.5 }}>
@@ -155,7 +73,20 @@ const MainPage = ({ services, products }) => {
             ))}
           </Stack>
         </Box>
+        <Typography
+          color={"#FFF"}
+          sx={{
+            fontFamily: "Century Gothic",
+            fontSize: { xs: "0.9rem", sm: "1.2rem" },
+            py: 3,
+            mx: 2,
+          }}
+        >
+          Todos los servicios incluyen mascarilla negra, delineado de cejas y
+          bebida de cortesía.
+        </Typography>
       </Box>
+
       <Box
         sx={{
           backgroundColor: "#333",
@@ -175,6 +106,9 @@ const MainPage = ({ services, products }) => {
             textAlign: "center",
             height: 75,
             color: "#e2b753",
+            fontSize: { xs: "1.5rem", sm: "2rem" },
+            mb: { xs: -1, sm: 1 },
+            fontFamily: "Century Gothic",
           }}
         >
           LO MAS VENDIDO
@@ -198,17 +132,28 @@ const MainPage = ({ services, products }) => {
               sx={{ justifyContent: "center", mx: 3, mt: { xs: 5, sm: 0 } }}
             >
               <Typography
-                variant="h3"
+                variant="h4"
                 maxWidth={300}
                 color={"white"}
-                sx={{ mb: 5 }}
+                sx={{ mb: 5, fontFamily: "Century Gothic" }}
               >
                 {products[1]?.nombre}
               </Typography>
-              <Typography variant="h6" maxWidth={300} color={"white"}>
+              <Typography
+                variant="h6"
+                maxWidth={300}
+                color={"white"}
+                sx={{ fontFamily: "Century Gothic" }}
+              >
                 {products[1]?.descripcion}
               </Typography>
-              <Button variant="outlined" sx={{ py: 1, mt: 2 }}>
+              <Button
+                onClick={() => {
+                  navigate("/tienda");
+                }}
+                variant="outlined"
+                sx={{ py: 1, mt: 2, fontFamily: "Century Gothic" }}
+              >
                 Visitar Tienda
               </Button>
             </Stack>
@@ -216,9 +161,9 @@ const MainPage = ({ services, products }) => {
         </Box>
       </Box>
 
-      <Box
+      {/* <Box
         sx={{
-          backgroundColor: "#000",
+          backgroundColor: "#1f1f1f",
           width: "100%",
           py: 2,
           textAlign: "center",
@@ -233,13 +178,14 @@ const MainPage = ({ services, products }) => {
             mt: { xs: 5, sm: 3 },
             mb: { xs: 5, sm: 0 },
             color: "#e2b753",
+            fontSize: { xs: "1.5rem", sm: "2rem" },
           }}
         >
           CLIENTES QUE NOS RECOMIENDAN
         </Typography>
 
         <AutoplaySlider />
-      </Box>
+      </Box> */}
 
       <FloatingAddButton
         handleClickFloatingButton={handleClickFloatingButton}

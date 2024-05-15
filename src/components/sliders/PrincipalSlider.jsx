@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Fade,
   Grid,
   Slide,
@@ -52,10 +53,10 @@ const PrincipalSlider = ({ banners }) => {
         indicators={false}
         navButtonsAlwaysInvisible={true}
       >
-        {banners.map((item, index) => (
+        {banners?.map((banner, index) => (
           <a
             key={index}
-            href={item.link}
+            href={banner.link_button}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -69,8 +70,8 @@ const PrincipalSlider = ({ banners }) => {
             >
               <img
                 key={index}
-                src={item.image}
-                alt={item.link}
+                src={banner.image}
+                alt={banner.image}
                 style={{
                   position: "absolute",
                   width: "100%",
@@ -100,25 +101,37 @@ const PrincipalSlider = ({ banners }) => {
                       variant={"h6"}
                       sx={{
                         fontWeight: "bold",
-
+                        fontFamily: "Century Gothic",
                         mb: 2,
                         color: "#e2b753",
                       }}
                     >
-                      {item.text2.toUpperCase()}
+                      {banner.secondary_text.toUpperCase()}
                     </Typography>
 
                     <Typography
                       variant="h4"
                       sx={{
                         fontWeight: "bold",
+                        fontFamily: "Century Gothic",
                         mt: 2,
                         mb: 3,
                       }}
                     >
-                      {item.text1.toUpperCase()}
+                      {banner.principal_text.toUpperCase()}
                     </Typography>
-                    {item.component}
+                    {banner.buttonText != "" && (
+                      <Button
+                        variant="outlined"
+                        sx={{
+                          width: 300,
+                          fontWeight: "bold",
+                          fontFamily: "Century Gothic",
+                        }}
+                      >
+                        {banner.buttonText}
+                      </Button>
+                    )}
                   </Box>
                 </Zoom>
               </div>
