@@ -1,0 +1,355 @@
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import Divider from "@mui/material/Divider";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useAppContext } from "../../context/AppProvider";
+import { cerrarSesionUsuario } from "../../api/FirebaseService";
+import ModalMisCitasCliente from "../modals/ModalMisCitasCliente";
+import ModalMisCitasBarbero from "../modals/ModalMisCitasBarbero";
+import ModalMiPerfilCliente from "../modals/ModalMiPerfilCliente";
+import ModalMiPerfilBarbero from "../modals/ModalMiPerfilBarbero";
+import { scrollToTop } from "../../utils/screen";
+
+const PAGES_ADMIN = [
+	{ title: "Citas", url: "/citas" },
+	{ title: "Servicios", url: "/servicios" },
+	{ title: "Tienda", url: "/tienda" },
+	{ title: "Sucursales", url: "/sucursales" },
+	{ title: "Sobre Nosotros", url: "/sobre-nosotros" },
+];
+
+const PAGES_CLIENTE = [
+	{ title: "Citas", url: "/citas" },
+	{ title: "Servicios", url: "/servicios" },
+	{ title: "Tienda", url: "/tienda" },
+	{ title: "Sucursales", url: "/sucursales" },
+	{ title: "Sobre Nosotros", url: "/sobre-nosotros" },
+];
+
+const PAGES_BARBERO = [
+	{ title: "Citas", url: "/citas" },
+	{ title: "Servicios", url: "/servicios" },
+	{ title: "Tienda", url: "/tienda" },
+	{ title: "Sucursales", url: "/sucursales" },
+	{ title: "Sobre Nosotros", url: "/sobre-nosotros" },
+];
+
+const SETTINGS_AUTENTICATED_CLIENT = ["Mi perfil", "Mis citas", "Cerrar sesión"];
+const SETTINGS_NO_AUTENTICATED = ["Iniciar sesión", "Registrarse"];
+
+function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
+	const { flagTransparent, setIsLoading, isAutenticated, avatarURL, sessionDataStorage, windowWidth } = useAppContext();
+	const navigate = useNavigate();
+	const [anchorElNav, setAnchorElNav] = useState(null);
+	const [anchorElUser, setAnchorElUser] = useState(null);
+	const [scrollY, setScrollY] = useState(0);
+	const [showNModalMisCitas, setShowModalMisCitas] = useState(false);
+	const [showNModalMiPerfil, setShowModalMiPerfil] = useState(false);
+	const [pages, setPages] = useState(PAGES_CLIENTE);
+	const [SETTINGS_AUTENTICATED, SETSETTINGS_AUTENTICATED] = useState(["Mis citas", "Mi perfil", "Administrar", "Cerrar sesión"]);
+
+	const backgroundColor = scrollY === 0 ? "rgba(0, 0, 0, 0)" : "#333"; // Cambia el color dependiendo de la posición del scroll
+
+	const appBarStyle = {
+		boxShadow: "none",
+		backgroundColor: "#333",
+		transition: "background-color 0.5s ease", // Agrega una transición suave al cambio de color
+		width: "100%", // Añadir esto para asegurar que AppBar ocupe todo el ancho
+	};
+
+	const appBarStyleTransparente = {
+		boxShadow: "none",
+		backgroundColor,
+		transition: "background-color 0.5s ease", // Agrega una transición suave al cambio de color
+		width: "100%", // Añadir esto para asegurar que AppBar ocupe todo el ancho
+	};
+
+	useEffect(() => {
+		if (sessionDataStorage === null) setPages(PAGES_CLIENTE);
+		else {
+			switch (sessionDataStorage?.rol) {
+				case "ADMINISTRADOR":
+					setPages(PAGES_ADMIN);
+					const indexToRemove = SETTINGS_AUTENTICATED.indexOf("Mis citas");
+					// Si el elemento existe en el array, elimínalo
+					if (indexToRemove !== -1) {
+						SETTINGS_AUTENTICATED.splice(indexToRemove, 1);
+					}
+					SETSETTINGS_AUTENTICATED(SETTINGS_AUTENTICATED);
+					break;
+				case "BARBERO":
+					setPages(PAGES_BARBERO);
+					break;
+				case "CLIENTE":
+					setPages(PAGES_CLIENTE);
+					break;
+			}
+		}
+	}, [sessionDataStorage]);
+
+	useEffect(() => {
+		const handleScroll = () => {
+			setScrollY(window.scrollY);
+		};
+		window.addEventListener("scroll", handleScroll);
+		return () => {
+			window.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
+
+	const handleClickPage = (url) => {
+		scrollToTop();
+		handleCloseNavMenu();
+		if (url === "/administracion") setShowNavigationBar(false);
+		navigate(url);
+	};
+
+	const handleOpenNavMenu = (event) => {
+		setAnchorElNav(event.currentTarget);
+	};
+
+	const handleOpenUserMenu = (event) => {
+		setAnchorElUser(event.currentTarget);
+	};
+
+	const handleCloseNavMenu = () => {
+		setAnchorElNav(null);
+	};
+
+	const handleClickSetting = (setting) => {
+		switch (setting) {
+			case "Iniciar sesión":
+				navigate("/login");
+				break;
+			case "Registrarse":
+				setShowModalRegistro(true);
+				navigate("/login");
+				break;
+			case "Mi perfil":
+				setShowModalMiPerfil(true);
+				break;
+			case "Mis citas":
+				setShowModalMisCitas(true);
+				break;
+			case "Administrar":
+				navigate("/administracion");
+				break;
+			case "Cerrar sesión":
+				handleCerrarSesion();
+				break;
+			default:
+				break;
+		}
+		setAnchorElUser(null);
+	};
+
+	const handleCerrarSesion = () => {
+		cerrarSesionUsuario();
+		window.location.reload();
+	};
+
+	const handleCloseModalMisCitas = () => {
+		setShowModalMisCitas(false);
+	};
+
+	const handleCloseModalMiPerfil = () => {
+		setShowModalMiPerfil(false);
+	};
+
+	return (
+		<AppBar position='fixed' sx={flagTransparent ? appBarStyleTransparente : appBarStyle}>
+			<Box sx={{ mx: { xs: 2, sm: 5 }, py: 1, border: 0 }}>
+				<Toolbar disableGutters sx={{ width: "100%" }}>
+					{windowWidth >= 768 && (
+						<Avatar
+							src='images/icon-tio.png'
+							onClick={() => handleClickPage("/")}
+							style={{ cursor: "pointer" }} // Cambio de cursor a una manita
+							sx={{ width: 80, height: 80, m: "auto" }}
+						/>
+					)}
+
+					<Typography
+						variant='h6'
+						noWrap
+						component='a'
+						onClick={() => handleClickPage("/")}
+						sx={{
+							ml: 1,
+							mr: 8,
+							display: { xs: "none", md: "flex" },
+							fontWeight: 700,
+							letterSpacing: ".1rem",
+							textDecoration: "none",
+							cursor: "pointer",
+							color: "#E2b753", // Color normal
+							fontFamily: "Century Gothic",
+							"&:hover": {
+								color: "#fff", // Cambia el color a amarillo al hacer hover
+							},
+						}}
+					>
+						EL TÍO BARBERSHOP
+					</Typography>
+
+					<Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+						<IconButton size='large' aria-label='account of current user' aria-controls='menu-appbar' aria-haspopup='true' onClick={handleOpenNavMenu} color='white' sx={{ ml: -2 }}>
+							<MenuIcon sx={{ color: "white", width: 30, height: 30 }} />
+						</IconButton>
+
+						{windowWidth <= 768 && (
+							<Avatar
+								src='images/icon-tio.png'
+								onClick={() => handleClickPage("/")}
+								style={{ cursor: "pointer" }} // Cambio de cursor a una manita
+								sx={{ width: 80, height: 80, m: "auto" }}
+							/>
+						)}
+
+						<Menu
+							id='menu-appbar'
+							anchorEl={anchorElNav}
+							anchorOrigin={{
+								vertical: "bottom",
+								horizontal: "left",
+							}}
+							keepMounted
+							transformOrigin={{
+								vertical: "top",
+								horizontal: "left",
+							}}
+							open={Boolean(anchorElNav)}
+							onClose={handleCloseNavMenu}
+							sx={{
+								display: { xs: "block", md: "none" },
+							}}
+						>
+							{pages.map((page) => (
+								<MenuItem key={page.title} onClick={() => handleClickPage(page.url)}>
+									<Typography
+										textAlign='center'
+										sx={{
+											fontFamily: "Century Gothic",
+											cursor: "pointer",
+											"&:hover": {
+												color: "#E2b753", // Cambia el color a amarillo al hacer hover
+											},
+										}}
+									>
+										{page.title}
+									</Typography>
+								</MenuItem>
+							))}
+						</Menu>
+					</Box>
+					<Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+						{pages.map((page) => (
+							<Button
+								key={page.title}
+								onClick={() => handleClickPage(page.url)}
+								sx={{
+									my: 2,
+									color: "white",
+									display: "block",
+									"&:hover": {
+										color: "#E2b753", // Cambia el color a amarillo al hacer hover
+									},
+								}}
+							>
+								<Typography
+									sx={{
+										fontFamily: "Century Gothic", // Cambia la fuente a Century Gothic
+										fontWeight: 400, // Cambia el peso de la fuente
+										fontSize: "1rem", // Cambia el tamaño de la fuente
+										textTransform: "uppercase", // Cambia a mayúsculas
+									}}
+								>
+									{page.title}
+								</Typography>
+							</Button>
+						))}
+					</Box>
+					<Box sx={{ flexGrow: 0 }}>
+						<Tooltip title='Menú de Usuario'>
+							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+								<AccountCircleOutlinedIcon sx={{ color: "white", width: 30, height: 30 }} />
+							</IconButton>
+						</Tooltip>
+						<Menu
+							sx={{ mt: "30px" }}
+							id='menu-appbar'
+							anchorEl={anchorElUser}
+							anchorOrigin={{
+								vertical: "top",
+								horizontal: "right",
+							}}
+							keepMounted
+							transformOrigin={{
+								vertical: "top",
+								horizontal: "right",
+							}}
+							open={Boolean(anchorElUser)}
+							onClose={handleClickSetting}
+						>
+							{sessionDataStorage !== null ? (
+								<Box textAlign='center' sx={{ color: "black", width: 180 }}>
+									<Box
+										sx={{
+											display: "flex",
+											flexDirection: "column",
+											alignItems: "center",
+										}}
+									>
+										<Avatar alt='Imagen de perfil' src={sessionDataStorage.imagenes[0]?.url} sx={{ height: 100, width: 100, marginBottom: "10px" }} />
+										<Typography variant='h6' gutterBottom>
+											<strong>{sessionDataStorage.nombre}</strong>
+										</Typography>
+										<Typography variant='h6'>{sessionDataStorage?.rol}</Typography>
+									</Box>
+									<Divider sx={{ marginTop: "20px", marginBottom: "20px" }} />
+									{sessionDataStorage?.rol === "ADMINISTRADOR" || sessionDataStorage?.rol === "BARBERO"
+										? SETTINGS_AUTENTICATED.map((setting) => (
+												<MenuItem key={setting} onClick={() => handleClickSetting(setting)}>
+													<Typography>{setting}</Typography>
+												</MenuItem>
+										  ))
+										: SETTINGS_AUTENTICATED_CLIENT.map((setting) => (
+												<MenuItem key={setting} onClick={() => handleClickSetting(setting)}>
+													<Typography>{setting}</Typography>
+												</MenuItem>
+										  ))}
+								</Box>
+							) : (
+								SETTINGS_NO_AUTENTICATED.map((setting) => (
+									<MenuItem key={setting} onClick={() => handleClickSetting(setting)}>
+										<Typography textAlign='center'>{setting}</Typography>
+									</MenuItem>
+								))
+							)}
+						</Menu>
+					</Box>
+				</Toolbar>
+			</Box>
+			{/* MODALES */}
+			{sessionDataStorage?.rol === "BARBERO" && <ModalMisCitasBarbero open={showNModalMisCitas} handleClose={handleCloseModalMisCitas} />}
+			{sessionDataStorage?.rol === "BARBERO" && <ModalMiPerfilBarbero open={showNModalMiPerfil} handleClose={handleCloseModalMiPerfil} />}
+			{sessionDataStorage?.rol === "CLIENTE" && <ModalMisCitasCliente open={showNModalMisCitas} handleClose={handleCloseModalMisCitas} />}
+			{sessionDataStorage?.rol === "CLIENTE" && <ModalMiPerfilCliente open={showNModalMiPerfil} handleClose={handleCloseModalMiPerfil} />}
+		</AppBar>
+	);
+}
+
+export default NavigationBar;

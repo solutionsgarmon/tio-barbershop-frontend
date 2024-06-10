@@ -107,10 +107,36 @@ export function getBarbers() {
   });
 }
 
-export function getHorarioDisponibleBarber(idBarbero,idServicio) {
+export function getBarber(id) {
+  return new Promise((resolve, reject) => {
+      axios.get(import.meta.env.VITE_BARBER_URL+"/"+id)
+    .then((response) => {
+        const data = response.data;
+        console.log("getUsers()", data);
+        if (!data.success) {
+          console.error("No se pudo realizar correctamente la petición getBarber():", data);
+          reject(data); 
+        } else if (data.length === 0) {
+          console.info("🛈 No se encontraron elementos para getBarber():");
+          resolve([]); 
+        } else  {
+          console.log("getUsers -> BARBERS", data.data);
+          resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
+        }
+      })
+      .catch((error) => {
+        console.error("Error en getBarber():", error);
+        reject(error); // Rechaza la promesa en caso de error
+      });
+  });
+}
+
+export function getHorarioDisponibleBarber(idBarbero,idServicio,idBarberia) {
+  console.log("[ejecucion] getHorarioDisponibleBarber()",idBarberia)
   const body = {
     idBarbero: idBarbero,
-    idServicio: idServicio
+    idServicio: idServicio,
+    idBarberia: idBarberia
   }
   return new Promise((resolve, reject) => {
       axios.post(`${import.meta.env.VITE_BARBER_URL}/horario-disponible`,body)
@@ -230,6 +256,31 @@ export function getCitas() {
       });
   });
 }
+
+export function getCursos() {
+  return new Promise((resolve, reject) => {
+      axios.get(import.meta.env.VITE_CURSOS_URL)
+    .then((response) => {
+        const data = response.data;
+        console.log("getCursos()", data);
+        if (!data.success) {
+          console.error("No se pudo realizar correctamente la petición getCursos():", data);
+          reject(data); 
+        } else if (data.length === 0) {
+          console.info("🛈 No se encontraron elementos para getCursos():");
+          resolve([]); 
+        } else  {
+          console.log("getCursos -> CURSOS", data.data);
+          resolve(JSON.parse(JSON.stringify(data.data))); // Resuelve la promesa y hace una copia profunda
+        }
+      })
+      .catch((error) => {
+        console.error("Error en getCursos():", error);
+        reject(error); // Rechaza la promesa en caso de error
+      });
+  });
+}
+
 
 
 export function getAppSettings() {

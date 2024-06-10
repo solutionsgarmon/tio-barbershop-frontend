@@ -17,7 +17,11 @@ import { updateBarbershop } from "../../../api/updates";
 import { useAppContext } from "../../../context/AppProvider";
 import { useEffect } from "react";
 
-const TabHorario = ({ barbershopSelected, setReloadData }) => {
+const TabHorario = ({
+  barbershopSelected,
+  setReloadData,
+  setIndexTabSelected,
+}) => {
   const { setIsLoadingApp } = useAppContext();
 
   const [horario, setHorario] = useState({
@@ -107,6 +111,7 @@ const TabHorario = ({ barbershopSelected, setReloadData }) => {
     // Si todos los horarios son válidoo, guardar...
     if (isValid) {
       handleUpdate(modifiedHorario);
+      setIndexTabSelected(0);
       toast.success(`Horario guardado correctamente.`);
     }
   };

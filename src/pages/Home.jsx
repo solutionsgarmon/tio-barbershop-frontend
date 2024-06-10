@@ -6,162 +6,128 @@ import { useAppContext } from "../context/AppProvider";
 import { useNavigate } from "react-router-dom";
 import CardServicesMainSlider from "../components/cards/CardServicesMainSlider";
 import Century_Gothic from "../fonts/Century_Gothic.ttf";
+import SliderFadeProducts from "../components/sliders/products/SliderFadeProducts";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import CardServicesMainSliderMob from "../components/cards/CardServicesMainSliderMob";
 
 const MainPage = ({ services, products }) => {
-  const { setFlagTransparent, appSettings } = useAppContext();
-  const navigate = useNavigate();
+	const { setFlagTransparent, appSettings, windowWidth, setIsLoadingApp } = useAppContext();
+	const navigate = useNavigate();
 
-  useEffect(() => {
-    setFlagTransparent(true);
+	const settingsSlider = {
+		dots: false,
+		infinite: false,
+		speed: 1000,
+		slidesToShow: windowWidth < 800 ? 1.2 : 3,
+		slidesToScroll: 1,
+	};
 
-    return () => {
-      setFlagTransparent(false);
-    };
-  }, []);
+	useEffect(() => {
+		setFlagTransparent(true);
+		setIsLoadingApp(false);
+		return () => {
+			setFlagTransparent(false);
+		};
+	}, []);
 
-  const handleClickFloatingButton = () => {
-    console.log("handleClickFloatingButton");
-    navigate("/citas");
-  };
+	const handleClickFloatingButton = () => {
+		console.log("handleClickFloatingButton");
+		navigate("/citas");
+	};
 
-  return (
-    <Box sx={{ mt: -10 }}>
-      <PrincipalSlider banners={appSettings.main_slider} />
-      <Box
-        sx={{
-          backgroundColor: "#1f1f1f",
-          height: "560px", //ALTURA DEL BOX NEGRO
+	return (
+		<Box sx={{ mt: -10 }}>
+			<PrincipalSlider banners={appSettings.main_slider} />
 
-          textAlign: "center",
-          overflowX: "scroll",
-          WebkitOverflowScrolling: "touch",
-          maxWidth: "100%",
-          "&::-webkit-scrollbar": { height: "5px" },
-        }}
-      >
-        <Typography
-          gutterBottom
-          variant={"h4"}
-          component="div"
-          sx={{
-            textAlign: "center",
-            height: 75,
-            pt: { xs: 5, sm: 5 },
-            pb: { xs: 7, sm: 9 },
-            color: "#e2b753",
-            fontSize: { xs: "1.5rem", sm: "2rem" },
-            fontFamily: "Century Gothic",
-          }}
-        >
-          NUESTROS SERVICIOS
-        </Typography>
-        <Box
-          sx={{
-            overflowX: "auto",
-            textAlign: "center",
-            "&::-webkit-scrollbar": { height: "6px" },
-          }}
-        >
-          <Stack direction={"row"} spacing={2} sx={{ mx: 1.5 }}>
-            {services?.map((servicio, index) => (
-              <Box key={index} sx={{ m: 2 }}>
-                <CardServicesMainSlider
-                  servicio={servicio}
-                  withButtons={false}
-                />
-              </Box>
-            ))}
-          </Stack>
-        </Box>
-        <Typography
-          color={"#FFF"}
-          sx={{
-            fontFamily: "Century Gothic",
-            fontSize: { xs: "0.9rem", sm: "1.2rem" },
-            py: 3,
-            mx: 2,
-          }}
-        >
-          Todos los servicios incluyen mascarilla negra, delineado de cejas y
-          bebida de cortesía.
-        </Typography>
-      </Box>
+			<Box
+				sx={{
+					backgroundColor: "#1f1f1f",
+					textAlign: "center",
+					overflowX: "scroll",
+				}}
+			>
+				<Typography
+					gutterBottom
+					variant={"h4"}
+					component='div'
+					sx={{
+						textAlign: "center",
+						height: 75,
+						pt: { xs: 5, sm: 5 },
+						pb: { xs: 7, sm: 9 },
+						color: "#e2b753",
+						fontSize: { xs: "1.5rem", sm: "2rem" },
+						fontFamily: "Century Gothic",
+					}}
+				>
+					NUESTROS SERVICIOS
+				</Typography>
 
-      <Box
-        sx={{
-          backgroundColor: "#333",
-          width: "100%",
-          py: 5,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Typography
-          gutterBottom
-          variant="h4"
-          component="div"
-          sx={{
-            textAlign: "center",
-            height: 75,
-            color: "#e2b753",
-            fontSize: { xs: "1.5rem", sm: "2rem" },
-            mb: { xs: -1, sm: 1 },
-            fontFamily: "Century Gothic",
-          }}
-        >
-          LO MAS VENDIDO
-        </Typography>
-        <Box sx={{ textAlign: "center" }}>
-          <Stack
-            direction={{ xs: "column", md: "row" }}
-            sx={{ justifyContent: "center" }}
-          >
-            <Avatar
-              src={products[1]?.imagenes[0].url}
-              sx={{
-                borderRadius: 5,
-                mx: 3,
-                height: 300,
-                width: 300,
-              }}
-            />
-            <Stack
-              direction={"column"}
-              sx={{ justifyContent: "center", mx: 3, mt: { xs: 5, sm: 0 } }}
-            >
-              <Typography
-                variant="h4"
-                maxWidth={300}
-                color={"white"}
-                sx={{ mb: 5, fontFamily: "Century Gothic" }}
-              >
-                {products[1]?.nombre}
-              </Typography>
-              <Typography
-                variant="h6"
-                maxWidth={300}
-                color={"white"}
-                sx={{ fontFamily: "Century Gothic" }}
-              >
-                {products[1]?.descripcion}
-              </Typography>
-              <Button
-                onClick={() => {
-                  navigate("/tienda");
-                }}
-                variant="outlined"
-                sx={{ py: 1, mt: 2, fontFamily: "Century Gothic" }}
-              >
-                Visitar Tienda
-              </Button>
-            </Stack>
-          </Stack>
-        </Box>
-      </Box>
+				{windowWidth > 800 && (
+					<Stack sx={{ maxWidth: "100%", mx: 5 }}>
+						<Slider {...settingsSlider}>
+							{services?.map((servicio, index) => (
+								<Box key={index}>{<CardServicesMainSlider servicio={servicio} withButtons={false} windowWidth={windowWidth} />}</Box>
+							))}
+						</Slider>
+					</Stack>
+				)}
 
-      {/* <Box
+				{windowWidth <= 800 && (
+					<Stack
+						direction={"row"}
+						sx={{
+							overflow: "auto",
+							mx: 1,
+							"&::-webkit-scrollbar": {
+								display: "none",
+							},
+							"-ms-overflow-style": "none", // IE and Edge
+							"scrollbar-width": "none", // Firefox
+						}}
+					>
+						{services?.map((servicio, index) => (
+							<Box key={index}>
+								<CardServicesMainSliderMob servicio={servicio} withButtons={false} windowWidth={windowWidth} />
+							</Box>
+						))}
+					</Stack>
+				)}
+
+				<Typography
+					color={"#FFF"}
+					sx={{
+						fontFamily: "Century Gothic",
+						fontSize: { xs: "0.9rem", sm: "1.2rem" },
+						py: 3,
+						mx: 2,
+					}}
+				>
+					Todos los servicios incluyen mascarilla negra, delineado de cejas y bebida de cortesía.
+				</Typography>
+			</Box>
+
+			<Box sx={{ backgroundColor: "#333", py: 3, textAlign: "center", m: "auto", px: 0 }}>
+				<Typography variant='h4' sx={{ color: "#e2b753", mb: 3 }}>
+					CONOCE NUESTROS PRODUCTOS
+				</Typography>
+				<SliderFadeProducts title='Lo más vendido' products={products} />
+				<Button
+					variant='outlined'
+					color='primary'
+					onClick={() => {
+						navigate("/tienda");
+						setIsLoadingApp(true);
+					}}
+					sx={{ px: 5, py: 1, mt: { xs: -5, sm: 2 } }}
+				>
+					Ver más
+				</Button>
+			</Box>
+
+			{/* <Box
         sx={{
           backgroundColor: "#1f1f1f",
           width: "100%",
@@ -187,11 +153,9 @@ const MainPage = ({ services, products }) => {
         <AutoplaySlider />
       </Box> */}
 
-      <FloatingAddButton
-        handleClickFloatingButton={handleClickFloatingButton}
-      />
-    </Box>
-  );
+			<FloatingAddButton handleClickFloatingButton={handleClickFloatingButton} />
+		</Box>
+	);
 };
 
 export default MainPage;

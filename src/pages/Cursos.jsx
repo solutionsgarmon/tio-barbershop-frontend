@@ -1,52 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PostFullscreen from "../components/cards/PostFullscreen";
+import PostFullscreenMob from "../components/cards/PostFullscreenMob";
 import { Box, Stack } from "@mui/material";
+import { useAppContext } from "../context/AppProvider";
+import { getCursos } from "../api/gets";
 
 const Cursos = () => {
-  return (
-    <Stack
-      direction="column"
-      sx={{
-        textAlign: "center",
-        m: "auto",
-        mt: 3,
-        maxWidth: { xs: 350, sm: 600 },
-      }}
-    >
-      <PostFullscreen
-        title={"Curso de cómo realizar un Fade"}
-        subtitle={"20 de mayo de 2024"}
-        image={""}
-        description={
-          "En este curso aprenderás a realizar un Fade perfecto. Ven y adquiere conocimientos de los mejores. No te arrepentirás. Este curso es perfecto para todas las personas, sin importar su edad."
-        }
-      />
-      <PostFullscreen
-        title={"Curso de cómo realizar un Fade"}
-        subtitle={"20 de mayo de 2024"}
-        image={""}
-        description={
-          "En este curso aprenderás a realizar un Fade perfecto. Ven y adquiere conocimientos de los mejores. No te arrepentirás. Este curso es perfecto para todas las personas, sin importar su edad."
-        }
-      />
-      <PostFullscreen
-        title={"Curso de cómo realizar un Fade"}
-        subtitle={"20 de mayo de 2024"}
-        image={""}
-        description={
-          "En este curso aprenderás a realizar un Fade perfecto. Ven y adquiere conocimientos de los mejores. No te arrepentirás. Este curso es perfecto para todas las personas, sin importar su edad."
-        }
-      />
-      <PostFullscreen
-        title={"Curso de cómo realizar un Fade"}
-        subtitle={"20 de mayo de 2024"}
-        image={""}
-        description={
-          "En este curso aprenderás a realizar un Fade perfecto. Ven y adquiere conocimientos de los mejores. No te arrepentirás. Este curso es perfecto para todas las personas, sin importar su edad."
-        }
-      />
-    </Stack>
-  );
+	const { setIsLoadingApp, windowWidth } = useAppContext();
+	const [cursos, setCursos] = useState([]);
+	useEffect(() => {
+		async function fetchData() {
+			setCursos(await getCursos());
+			setIsLoadingApp(false);
+		}
+
+		fetchData();
+	}, []);
+
+	return (
+		<Stack
+			direction='column'
+			sx={{
+				textAlign: "center",
+				m: "auto",
+				mt: 3,
+				mb: 5,
+
+				maxWidth: { sm: "1000px" },
+			}}
+		>
+			{cursos.map((curso) => {
+				if (windowWidth > 800) return <PostFullscreen curso={curso} />;
+				else return <PostFullscreenMob curso={curso} />;
+			})}
+		</Stack>
+	);
 };
 
 export default Cursos;

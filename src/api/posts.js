@@ -73,6 +73,20 @@ export function postServices(data) {
   });
 }
 
+export function postCurso(data) {
+  console.log("[ejecución] postCurso()", data)
+  return new Promise((resolve, reject) => {
+    axios.post(import.meta.env.VITE_CURSOS_URL, data)
+      .then((response) => {
+        resolve(response); 
+      })
+      .catch((error) => {
+        console.error("Error en postCurso():", error);
+        reject(error); 
+      });
+  });
+}
+
 export function postProduct(product) {
   console.log("[ejecución] postProduct()",product)
   return new Promise((resolve, reject) => {

@@ -176,6 +176,29 @@ export function updateCita(values, idCita) {
   });
 }
 
+export function updateCitaRegistro(values, idCita) {
+  return new Promise((resolve, reject) => {
+    axios.patch(
+      `${import.meta.env.VITE_CITAS_REGISTRO_URL}/${idCita}`,
+      values
+    )
+      .then((response) => {
+        if (!response.data.success) {
+          console.error("No se pudo realizar correctamente la petición updateCitaRegistro():", response.data);
+          reject(response);
+        } else {
+          resolve(response);
+        }
+      })
+      .catch((error) => {
+        console.error("Error en updateCitaRegistro():", error);
+        reject(error);
+      });
+  });
+}
+
+
+
 export function updateService(values, idService) {
   return new Promise((resolve, reject) => {
     axios.patch(
@@ -213,6 +236,27 @@ export function updatePost(values, idPost) {
       })
       .catch((error) => {
         console.error("Error en updatePost():", error);
+        reject(error);
+      });
+  });
+}
+
+export function updateCurso(values, id) {
+  return new Promise((resolve, reject) => {
+    axios.patch(
+      `${import.meta.env.VITE_CURSOS_URL}/${id}`,
+      values
+    )
+      .then((response) => {
+        if (!response.data.success) {
+          console.error("No se pudo realizar correctamente la petición updateCurso():", response.data);
+          reject(response);
+        } else {
+          resolve(response);
+        }
+      })
+      .catch((error) => {
+        console.error("Error en updateCurso():", error);
         reject(error);
       });
   });

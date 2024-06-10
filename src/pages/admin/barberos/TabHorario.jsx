@@ -11,6 +11,9 @@ import {
   Typography,
   Stack,
   Avatar,
+  Select,
+  InputLabel,
+  MenuItem,
 } from "@mui/material";
 import AlertWarning from "../../../components/messages/AlertWarning";
 import { toast } from "react-toastify";
@@ -18,9 +21,9 @@ import { updateBarber, updateBarbershop } from "../../../api/updates";
 import { useAppContext } from "../../../context/AppProvider";
 import { useEffect } from "react";
 
-const TabHorario = ({ barberSelected, setReloadData }) => {
+const TabHorario = ({ barberSelected, setReloadData, setIndexTabSelected }) => {
   const { setIsLoadingApp } = useAppContext();
-
+  const [barbershopSelected, setBarbershopSelected] = useState("");
   const [horario, setHorario] = useState({
     lunes: { trabaja: "", hora_inicio: "", hora_fin: "" },
     martes: { trabaja: "", hora_inicio: "", hora_fin: "" },
@@ -32,8 +35,18 @@ const TabHorario = ({ barberSelected, setReloadData }) => {
   });
 
   useEffect(() => {
-    setHorario(barberSelected?.horario);
-  }, [barberSelected]);
+    if (barberSelected?.barberias_asignadas.length > 0)
+      setBarbershopSelected(barberSelected?.barberias_asignadas[0]?.idBarberia);
+  }, []);
+
+  useEffect(() => {
+    if (barbershopSelected != "" && barberSelected) {
+      const barberiaSeleccionada = barberSelected.barberias_asignadas.find(
+        (barberiaAsigada) => barberiaAsigada.idBarberia == barbershopSelected
+      );
+      setHorario(barberiaSeleccionada.horario);
+    }
+  }, [barbershopSelected]);
 
   const handleHorarioChange = (day, field, value) => {
     if (field === "trabaja") {
@@ -60,10 +73,14 @@ const TabHorario = ({ barberSelected, setReloadData }) => {
       }));
     }
   };
+
+  const handleChangeSelect = (event) => {
+    setBarbershopSelected(event.target.value);
+  };
+
   const handleSubmit = () => {
     event.preventDefault();
     let isValid = true;
-
     let modifiedHorario = {};
 
     for (const [day, time] of Object.entries(horario)) {
@@ -105,9 +122,11 @@ const TabHorario = ({ barberSelected, setReloadData }) => {
       }
     });
 
-    // Si todos los horarios son válidoo, guardar...
+    // Si todos los horarios son válidos, guardar...
     if (isValid) {
+      console.log("modifiedHorario", modifiedHorario);
       handleUpdate(modifiedHorario);
+      setIndexTabSelected(0);
       toast.success(`Horario guardado correctamente.`);
     }
   };
@@ -116,9 +135,19 @@ const TabHorario = ({ barberSelected, setReloadData }) => {
   const handleUpdate = async (values) => {
     setIsLoadingApp(true);
     const id = barberSelected._id;
-    console.log("values", values, id);
-    const newHorario = { horario: values };
+    // console.log("values", values, id);
+
+    let clonacionBarberiasAsignadas = [...barberSelected.barberias_asignadas];
+    // console.log("clonacionBarberiasAsignadas", clonacionBarberiasAsignadas);
+    const indexUpdate = clonacionBarberiasAsignadas.findIndex(
+      (barberiaAsignada) => {
+        return barberiaAsignada.idBarberia === barbershopSelected;
+      }
+    );
+    clonacionBarberiasAsignadas[indexUpdate].horario = values;
+    const newHorario = { barberias_asignadas: clonacionBarberiasAsignadas };
     try {
+      // console.log("clonacionBarberiasAsignadas", clonacionBarberiasAsignadas);
       const resp = await updateBarber(newHorario, id);
       if (resp.data.success) {
         toast.success("Se modificó correctamente.");
@@ -135,15 +164,35 @@ const TabHorario = ({ barberSelected, setReloadData }) => {
 
   return (
     <div>
-      {barberSelected ? (
+      {barberSelected && barberSelected?.barberias_asignadas.length > 0 ? (
         <div>
-          <Stack direction={"row"}>
+          <Stack direction={"row"} sx={{ mb: 1 }}>
             <Typography variant="h5" gutterBottom>
               Horario del Barbero [{barberSelected.nombre}]
             </Typography>{" "}
             <Avatar src={barberSelected?.imagenes[0].url} sx={{ ml: 1 }} />
           </Stack>
           <form onSubmit={handleSubmit}>
+            <Paper sx={{ mb: 1 }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">
+                  Selecciona una barbería
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={barbershopSelected}
+                  label=" Selecciona una barbería"
+                  onChange={handleChangeSelect}
+                >
+                  {barberSelected?.barberias_asignadas.map((barberia) => (
+                    <MenuItem value={barberia.idBarberia}>
+                      {barberia.nombreBarberia}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Paper>
             <Paper elevation={3} style={{ width: "fit-content", padding: 20 }}>
               <Grid container spacing={2} justifyContent="center">
                 {Object.keys(horario).map((day) => (
@@ -226,7 +275,7 @@ const TabHorario = ({ barberSelected, setReloadData }) => {
       ) : (
         <AlertWarning
           text={
-            "Debe seleccionar un Barbero para modificar su Horario de Trabajo"
+            "Debe seleccionar un barbero y este debe tener al menos una barbería asignada."
           }
         />
       )}

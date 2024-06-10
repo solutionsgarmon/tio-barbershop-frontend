@@ -25,100 +25,88 @@ import HomeIcon from "@mui/icons-material/Home";
 const lightColor = "rgba(255, 255, 255, 0.7)";
 
 function Header(props) {
-  const { sessionDataStorage } = useAppContext();
-  const navigate = useNavigate();
+	const { sessionDataStorage } = useAppContext();
+	const navigate = useNavigate();
 
-  return (
-    <React.Fragment>
-      <AppBar
-        component="div"
-        position="static"
-        sx={{ zIndex: 0, paddingTop: 1 }}
-      >
-        <Toolbar sx={{ backgroundColor: "#E2b753" }}>
-          {" "}
-          {/*COLOR Titulo */}
-          <Grid container alignItems="center" spacing={0.5}>
-            <Grid sx={{ display: { sm: "none", xs: "block" } }} item>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={props.onDrawerToggle}
-                edge="start"
-              >
-                <MenuIcon />
-              </IconButton>
-            </Grid>
-            <Grid item xs>
-              {props.isSmUp && (
-                <Typography color="inherit" variant="h5" component="h1">
-                  {props.tabs ? (
-                    props.tabs[0]
-                  ) : (
-                    // <Stack direction={"row"}>
-                    //   <Skeleton variant="rectangular" width={500} height={20} />{" "}
-                    // </Stack>
-                    <></>
-                  )}
-                </Typography>
-              )}
-              {/* {sessionDataStorage?.rol == "BARBERO" && <MySwitch />} */}
-            </Grid>
-            <Grid item>
-              <Tooltip title="Regresar a la Página principal.">
-                <Button
-                  sx={{ borderColor: lightColor }}
-                  variant="outlined"
-                  color="inherit"
-                  size="small"
-                  onClick={() => {
-                    navigate("/");
-                  }}
-                >
-                  {/* Regresar */}
-                  <HomeIcon />
-                </Button>
-              </Tooltip>
-            </Grid>
-            {/* <Grid item>
+	return (
+		<React.Fragment>
+			<AppBar component='div' position='static' sx={{ zIndex: 0, paddingTop: 1 }}>
+				<Toolbar sx={{ backgroundColor: "#E2b753" }}>
+					{" "}
+					{/*COLOR Titulo */}
+					<Grid container alignItems='center' spacing={0.5}>
+						<Grid sx={{ display: { sm: "none", xs: "block" } }} item>
+							<IconButton color='inherit' aria-label='open drawer' onClick={props.onDrawerToggle} edge='start'>
+								<MenuIcon />
+							</IconButton>
+						</Grid>
+						<Grid item xs>
+							{props.isSmUp && (
+								<Typography color='inherit' variant='h5' component='h1'>
+									{props.tabs ? (
+										props.tabs[0]
+									) : (
+										// <Stack direction={"row"}>
+										//   <Skeleton variant="rectangular" width={500} height={20} />{" "}
+										// </Stack>
+										<></>
+									)}
+								</Typography>
+							)}
+							{/* {sessionDataStorage?.rol == "BARBERO" && <MySwitch />} */}
+						</Grid>
+						<Grid item>
+							<Tooltip title='Regresar a la Página principal.'>
+								<Button
+									sx={{ borderColor: lightColor }}
+									variant='outlined'
+									color='inherit'
+									size='small'
+									onClick={() => {
+										navigate("/");
+									}}
+								>
+									{/* Regresar */}
+									<HomeIcon />
+								</Button>
+							</Tooltip>
+						</Grid>
+						{/* <Grid item>
               <Tooltip title="Notificaciones">
                 <IconButton color="inherit">
                   <NotificationsIcon />
                 </IconButton>
               </Tooltip>
             </Grid> */}
-            {/* <Grid item>
+						{/* <Grid item>
               <IconButton color="inherit" sx={{ p: 0.5 }}>
                 <Avatar src="/images/icon-tio.png" alt="My Avatar" />
                 <SecurityIcon />
               </IconButton>
             </Grid> */}
-          </Grid>
-        </Toolbar>
-      </AppBar>
-      {props.tabs && (
-        <AppBar
-          component="div"
-          position="static"
-          elevation={0}
-          sx={{ zIndex: 0, backgroundColor: "#E2b753" }} //COLOR Barra Pestañas
-        >
-          <Tabs value={props.indexTabSelected} textColor="inherit">
-            {props.tabs.map((tab, index) => (
-              <Tab
-                label={tab}
-                onClick={() => props.setIndexTabSelected(index)}
-              />
-            ))}
-          </Tabs>
-        </AppBar>
-      )}
-    </React.Fragment>
-  );
+					</Grid>
+				</Toolbar>
+			</AppBar>
+			{props.tabs && (
+				<AppBar
+					component='div'
+					position='static'
+					elevation={0}
+					sx={{ zIndex: 0, backgroundColor: "#E2b753" }} //COLOR Barra Pestañas
+				>
+					<Tabs value={props.indexTabSelected} textColor='inherit'>
+						{props.tabs.map((tab, index) => (
+							<Tab label={tab} onClick={() => props.setIndexTabSelected(index)} />
+						))}
+					</Tabs>
+				</AppBar>
+			)}
+		</React.Fragment>
+	);
 }
 
 Header.propTypes = {
-  onDrawerToggle: PropTypes.func.isRequired,
+	onDrawerToggle: PropTypes.func.isRequired,
 };
 
 export default Header;

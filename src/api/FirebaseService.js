@@ -47,6 +47,7 @@ export async function cerrarSesionUsuario() {
     await signOut(auth);
     console.log("Usuario cerró sesión exitosamente");
     removeFromLocalStorage("session")
+    
   } catch (error) {
     console.error("Error al cerrar sesión:", error);
     throw new Error(error.code);

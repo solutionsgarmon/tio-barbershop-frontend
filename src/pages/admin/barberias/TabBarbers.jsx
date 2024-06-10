@@ -11,20 +11,22 @@ const TabBarbers = ({ barbershopSelected, barbers, setReloadData }) => {
   const [right, setRight] = React.useState([]);
 
   useEffect(() => {
-    //Crear lado izquierda y lado derecho
-    if (barbershopSelected) {
+    // Verificar que se ha seleccionado una barbería y que hay barberos disponibles
+    if (barbershopSelected && barbers.length > 0) {
       const barberosAsignados = barbershopSelected.barberos;
       console.log("barberosAsignados", barberosAsignados);
       console.log("Todos los barberos", barbers);
 
+      // Filtrar los barberos totales para encontrar los no asignados
       const barberosNoAsignados = barbers.filter(
-        (barber) => barber.barberia_asignada === ""
+        (barber) =>
+          !barberosAsignados.some((asignado) => asignado._id === barber._id)
       );
 
       setLeft(barberosAsignados);
       setRight(barberosNoAsignados);
     }
-  }, []);
+  }, [barbershopSelected, barbers]);
 
   const handleSave = async () => {
     setIsLoadingApp(true);
@@ -35,23 +37,71 @@ const TabBarbers = ({ barbershopSelected, barbers, setReloadData }) => {
     console.log("newBarberosNoAsignados", newBarberosNoAsignados);
     console.log("id barberia", idBarbershop);
 
-    //Modificar subdocumento barberos de barberia seleccionada
+    //Modificar subdocumento barberos de BARBERIA seleccionada
     const values = { barberos: newBarberosAsignados };
     const resp = await updateBarbershop(values, idBarbershop);
 
-    // Modificar propiedad de barberia_asignada a todos los barberos asignados
-    const promises1 = newBarberosAsignados.map(async (barbero) => {
-      const values = { barberia_asignada: idBarbershop };
-      return updateBarber(values, barbero._id);
-    });
+    //**** Modificar propiedad de barberias_asignadas a todos los barberos asignados*****
+    const promises1 = [];
+    for (let i = 0; i < newBarberosAsignados.length; i++) {
+      const barbero = newBarberosAsignados[i];
 
-    // Modificar propiedad de barberia_asignada a todos los barberos no asignados
-    const promises2 = newBarberosNoAsignados.map(async (barbero) => {
-      const values = { barberia_asignada: "" };
-      return updateBarber(values, barbero._id);
-    });
+      const barberiaEncontrada = barbero.barberias_asignadas.find(
+        (barberiaAsignada) =>
+          barberiaAsignada.idBarberia === barbershopSelected._id
+      );
+      let values;
+      if (barberiaEncontrada) {
+        //Si ya lo tiene, no hagas nada
+        promises1.push(null);
+      } else {
+        //Si no tiene, modifica la estructura del barbero.barberias_asiganadas haciendo un push()
+        let clonacionBarberiasAsignadas = [...barbero.barberias_asignadas];
+        // Buscar en el arreglo si no tiene la barbería, hacerle un push
+        clonacionBarberiasAsignadas.push({
+          idBarberia: barbershopSelected._id,
+          nombreBarberia: barbershopSelected.nombre,
+          horario: {
+            domingo: "",
+            lunes: "",
+            martes: "",
+            miercoles: "",
+            jueves: "",
+            viernes: "",
+            sabado: "",
+          },
+        });
+        values = { barberias_asignadas: clonacionBarberiasAsignadas };
+        promises1.push(updateBarber(values, barbero._id));
+      }
+    }
 
-    // Esperar a que todas las actualizaciones se completen
+    //**** Modificar propiedad de barberias_asignadas a todos los barberos no asignados*****
+    const promises2 = [];
+    for (let i = 0; i < newBarberosNoAsignados.length; i++) {
+      const barbero = newBarberosNoAsignados[i];
+
+      const barberiaEncontrada = barbero.barberias_asignadas.find(
+        (barberiaAsignada) =>
+          barberiaAsignada.idBarberia === barbershopSelected._id
+      );
+      let values;
+      if (barberiaEncontrada) {
+        //Si ya lo tiene, borralo
+        let clonacionBarberiasAsignadas = [...barbero.barberias_asignadas];
+        clonacionBarberiasAsignadas = clonacionBarberiasAsignadas.filter(
+          (barberiaAsignada) =>
+            barberiaAsignada.idBarberia != barbershopSelected._id
+        );
+        values = { barberias_asignadas: clonacionBarberiasAsignadas };
+        promises2.push(updateBarber(values, barbero._id));
+      } else {
+        //Si no tiene, no hagas nada
+        promises2.push(null);
+      }
+    }
+
+    ///////// Esperar a que todas las actualizaciones se completen////////
     const resultados = await Promise.allSettled([...promises1, ...promises2]);
 
     // Verificar si todas las actualizaciones fueron exitosas

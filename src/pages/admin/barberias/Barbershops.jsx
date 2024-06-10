@@ -71,6 +71,7 @@ const Barbershops = () => {
         <TabHorario
           barbershopSelected={barbershopSelected}
           setReloadData={setReloadData}
+          setIndexTabSelected={setIndexTabSelected}
         />
       )}
       {indexTabSelected == 3 && (
