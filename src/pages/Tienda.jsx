@@ -36,7 +36,7 @@ const Tienda = () => {
 	const currentProducts = products.slice(startIndex, endIndex);
 
 	return (
-		<Box sx={{ py: 3, backgroundColor: "#1f1f1f" }}>
+		<Box sx={{ mt: { xs: 2, sm: 0 }, py: 3, backgroundColor: "#1f1f1f" }}>
 			<Typography variant='h4' align='center' color={"#E2b753"}>
 				Tienda
 			</Typography>

@@ -23,7 +23,7 @@ const Servicios = ({ services }) => {
 					display: "flex",
 					justifyContent: "center",
 					flexWrap: "wrap",
-					mt: 4,
+					mt: { xs: 6, sm: 4 },
 				}}
 			>
 				<h2 style={{ color: "#E2b753 ", fontFamily: "Century Gothic" }}>Nuestros Servicios</h2>

@@ -38,7 +38,7 @@ const InactividadDetector2 = ({ children }) => {
 						}
 					});
 				} else {
-					toast.success("Sesión Restaurada");
+					//toast.success("Sesión Restaurada");
 				}
 			} else {
 				console.log("No last activity record. Redirecting to login.");

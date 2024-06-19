@@ -166,6 +166,7 @@ const Citas = () => {
 				maxWidth: 1000,
 				textAlign: "center",
 				my: 4,
+				mt: { xs: 6, sm: 3 },
 			}}
 		>
 			<Paper sx={{ pt: 2, pb: 1, mt: { xs: -1.5, sm: 1 }, mb: 3 }}>

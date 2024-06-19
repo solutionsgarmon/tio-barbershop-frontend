@@ -183,7 +183,6 @@ function NavigationBar({ setShowNavigationBar, setShowModalRegistro }) {
 
 	const handleCerrarSesion = () => {
 		cerrarSesionUsuario();
-		window.location.reload();
 	};
 
 	const handleCloseModalMisCitas = () => {

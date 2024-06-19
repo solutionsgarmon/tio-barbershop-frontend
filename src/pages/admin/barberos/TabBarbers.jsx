@@ -211,11 +211,8 @@ const Table = ({ setBarberSelected, modalOpen, setModalOpen }) => {
 
 		try {
 			const id = row.original._id;
-			const valuesSinPassword = {
-				correo: values.correo,
-				nombre: values.nombre,
-			};
-			const resp = await updateBarber(valuesSinPassword, id);
+
+			const resp = await updateBarber(values, id);
 
 			if (resp.data.success) {
 				toast.success("Se modificó correctamente.");

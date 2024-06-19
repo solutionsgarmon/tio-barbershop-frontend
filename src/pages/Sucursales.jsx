@@ -25,7 +25,7 @@ const Sucursales = () => {
 	};
 
 	return (
-		<Grid container spacing={0} sx={{ mt: 1.5, px: 5 }}>
+		<Grid container spacing={0} sx={{ mt: { xs: 3, sm: 1.5 }, px: 5 }}>
 			<Grid item xs={12} md={4}>
 				<h2 style={{ textAlign: "center", color: "#FFF", margin: "20px" }}>SUCURSALES</h2>
 				<Box

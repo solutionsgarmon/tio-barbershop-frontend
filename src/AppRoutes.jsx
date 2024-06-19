@@ -16,7 +16,7 @@ import { getServices, getProducts } from "./api/gets";
 import { useEffect } from "react";
 import Cursos from "./pages/Cursos";
 
-function AppRoutes() {
+function AppRoutes({ isFullscreen, enterFullscreen, exitFullscreen }) {
 	const [showNavigationBar, setShowNavigationBar] = useState(true);
 	const [showModalRegistro, setShowModalRegistro] = useState(false);
 	const [products, setProducts] = useState([]);
@@ -42,7 +42,7 @@ function AppRoutes() {
 			{showNavigationBar && <NavigationBar setShowNavigationBar={setShowNavigationBar} setShowModalRegistro={setShowModalRegistro} />}
 			<Box sx={{ margin: "auto", mb: -2, pt: 6, minHeight: "60vh" }}>
 				<Routes>
-					<Route path='/' element={<Home services={services} products={products} />} />
+					<Route path='/' element={<Home services={services} products={products} isFullscreen={isFullscreen} exitFullscreen={exitFullscreen} enterFullscreen={enterFullscreen} />} />
 					<Route path='/sobre-nosotros' element={<SobreNosotros />} />
 					<Route path='/tienda' element={<Tienda products={products} />} />
 					<Route path='/servicios' element={<Servicios services={services} />} />

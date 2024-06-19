@@ -323,7 +323,8 @@ const categories_administrador = [
 			{
 				id: "Personalización",
 				icon: <SettingsIcon />,
-				tabs: ["Banner Principal", "Redes Sociales", "Colores", "Typografía"],
+				// tabs: ["Banner Principal", "Redes Sociales", "Colores", "Typografía"],
+				tabs: ["Banner Principal"],
 				component: <Configuracion />,
 			},
 		],
@@ -455,6 +456,7 @@ export default function Paperbase() {
 		<ThemeProvider theme={theme}>
 			<Box
 				sx={{
+					mt: { xs: 5, sm: 5 },
 					display: "flex",
 					minHeight: "100vh",
 					maxWidth: "100%",
@@ -492,8 +494,8 @@ export default function Paperbase() {
 						sx={{
 							flex: 1,
 							bgcolor: "#EEE",
-							m: { xs: 1, md: 2 },
-							maxWidth: isSmUp ? `${windowWidth - 290}px` : `${windowWidth - 18}px`,
+							m: { xs: 0, md: 0 },
+							maxWidth: isSmUp ? `${windowWidth - 250}px` : `${windowWidth}px`,
 						}}
 					>
 						{displayComponent}

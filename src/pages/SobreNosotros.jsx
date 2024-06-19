@@ -33,7 +33,7 @@ const SobreNosotros = () => {
 				color: "#E2b753 ",
 				textAlign: "center",
 				minHeight: "70vh",
-				mt: { xs: 2, sm: -1 },
+				mt: { xs: 4, sm: 0 },
 				overflowX: "hidden",
 			}}
 		>

@@ -365,7 +365,16 @@ const ModalCrearDescansoAdmin = ({ handleClose, open, setReload }) => {
 						InputLabelProps={{ shrink: true }}
 						sx={{ mt: 1 }}
 					/>
-					<Button disabled={isLoadingApp} fullWidth variant='contained' sx={{ py: 1, mt: 1 }} onClick={handleCrearDescanso}>
+					<Button
+						disabled={isLoadingApp}
+						fullWidth
+						variant='contained'
+						sx={{ py: 1, mt: 1 }}
+						onClick={() => {
+							handleCrearDescanso();
+							setIsLoadingApp(true);
+						}}
+					>
 						Crear Descanso
 					</Button>
 				</Box>

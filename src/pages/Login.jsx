@@ -160,7 +160,7 @@ export default function Login({ setShowNavigationBar, showModalRegistro, setShow
 	document.addEventListener("keydown", isCapsLockOn);
 
 	return (
-		<Grid container component='main' sx={{ mt: -10, height: "100vh" }}>
+		<Grid container component='main' sx={{ mt: -5, height: "98.8vh" }}>
 			<Grid
 				item
 				xs={false}

@@ -12,7 +12,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CardServicesMainSliderMob from "../components/cards/CardServicesMainSliderMob";
 
-const MainPage = ({ services, products }) => {
+const MainPage = ({ services, products, isFullscreen, enterFullscreen, exitFullscreen }) => {
 	const { setFlagTransparent, appSettings, windowWidth, setIsLoadingApp } = useAppContext();
 	const navigate = useNavigate();
 
@@ -32,13 +32,13 @@ const MainPage = ({ services, products }) => {
 		};
 	}, []);
 
-	const handleClickFloatingButton = () => {
+	const handleClickFloatingButtonCitas = () => {
 		console.log("handleClickFloatingButton");
 		navigate("/citas");
 	};
 
 	return (
-		<Box sx={{ mt: -10 }}>
+		<Box>
 			<PrincipalSlider banners={appSettings.main_slider} />
 
 			<Box
@@ -153,7 +153,7 @@ const MainPage = ({ services, products }) => {
         <AutoplaySlider />
       </Box> */}
 
-			<FloatingAddButton handleClickFloatingButton={handleClickFloatingButton} />
+			<FloatingAddButton handleClickFloatingButtonCitas={handleClickFloatingButtonCitas} isFullscreen={isFullscreen} exitFullscreen={exitFullscreen} enterFullscreen={enterFullscreen} />
 		</Box>
 	);
 };
